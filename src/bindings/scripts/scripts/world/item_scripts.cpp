@@ -51,12 +51,12 @@ enum
 bool ItemUse_item_arcane_charges(Player* pPlayer, Item* pItem, const SpellCastTargets& /*pTargets*/)
 {
     if (pPlayer->IsTaxiFlying())
-        return false;
+    { return false; }
 
     pPlayer->SendEquipError(EQUIP_ERR_NONE, pItem, NULL);
 
     if (const SpellEntry* pSpellInfo = GetSpellStore()->LookupEntry(SPELL_ARCANE_CHARGES))
-        Spell::SendCastResult(pPlayer, pSpellInfo, 1, SPELL_FAILED_ERROR);
+    { Spell::SendCastResult(pPlayer, pSpellInfo, 1, SPELL_FAILED_ERROR); }
 
     return true;
 }
@@ -71,11 +71,11 @@ bool ItemUse_item_flying_machine(Player* pPlayer, Item* pItem, const SpellCastTa
 
     if (itemId == 34060)
         if (pPlayer->GetBaseSkillValue(SKILL_RIDING) >= 225)
-            return false;
+        { return false; }
 
     if (itemId == 34061)
         if (pPlayer->GetBaseSkillValue(SKILL_RIDING) == 300)
-            return false;
+        { return false; }
 
     debug_log("SD2: Player attempt to use item %u, but did not meet riding requirement", itemId);
     pPlayer->SendEquipError(EQUIP_ERR_CANT_EQUIP_SKILL, pItem, NULL);
@@ -99,7 +99,7 @@ bool ItemUse_item_gor_dreks_ointment(Player* pPlayer, Item* pItem, const SpellCa
         pPlayer->SendEquipError(EQUIP_ERR_NONE, pItem, NULL);
 
         if (const SpellEntry* pSpellInfo = GetSpellStore()->LookupEntry(SPELL_GORDREKS_OINTMENT))
-            Spell::SendCastResult(pPlayer, pSpellInfo, 1, SPELL_FAILED_TARGET_AURASTATE);
+        { Spell::SendCastResult(pPlayer, pSpellInfo, 1, SPELL_FAILED_TARGET_AURASTATE); }
 
         return true;
     }

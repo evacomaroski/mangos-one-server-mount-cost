@@ -72,7 +72,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
         Player* pPlayer = GetPlayerForEscort();
 
         if (!pPlayer)
-            return;
+        { return; }
 
         switch (i)
         {
@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
                 break;
             case 14:
                 if (Creature* pRane = GetClosestCreatureWithEntry(m_creature, NPC_RANE, 45.0f))
-                    DoScriptText(SAY_RANE, pRane, m_creature);
+                { DoScriptText(SAY_RANE, pRane, m_creature); }
                 break;
             case 15:
                 DoScriptText(SAY_RANE_REPLY, m_creature);
@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
                 break;
             case 25:
                 if (Creature* pQuinn = GetClosestCreatureWithEntry(m_creature, NPC_QUINN, 45.0f))
-                    DoScriptText(SAY_QUINN_REPLY, pQuinn, m_creature);
+                { DoScriptText(SAY_QUINN_REPLY, pQuinn, m_creature); }
                 break;
             case 26:
                 DoScriptText(SAY_BYE, m_creature);
@@ -126,7 +126,7 @@ bool QuestAccept_npc_deathstalker_erland(Player* pPlayer, Creature* pCreature, c
         DoScriptText(SAY_START_1, pCreature);
 
         if (npc_deathstalker_erlandAI* pEscortAI = dynamic_cast<npc_deathstalker_erlandAI*>(pCreature->AI()))
-            pEscortAI->Start(false, pPlayer, pQuest);
+        { pEscortAI->Start(false, pPlayer, pQuest); }
     }
     return true;
 }
@@ -215,7 +215,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_playerGuid))
-            pPlayer->SendQuestFailed(QUEST_PYREWOOD_AMBUSH);
+        { pPlayer->SendQuestFailed(QUEST_PYREWOOD_AMBUSH); }
 
         FinishEvent();
     }
@@ -244,7 +244,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
                 DoScriptText(SAY_COMPLETED, m_creature);
 
                 if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_playerGuid))
-                    pPlayer->GroupEventHappens(QUEST_PYREWOOD_AMBUSH, m_creature);
+                { pPlayer->GroupEventHappens(QUEST_PYREWOOD_AMBUSH, m_creature); }
 
                 FinishEvent();
             }
@@ -284,11 +284,11 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
                 ++m_uiWaveCount;
             }
             else
-                m_uiWaveTimer -= uiDiff;
+            { m_uiWaveTimer -= uiDiff; }
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }
@@ -301,7 +301,7 @@ bool QuestAccept_npc_deathstalker_faerleia(Player* pPlayer, Creature* pCreature,
         DoScriptText(SAY_START, pCreature, pPlayer);
 
         if (npc_deathstalker_faerleiaAI* pFaerleiaAI = dynamic_cast<npc_deathstalker_faerleiaAI*>(pCreature->AI()))
-            pFaerleiaAI->StartEvent(pPlayer);
+        { pFaerleiaAI->StartEvent(pPlayer); }
     }
     return true;
 }

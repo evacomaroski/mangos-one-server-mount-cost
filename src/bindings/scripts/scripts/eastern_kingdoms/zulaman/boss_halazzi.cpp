@@ -125,7 +125,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     {
         // Transform back on evade
         if (DoCastSpellIfCan(m_creature, SPELL_TRANSFORM_TO_ORIGINAL) == CAST_OK)
-            m_creature->UpdateEntry(NPC_HALAZZI);
+        { m_creature->UpdateEntry(NPC_HALAZZI); }
 
         ScriptedAI::EnterEvadeMode();
     }
@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_HALAZZI, FAIL);
+        { m_pInstance->SetData(TYPE_HALAZZI, FAIL); }
     }
 
     void Aggro(Unit* /*pWho*/) override
@@ -141,13 +141,13 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS); }
     }
 
     void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
-            return;
+        { return; }
 
         DoScriptText(urand(0, 1) ? SAY_KILL1 : SAY_KILL2, m_creature);
     }
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_HALAZZI, DONE);
+        { m_pInstance->SetData(TYPE_HALAZZI, DONE); }
     }
 
     void JustSummoned(Creature* pSummoned) override
@@ -204,7 +204,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
             // Despawn the Lynx
             if (Creature* pLynx = m_creature->GetMap()->GetCreature(m_spiritLynxGuid))
-                pLynx->ForcedDespawn();
+            { pLynx->ForcedDespawn(); }
 
             // Set the proper health level - workaround for missing server side spell 43538
             m_creature->SetHealth(m_creature->GetMaxHealth() / 4 * m_uiPhaseCounter);
@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiBerserkTimer)
         {
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 }
             }
             else
-                m_uiBerserkTimer -= uiDiff;
+            { m_uiBerserkTimer -= uiDiff; }
         }
 
         // Abilities used only in the single or final phase
@@ -252,10 +252,10 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             if (m_uiFrenzyTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_FRENZY) == CAST_OK)
-                    m_uiFrenzyTimer = 16000;
+                { m_uiFrenzyTimer = 16000; }
             }
             else
-                m_uiFrenzyTimer -= uiDiff;
+            { m_uiFrenzyTimer -= uiDiff; }
 
             if (m_uiSaberLashTimer < uiDiff)
             {
@@ -266,7 +266,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 }
             }
             else
-                m_uiSaberLashTimer -= uiDiff;
+            { m_uiSaberLashTimer -= uiDiff; }
         }
 
         // Abilities used during the split phase or when the boss is below 25% health
@@ -275,26 +275,26 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             if (m_uiTotemTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_LIGHTNING_TOTEM) == CAST_OK)
-                    m_uiTotemTimer = 20000;
+                { m_uiTotemTimer = 20000; }
             }
             else
-                m_uiTotemTimer -= uiDiff;
+            { m_uiTotemTimer -= uiDiff; }
 
             if (m_uiShockTimer < uiDiff)
             {
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 {
                     if (DoCastSpellIfCan(pTarget, urand(0, 1) ? SPELL_EARTHSHOCK : SPELL_FLAMESHOCK) == CAST_OK)
-                        m_uiShockTimer = urand(10000, 14000);
+                    { m_uiShockTimer = urand(10000, 14000); }
                 }
             }
             else
-                m_uiShockTimer -= uiDiff;
+            { m_uiShockTimer -= uiDiff; }
         }
 
         // Transform back from Totem phase
         if (m_uiPhase == PHASE_TOTEM && m_creature->GetHealthPercent() < 20.0f)
-            DoReuniteSpirits();
+        { DoReuniteSpirits(); }
 
         DoMeleeAttackIfReady();
     }
@@ -335,16 +335,16 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
     void KilledUnit(Unit* pVictim) override
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         if (Creature* pHalazzi = m_pInstance->GetSingleCreatureFromStorage(NPC_HALAZZI))
-            pHalazzi->AI()->KilledUnit(pVictim);
+        { pHalazzi->AI()->KilledUnit(pVictim); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiFrenzyTimer < uiDiff)
         {
@@ -352,7 +352,7 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
             m_uiFrenzyTimer = urand(20000, 30000);          // subsequent frenzys casted every 20-30 seconds
         }
         else
-            m_uiFrenzyTimer -= uiDiff;
+        { m_uiFrenzyTimer -= uiDiff; }
 
         if (m_uiShredArmorTimer < uiDiff)
         {
@@ -360,7 +360,7 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
             m_uiShredArmorTimer = 4000;
         }
         else
-            m_uiShredArmorTimer -= uiDiff;
+        { m_uiShredArmorTimer -= uiDiff; }
 
         // Unite spirits at 10% health
         // Note: maybe there is some spell related to this - needs research
@@ -369,7 +369,7 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
             if (Creature* pHalazzi = m_pInstance->GetSingleCreatureFromStorage(NPC_HALAZZI))
             {
                 if (boss_halazziAI* pBossAI = dynamic_cast<boss_halazziAI*>(pHalazzi->AI()))
-                    pBossAI->DoReuniteSpirits();
+                { pBossAI->DoReuniteSpirits(); }
             }
             m_bHasUnited = true;
         }

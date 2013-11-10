@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_BROGGOK_EVENT, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_BROGGOK_EVENT, IN_PROGRESS); }
     }
 
     void JustSummoned(Creature* pSummoned) override
@@ -91,7 +91,7 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
     void JustDied(Unit* /*pWho*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_BROGGOK_EVENT, DONE);
+        { m_pInstance->SetData(TYPE_BROGGOK_EVENT, DONE); }
     }
 
     void EnterEvadeMode() override
@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
         Reset();
 
         if (!m_creature->isAlive())
-            return;
+        { return; }
 
         if (m_pInstance)
         {
@@ -117,47 +117,47 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
             m_creature->GetMotionMaster()->MovePoint(POINT_EVENT_COMBAT, dx, dy, fRespZ);
         }
         else
-            m_creature->GetMotionMaster()->MoveTargetedHome();
+        { m_creature->GetMotionMaster()->MoveTargetedHome(); }
     }
 
     // Reset Orientation
     void MovementInform(uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE || uiPointId != POINT_EVENT_COMBAT)
-            return;
+        { return; }
 
         if (GameObject* pFrontDoor = m_pInstance->GetSingleGameObjectFromStorage(GO_DOOR_BROGGOK_FRONT))
-            m_creature->SetFacingToObject(pFrontDoor);
+        { m_creature->SetFacingToObject(pFrontDoor); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiAcidSprayTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_SLIME_SPRAY : SPELL_SLIME_SPRAY_H) == CAST_OK)
-                m_uiAcidSprayTimer = urand(4000, 12000);
+            { m_uiAcidSprayTimer = urand(4000, 12000); }
         }
         else
-            m_uiAcidSprayTimer -= uiDiff;
+        { m_uiAcidSprayTimer -= uiDiff; }
 
         if (m_uiPoisonBoltTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_POISON_BOLT : SPELL_POISON_BOLT_H) == CAST_OK)
-                m_uiPoisonBoltTimer = urand(4000, 12000);
+            { m_uiPoisonBoltTimer = urand(4000, 12000); }
         }
         else
-            m_uiPoisonBoltTimer -= uiDiff;
+        { m_uiPoisonBoltTimer -= uiDiff; }
 
         if (m_uiPoisonSpawnTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_POISON_CLOUD) == CAST_OK)
-                m_uiPoisonSpawnTimer = 20000;
+            { m_uiPoisonSpawnTimer = 20000; }
         }
         else
-            m_uiPoisonSpawnTimer -= uiDiff;
+        { m_uiPoisonSpawnTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

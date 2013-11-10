@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         if (!m_bDidMagtheridonYell && pWho->GetTypeId() == TYPEID_PLAYER && !((Player*)pWho)->isGameMaster() && m_creature->_IsWithinDist(pWho, 73.0f, false))
         {
             if (m_pInstance)
-                m_pInstance->DoOrSimulateScriptTextForThisInstance(SAY_MAGTHERIDON_INTRO, NPC_MAGTHERIDON);
+            { m_pInstance->DoOrSimulateScriptTextForThisInstance(SAY_MAGTHERIDON_INTRO, NPC_MAGTHERIDON); }
 
             m_bDidMagtheridonYell = true;
         }
@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
     void KilledUnit(Unit* /*pVictim*/) override
     {
         if (urand(0, 1))
-            return;
+        { return; }
 
         DoScriptText(urand(0, 1) ? SAY_KILL_1 : SAY_KILL_2, m_creature);
     }
@@ -143,13 +143,13 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         DoScriptText(SAY_DIE, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_KELIDAN_EVENT, DONE);
+        { m_pInstance->SetData(TYPE_KELIDAN_EVENT, DONE); }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_KELIDAN_EVENT, FAIL);
+        { m_pInstance->SetData(TYPE_KELIDAN_EVENT, FAIL); }
 
         DoCastSpellIfCan(m_creature, SPELL_EVOCATION);
         m_uiSetupAddsTimer = 2000;
@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         m_uiSetupAddsTimer = 0;
 
         if (!m_pInstance)
-            return;
+        { return; }
 
         GuidList lAddGuids;
         m_pInstance->GetKelidanAddList(lAddGuids);
@@ -173,12 +173,12 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
             for (GuidList::const_iterator itr = lAddGuids.begin(); itr != lAddGuids.end(); ++itr)
             {
                 if (Creature* pAdd = m_pInstance->instance->GetCreature(*itr))
-                    lAdds.push_back(pAdd);
+                { lAdds.push_back(pAdd); }
             }
             // Sort them by angle
             lAdds.sort(SortByAngle(m_creature));
             for (std::list<Creature*>::const_iterator itr = lAdds.begin(); itr != lAdds.end(); ++itr)
-                m_vAddGuids.push_back((*itr)->GetObjectGuid());
+            { m_vAddGuids.push_back((*itr)->GetObjectGuid()); }
         }
 
         // Respawn killed adds and reset counter
@@ -187,7 +187,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         {
             Creature* pAdd = m_pInstance->instance->GetCreature(*itr);
             if (pAdd && !pAdd->isAlive())
-                pAdd->Respawn();
+            { pAdd->Respawn(); }
         }
 
         // Cast pentagram
@@ -197,7 +197,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
             Creature* pCaster = m_pInstance->instance->GetCreature(m_vAddGuids[i]);
             Creature* pTarget = m_pInstance->instance->GetCreature(m_vAddGuids[(i + 2) % s]);
             if (pCaster && pTarget)
-                pCaster->CastSpell(pTarget, SPELL_CHANNELING, false);
+            { pCaster->CastSpell(pTarget, SPELL_CHANNELING, false); }
         }
     }
 
@@ -208,7 +208,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         {
             Creature* pAdd = m_creature->GetMap()->GetCreature(*itr);
             if (pAdd && !pAdd->getVictim())
-                pAdd->AI()->AttackStart(pWho);
+            { pAdd->AI()->AttackStart(pWho); }
         }
     }
 
@@ -232,13 +232,13 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         if (m_uiSetupAddsTimer)
         {
             if (m_uiSetupAddsTimer <= uiDiff)
-                DoSetupAdds();
+            { DoSetupAdds(); }
             else
-                m_uiSetupAddsTimer -= uiDiff;
+            { m_uiSetupAddsTimer -= uiDiff; }
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiFirenovaTimer)
         {
@@ -251,24 +251,24 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
                 }
             }
             else
-                m_uiFirenovaTimer -= uiDiff;
+            { m_uiFirenovaTimer -= uiDiff; }
         }
 
         if (m_uiShadowVolleyTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_SHADOW_BOLT_VOLLEY : SPELL_SHADOW_BOLT_VOLLEY_H) == CAST_OK)
-                m_uiShadowVolleyTimer = urand(5000, 13000);
+            { m_uiShadowVolleyTimer = urand(5000, 13000); }
         }
         else
-            m_uiShadowVolleyTimer -= uiDiff;
+        { m_uiShadowVolleyTimer -= uiDiff; }
 
         if (m_uiCorruptionTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_CORRUPTION) == CAST_OK)
-                m_uiCorruptionTimer = urand(30000, 50000);
+            { m_uiCorruptionTimer = urand(30000, 50000); }
         }
         else
-            m_uiCorruptionTimer -= uiDiff;
+        { m_uiCorruptionTimer -= uiDiff; }
 
         if (m_uiBurningNovaTimer < uiDiff)
         {
@@ -277,14 +277,14 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
                 DoScriptText(SAY_NOVA, m_creature);
 
                 if (!m_bIsRegularMode)
-                    DoCastSpellIfCan(m_creature, SPELL_VORTEX, CAST_TRIGGERED);
+                { DoCastSpellIfCan(m_creature, SPELL_VORTEX, CAST_TRIGGERED); }
 
                 m_uiBurningNovaTimer = urand(20000, 28000);
                 m_uiFirenovaTimer = 5000;
             }
         }
         else
-            m_uiBurningNovaTimer -= uiDiff;
+        { m_uiBurningNovaTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -346,59 +346,59 @@ struct MANGOS_DLL_DECL mob_shadowmoon_channelerAI : public ScriptedAI
         }
 
         if (!m_pInstance)
-            return;
+        { return; }
 
         if (Creature* pKelidan = m_pInstance->GetSingleCreatureFromStorage(NPC_KELIDAN_THE_BREAKER))
             if (boss_kelidan_the_breakerAI* pKelidanAI = dynamic_cast<boss_kelidan_the_breakerAI*>(pKelidan->AI()))
-                pKelidanAI->AddJustAggroed(pWho);
+            { pKelidanAI->AddJustAggroed(pWho); }
     }
 
     void JustDied(Unit* pKiller) override
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         if (Creature* pKelidan = m_pInstance->GetSingleCreatureFromStorage(NPC_KELIDAN_THE_BREAKER))
             if (boss_kelidan_the_breakerAI* pKelidanAI = dynamic_cast<boss_kelidan_the_breakerAI*>(pKelidan->AI()))
-                pKelidanAI->AddJustDied(pKiller);
+            { pKelidanAI->AddJustDied(pKiller); }
     }
 
     void JustReachedHome() override
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         if (Creature* pKelidan = m_pInstance->GetSingleCreatureFromStorage(NPC_KELIDAN_THE_BREAKER))
             if (boss_kelidan_the_breakerAI* pKelidanAI = dynamic_cast<boss_kelidan_the_breakerAI*>(pKelidan->AI()))
-                pKelidanAI->AddJustReachedHome();
+            { pKelidanAI->AddJustReachedHome(); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiMarkOfShadowTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_MARK_OF_SHADOW) == CAST_OK)
-                    m_uiMarkOfShadowTimer = urand(15000, 20000);
+                { m_uiMarkOfShadowTimer = urand(15000, 20000); }
             }
         }
         else
-            m_uiMarkOfShadowTimer -= uiDiff;
+        { m_uiMarkOfShadowTimer -= uiDiff; }
 
         if (m_uiShadowBoltTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, m_bIsRegularMode ? SPELL_SHADOW_BOLT : SPELL_SHADOW_BOLT_H) == CAST_OK)
-                    m_uiShadowBoltTimer = urand(5000, 6000);
+                { m_uiShadowBoltTimer = urand(5000, 6000); }
             }
         }
         else
-            m_uiShadowBoltTimer -= uiDiff;
+        { m_uiShadowBoltTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

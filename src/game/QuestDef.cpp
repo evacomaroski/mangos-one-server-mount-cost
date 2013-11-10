@@ -64,46 +64,46 @@ Quest::Quest(Field* questRecord)
     EndText = questRecord[33].GetCppString();
 
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-        ObjectiveText[i] = questRecord[34+i].GetCppString();
+    { ObjectiveText[i] = questRecord[34 + i].GetCppString(); }
 
     for (int i = 0; i < QUEST_ITEM_OBJECTIVES_COUNT; ++i)
-        ReqItemId[i] = questRecord[38+i].GetUInt32();
+    { ReqItemId[i] = questRecord[38 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-        ReqItemCount[i] = questRecord[42+i].GetUInt32();
+    { ReqItemCount[i] = questRecord[42 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_SOURCE_ITEM_IDS_COUNT; ++i)
-        ReqSourceId[i] = questRecord[46+i].GetUInt32();
+    { ReqSourceId[i] = questRecord[46 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_SOURCE_ITEM_IDS_COUNT; ++i)
-        ReqSourceCount[i] = questRecord[50+i].GetUInt32();
+    { ReqSourceCount[i] = questRecord[50 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-        ReqCreatureOrGOId[i] = questRecord[54+i].GetInt32();
+    { ReqCreatureOrGOId[i] = questRecord[54 + i].GetInt32(); }
 
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-        ReqCreatureOrGOCount[i] = questRecord[58+i].GetUInt32();
+    { ReqCreatureOrGOCount[i] = questRecord[58 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-        ReqSpell[i] = questRecord[62+i].GetUInt32();
+    { ReqSpell[i] = questRecord[62 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_REWARD_CHOICES_COUNT; ++i)
-        RewChoiceItemId[i] = questRecord[66+i].GetUInt32();
+    { RewChoiceItemId[i] = questRecord[66 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_REWARD_CHOICES_COUNT; ++i)
-        RewChoiceItemCount[i] = questRecord[72+i].GetUInt32();
+    { RewChoiceItemCount[i] = questRecord[72 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_REWARDS_COUNT; ++i)
-        RewItemId[i] = questRecord[78+i].GetUInt32();
+    { RewItemId[i] = questRecord[78 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_REWARDS_COUNT; ++i)
-        RewItemCount[i] = questRecord[82+i].GetUInt32();
+    { RewItemCount[i] = questRecord[82 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)
-        RewRepFaction[i] = questRecord[86+i].GetUInt32();
+    { RewRepFaction[i] = questRecord[86 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)
-        RewRepValue[i] = questRecord[91+i].GetInt32();
+    { RewRepValue[i] = questRecord[91 + i].GetInt32(); }
 
     RewHonorableKills = questRecord[96].GetUInt32();
     RewOrReqMoney = questRecord[97].GetInt32();
@@ -118,19 +118,19 @@ Quest::Quest(Field* questRecord)
     PointOpt = questRecord[106].GetUInt32();
 
     for (int i = 0; i < QUEST_EMOTE_COUNT; ++i)
-        DetailsEmote[i] = questRecord[107+i].GetUInt32();
+    { DetailsEmote[i] = questRecord[107 + i].GetUInt32(); }
 
     for (int i = 0; i < QUEST_EMOTE_COUNT; ++i)
-        DetailsEmoteDelay[i] = questRecord[111+i].GetUInt32();
+    { DetailsEmoteDelay[i] = questRecord[111 + i].GetUInt32(); }
 
     IncompleteEmote = questRecord[115].GetUInt32();
     CompleteEmote = questRecord[116].GetUInt32();
 
     for (int i = 0; i < QUEST_EMOTE_COUNT; ++i)
-        OfferRewardEmote[i] = questRecord[117+i].GetInt32();
+    { OfferRewardEmote[i] = questRecord[117 + i].GetInt32(); }
 
     for (int i = 0; i < QUEST_EMOTE_COUNT; ++i)
-        OfferRewardEmoteDelay[i] = questRecord[121+i].GetInt32();
+    { OfferRewardEmoteDelay[i] = questRecord[121 + i].GetInt32(); }
 
     QuestStartScript = questRecord[125].GetUInt32();
     QuestCompleteScript = questRecord[126].GetUInt32();
@@ -145,22 +145,22 @@ Quest::Quest(Field* questRecord)
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
     {
         if (ReqItemId[i])
-            ++m_reqitemscount;
+        { ++m_reqitemscount; }
 
         if (ReqCreatureOrGOId[i])
-            ++m_reqCreatureOrGOcount;
+        { ++m_reqCreatureOrGOcount; }
     }
 
     for (int i = 0; i < QUEST_REWARDS_COUNT; ++i)
     {
         if (RewItemId[i])
-            ++m_rewitemscount;
+        { ++m_rewitemscount; }
     }
 
     for (int i = 0; i < QUEST_REWARD_CHOICES_COUNT; ++i)
     {
         if (RewChoiceItemId[i])
-            ++m_rewchoiceitemscount;
+        { ++m_rewchoiceitemscount; }
     }
 }
 
@@ -174,30 +174,30 @@ uint32 Quest::XPValue(Player* pPlayer) const
             uint32 qLevel = QuestLevel > 0 ? (uint32)QuestLevel : 0;
             float fullxp = 0;
             if (qLevel >= 65)
-                fullxp = RewMoneyMaxLevel / 6.0f;
+            { fullxp = RewMoneyMaxLevel / 6.0f; }
             else if (qLevel == 64)
-                fullxp = RewMoneyMaxLevel / 4.8f;
+            { fullxp = RewMoneyMaxLevel / 4.8f; }
             else if (qLevel == 63)
-                fullxp = RewMoneyMaxLevel / 3.6f;
+            { fullxp = RewMoneyMaxLevel / 3.6f; }
             else if (qLevel == 62)
-                fullxp = RewMoneyMaxLevel / 2.4f;
+            { fullxp = RewMoneyMaxLevel / 2.4f; }
             else if (qLevel == 61)
-                fullxp = RewMoneyMaxLevel / 1.2f;
+            { fullxp = RewMoneyMaxLevel / 1.2f; }
             else if (qLevel > 0 && qLevel <= 60)
-                fullxp = RewMoneyMaxLevel / 0.6f;
+            { fullxp = RewMoneyMaxLevel / 0.6f; }
 
             if (pLevel <= qLevel +  5)
-                return uint32(ceilf(fullxp));
+            { return uint32(ceilf(fullxp)); }
             else if (pLevel == qLevel +  6)
-                return uint32(ceilf(fullxp * 0.8f));
+            { return uint32(ceilf(fullxp * 0.8f)); }
             else if (pLevel == qLevel +  7)
-                return uint32(ceilf(fullxp * 0.6f));
+            { return uint32(ceilf(fullxp * 0.6f)); }
             else if (pLevel == qLevel +  8)
-                return uint32(ceilf(fullxp * 0.4f));
+            { return uint32(ceilf(fullxp * 0.4f)); }
             else if (pLevel == qLevel +  9)
-                return uint32(ceilf(fullxp * 0.2f));
+            { return uint32(ceilf(fullxp * 0.2f)); }
             else
-                return uint32(ceilf(fullxp * 0.1f));
+            { return uint32(ceilf(fullxp * 0.1f)); }
         }
     }
 
@@ -207,7 +207,7 @@ uint32 Quest::XPValue(Player* pPlayer) const
 int32  Quest::GetRewOrReqMoney() const
 {
     if (RewOrReqMoney <= 0)
-        return RewOrReqMoney;
+    { return RewOrReqMoney; }
 
     return int32(RewOrReqMoney * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY));
 }
@@ -215,7 +215,7 @@ int32  Quest::GetRewOrReqMoney() const
 bool Quest::IsAllowedInRaid() const
 {
     if (Type == QUEST_TYPE_RAID)
-        return true;
+    { return true; }
 
     return sWorld.getConfig(CONFIG_BOOL_QUEST_IGNORE_RAID);
 }
@@ -223,7 +223,7 @@ bool Quest::IsAllowedInRaid() const
 uint32 Quest::GetCharTitleBitIndex() const
 {
     if (!CharTitleId)
-        return 0;
+    { return 0; }
     CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(CharTitleId);
     return titleEntry ? titleEntry->bit_index : 0;
 }

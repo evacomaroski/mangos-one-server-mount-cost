@@ -75,7 +75,7 @@ struct MANGOS_DLL_DECL npc_converted_sentryAI : public ScriptedAI
                 m_uiCreditTimer = 0;
             }
             else
-                m_uiCreditTimer -= uiDiff;
+            { m_uiCreditTimer -= uiDiff; }
         }
     }
 };

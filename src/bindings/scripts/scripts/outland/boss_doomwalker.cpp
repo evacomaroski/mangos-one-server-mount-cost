@@ -77,12 +77,12 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public ScriptedAI
     void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
-            return;
+        { return; }
 
         pVictim->CastSpell(pVictim, SPELL_MARK_OF_DEATH_PLAYER, true, NULL, NULL, m_creature->GetObjectGuid());
 
         if (urand(0, 4))
-            return;
+        { return; }
 
         switch (urand(0, 2))
         {
@@ -106,13 +106,13 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Spell Enrage, when hp <= 20% gain enrage
         if (m_creature->GetHealthPercent() <= 20.0f && !m_bHasEnrage)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_ENRAGE) == CAST_OK)
-                m_bHasEnrage = true;
+            { m_bHasEnrage = true; }
         }
 
         // Spell Overrun
@@ -125,7 +125,7 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public ScriptedAI
             }
         }
         else
-            m_uiOverrunTimer -= uiDiff;
+        { m_uiOverrunTimer -= uiDiff; }
 
         // Spell Earthquake
         if (m_uiQuakeTimer < uiDiff)
@@ -137,32 +137,32 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public ScriptedAI
             }
         }
         else
-            m_uiQuakeTimer -= uiDiff;
+        { m_uiQuakeTimer -= uiDiff; }
 
         // Spell Chain Lightning
         if (m_uiChainTimer < uiDiff)
         {
             Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1);
             if (!pTarget)
-                pTarget = m_creature->getVictim();
+            { pTarget = m_creature->getVictim(); }
 
             if (pTarget)
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_LIGHTNING_WRATH) == CAST_OK)
-                    m_uiChainTimer = urand(7000, 27000);
+                { m_uiChainTimer = urand(7000, 27000); }
             }
         }
         else
-            m_uiChainTimer -= uiDiff;
+        { m_uiChainTimer -= uiDiff; }
 
         // Spell Sunder Armor
         if (m_uiArmorTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_CRUSH_ARMOR) == CAST_OK)
-                m_uiArmorTimer = urand(10000, 25000);
+            { m_uiArmorTimer = urand(10000, 25000); }
         }
         else
-            m_uiArmorTimer -= uiDiff;
+        { m_uiArmorTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

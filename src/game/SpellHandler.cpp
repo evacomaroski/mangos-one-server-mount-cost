@@ -105,8 +105,8 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
     // only allow conjured consumable, bandage, poisons (all should have the 2^21 item flag set in DB)
     if (proto->Class == ITEM_CLASS_CONSUMABLE &&
-            !(proto->Flags & ITEM_FLAG_USEABLE_IN_ARENA) &&
-            pUser->InArena())
+        !(proto->Flags & ITEM_FLAG_USEABLE_IN_ARENA) &&
+        pUser->InArena())
     {
         recvPacket.rpos(recvPacket.wpos());                 // prevent spam at not read packet tail
         pUser->SendEquipError(EQUIP_ERR_NOT_DURING_ARENA_MATCH, pItem, NULL);
@@ -163,7 +163,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
         // send spell error
         if (SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid))
-            Spell::SendCastResult(_player, spellInfo, cast_count, SPELL_FAILED_BAD_TARGETS);
+        { Spell::SendCastResult(_player, spellInfo, cast_count, SPELL_FAILED_BAD_TARGETS); }
         return;
     }
 
@@ -195,7 +195,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
 
     // ignore for remote control state
     if (!pUser->IsSelfMover())
-        return;
+    { return; }
 
     Item* pItem = pUser->GetItemByPos(bagIndex, slot);
     if (!pItem)
@@ -260,7 +260,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
         stmt.PExecute(pItem->GetGUIDLow());
     }
     else
-        pUser->SendLoot(pItem->GetObjectGuid(), LOOT_CORPSE);
+    { pUser->SendLoot(pItem->GetObjectGuid(), LOOT_CORPSE); }
 }
 
 void WorldSession::HandleGameObjectUseOpcode(WorldPacket& recv_data)
@@ -273,11 +273,11 @@ void WorldSession::HandleGameObjectUseOpcode(WorldPacket& recv_data)
 
     // ignore for remote control state
     if (!_player->IsSelfMover())
-        return;
+    { return; }
 
     GameObject* obj = GetPlayer()->GetMap()->GetGameObject(guid);
     if (!obj)
-        return;
+    { return; }
 
     // Additional check preventing exploits (ie loot despawned chests)
     if (!obj->isSpawned())
@@ -362,7 +362,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     {
         // if rank not found then function return NULL but in explicit cast case original spell can be casted and later failed with appropriate error message
         if (SpellEntry const* actualSpellInfo = sSpellMgr.SelectAuraRankForLevel(spellInfo, target->getLevel()))
-            spellInfo = actualSpellInfo;
+        { spellInfo = actualSpellInfo; }
     }
 
     Spell* spell = new Spell(_player, spellInfo, false);
@@ -379,14 +379,14 @@ void WorldSession::HandleCancelCastOpcode(WorldPacket& recvPacket)
     // ignore for remote control state (for player case)
     Unit* mover = _player->GetMover();
     if (mover != _player && mover->GetTypeId() == TYPEID_PLAYER)
-        return;
+    { return; }
 
     // FIXME: hack, ignore unexpected client cancel Deadly Throw cast
     if (spellId == 26679)
-        return;
+    { return; }
 
     if (_player->IsNonMeleeSpellCasted(false))
-        _player->InterruptNonMeleeSpells(false, spellId);
+    { _player->InterruptNonMeleeSpells(false, spellId); }
 }
 
 void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)
@@ -396,13 +396,13 @@ void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)
 
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellId);
     if (!spellInfo)
-        return;
+    { return; }
 
     if (spellInfo->HasAttribute(SPELL_ATTR_CANT_CANCEL))
-        return;
+    { return; }
 
     if (IsPassiveSpell(spellInfo))
-        return;
+    { return; }
 
     if (!IsPositiveSpell(spellId))
     {
@@ -414,7 +414,7 @@ void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)
             for (int k = 0; k < MAX_EFFECT_INDEX; ++k)
             {
                 if (spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS ||
-                        spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS_PET)
+                    spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS_PET)
                 {
                     allow = true;
                     break;
@@ -423,10 +423,10 @@ void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)
 
             // this also include case when aura not found
             if (!allow)
-                return;
+            { return; }
         }
         else
-            return;
+        { return; }
     }
 
     // channeled spell case (it currently casted then)
@@ -434,7 +434,7 @@ void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)
     {
         if (Spell* curSpell = _player->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
             if (curSpell->m_spellInfo->Id == spellId)
-                _player->InterruptSpell(CURRENT_CHANNELED_SPELL);
+            { _player->InterruptSpell(CURRENT_CHANNELED_SPELL); }
         return;
     }
 
@@ -442,7 +442,7 @@ void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)
 
     // not own area auras can't be cancelled (note: maybe need to check for aura on holder and not general on spell)
     if (holder && holder->GetCasterGuid() != _player->GetObjectGuid() && HasAreaAuraEffect(holder->GetSpellProto()))
-        return;
+    { return; }
 
     // non channeled case
     _player->RemoveAurasDueToSpellByCancel(spellId);
@@ -458,7 +458,7 @@ void WorldSession::HandlePetCancelAuraOpcode(WorldPacket& recvPacket)
 
     // ignore for remote control state
     if (!_player->IsSelfMover())
-        return;
+    { return; }
 
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellId);
     if (!spellInfo)
@@ -511,7 +511,7 @@ void WorldSession::HandleCancelChanneling(WorldPacket& recv_data)
     // ignore for remote control state (for player case)
     Unit* mover = _player->GetMover();
     if (mover != _player && mover->GetTypeId() == TYPEID_PLAYER)
-        return;
+    { return; }
 
     _player->InterruptSpell(CURRENT_CHANNELED_SPELL);
 }
@@ -524,13 +524,13 @@ void WorldSession::HandleTotemDestroyed(WorldPacket& recvPacket)
 
     // ignore for remote control state
     if (!_player->IsSelfMover())
-        return;
+    { return; }
 
     if (int(slotId) >= MAX_TOTEM_SLOT)
-        return;
+    { return; }
 
     if (Totem* totem = GetPlayer()->GetTotem(TotemSlot(slotId)))
-        totem->UnSummon();
+    { totem->UnSummon(); }
 }
 
 void WorldSession::HandleSelfResOpcode(WorldPacket & /*recv_data*/)
@@ -541,7 +541,7 @@ void WorldSession::HandleSelfResOpcode(WorldPacket & /*recv_data*/)
     {
         SpellEntry const* spellInfo = sSpellStore.LookupEntry(_player->GetUInt32Value(PLAYER_SELF_RES_SPELL));
         if (spellInfo)
-            _player->CastSpell(_player, spellInfo, false);
+        { _player->CastSpell(_player, spellInfo, false); }
 
         _player->SetUInt32Value(PLAYER_SELF_RES_SPELL, 0);
     }
@@ -557,12 +557,12 @@ void WorldSession::HandleGetMirrorimageData(WorldPacket& recv_data)
     Creature* pCreature = _player->GetMap()->GetAnyTypeCreature(guid);
 
     if (!pCreature)
-        return;
+    { return; }
 
     Unit::AuraList const& images = pCreature->GetAurasByType(SPELL_AURA_MIRROR_IMAGE);
 
     if (images.empty())
-        return;
+    { return; }
 
     Unit* pCaster = images.front()->GetCaster();
 
@@ -595,9 +595,9 @@ void WorldSession::HandleGetMirrorimageData(WorldPacket& recv_data)
         data << (uint32)pPlayer->GetGuildId();
 
         if (pPlayer->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
-            data << (uint32)0;
+        { data << (uint32)0; }
         else
-            data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_HEAD);
+        { data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_HEAD); }
 
         data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_SHOULDERS);
         data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_BODY);
@@ -609,9 +609,9 @@ void WorldSession::HandleGetMirrorimageData(WorldPacket& recv_data)
         data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_HANDS);
 
         if (pPlayer->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK))
-            data << (uint32)0;
+        { data << (uint32)0; }
         else
-            data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_BACK);
+        { data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_BACK); }
 
         data << (uint32)pPlayer->GetItemDisplayIdInSlot(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_TABARD);
     }
@@ -630,7 +630,7 @@ void WorldSession::HandleGetMirrorimageData(WorldPacket& recv_data)
         data << (uint32)0;
 
         for (int i = 0; i < 11; ++i)
-            data << (uint32)0;
+        { data << (uint32)0; }
     }
 
     SendPacket(&data);

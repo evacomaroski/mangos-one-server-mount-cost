@@ -179,7 +179,7 @@ void PG_Exec_str(string sql, PGconn* mPGconn)
 void PG_Escape_Str(string& str)
 {
     if (str.empty())
-        return;
+    { return; }
     char* buf = new char[str.size() * 2 + 1];
     PQescapeString(buf, str.c_str(), str.size());
     str = buf;

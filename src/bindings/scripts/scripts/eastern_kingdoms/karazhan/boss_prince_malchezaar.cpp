@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
         m_creature->RemoveGuardians();
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MALCHEZZAR, DONE);
+        { m_pInstance->SetData(TYPE_MALCHEZZAR, DONE); }
     }
 
     void Aggro(Unit* /*pWho*/) override
@@ -150,13 +150,13 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MALCHEZZAR, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_MALCHEZZAR, IN_PROGRESS); }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MALCHEZZAR, FAIL);
+        { m_pInstance->SetData(TYPE_MALCHEZZAR, FAIL); }
 
         // Remove the summoned axe - which is considered a guardian
         m_creature->RemoveGuardians();
@@ -165,9 +165,9 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_NETHERSPITE_INFERNAL)
-            pSummoned->CastSpell(pSummoned, SPELL_HELLFIRE, false);
+        { pSummoned->CastSpell(pSummoned, SPELL_HELLFIRE, false); }
         else if (pSummoned->GetEntry() == NPC_MALCHEZARS_AXE)
-            pSummoned->SetInCombatWithZone();
+        { pSummoned->SetInCombatWithZone(); }
     }
 
     void SpellHitTarget(Unit* pTarget, SpellEntry const* pSpellEntry) override
@@ -191,7 +191,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             Player* pTarget = m_creature->GetMap()->GetPlayer(m_aEnfeebleTargetGuid[i]);
 
             if (pTarget && pTarget->isAlive())
-                pTarget->SetHealth(m_auiEnfeebleHealth[i]);
+            { pTarget->SetHealth(m_auiEnfeebleHealth[i]); }
 
             m_aEnfeebleTargetGuid[i].Clear();
             m_auiEnfeebleHealth[i] = 0;
@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Phase 1 - over 60% HP
         if (m_uiPhase == 1)
@@ -252,10 +252,10 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             if (m_uiSunderArmorTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_SUNDER_ARMOR) == CAST_OK)
-                    m_uiSunderArmorTimer = urand(10000, 18000);
+                { m_uiSunderArmorTimer = urand(10000, 18000); }
             }
             else
-                m_uiSunderArmorTimer -= uiDiff;
+            { m_uiSunderArmorTimer -= uiDiff; }
         }
         // Phase 3
         else
@@ -263,10 +263,10 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             if (m_uiAmplifyDamageTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_AMPLIFY_DAMAGE) == CAST_OK)
-                    m_uiAmplifyDamageTimer = urand(20000, 30000);
+                { m_uiAmplifyDamageTimer = urand(20000, 30000); }
             }
             else
-                m_uiAmplifyDamageTimer -= uiDiff;
+            { m_uiAmplifyDamageTimer -= uiDiff; }
         }
 
         // Summon an infernal on timer
@@ -279,7 +279,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             }
         }
         else
-            m_uiInfernalTimer -= uiDiff;
+        { m_uiInfernalTimer -= uiDiff; }
 
         // Cast shadow nova - on timer during phase 3, or after Enfeeble during phases 1 and 2
         if (m_uiShadowNovaTimer)
@@ -287,10 +287,10 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             if (m_uiShadowNovaTimer <= uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_SHADOW_NOVA) == CAST_OK)
-                    m_uiShadowNovaTimer = m_uiPhase == 3 ? 30000 : 0;
+                { m_uiShadowNovaTimer = m_uiPhase == 3 ? 30000 : 0; }
             }
             else
-                m_uiShadowNovaTimer -= uiDiff;
+            { m_uiShadowNovaTimer -= uiDiff; }
         }
 
         // Cast SW pain during phase 1 and 3
@@ -299,10 +299,10 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             if (m_uiSWPainTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_uiPhase == 1 ? m_creature->getVictim() : m_creature, m_uiPhase == 1 ? SPELL_SW_PAIN_PHASE1 : SPELL_SW_PAIN_PHASE3) == CAST_OK)
-                    m_uiSWPainTimer = 20000;
+                { m_uiSWPainTimer = 20000; }
             }
             else
-                m_uiSWPainTimer -= uiDiff;
+            { m_uiSWPainTimer -= uiDiff; }
         }
 
         // Cast Enfeeble during phase 1 and 2
@@ -318,7 +318,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
                 }
             }
             else
-                m_uiEnfeebleTimer -= uiDiff;
+            { m_uiEnfeebleTimer -= uiDiff; }
         }
 
         if (m_uiEnfeebleResetTimer)
@@ -329,7 +329,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
                 m_uiEnfeebleResetTimer = 0;
             }
             else
-                m_uiEnfeebleResetTimer -= uiDiff;
+            { m_uiEnfeebleResetTimer -= uiDiff; }
         }
 
         DoMeleeAttackIfReady();

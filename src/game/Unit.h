@@ -573,7 +573,7 @@ enum UnitFlags
     UNIT_FLAG_UNK_28                = 0x10000000,
     UNIT_FLAG_UNK_29                = 0x20000000,           // used in Feing Death spell
     UNIT_FLAG_SHEATHE               = 0x40000000
-    // UNIT_FLAG_UNK_31              = 0x80000000           // no affect in 2.4.3
+                                      // UNIT_FLAG_UNK_31              = 0x80000000           // no affect in 2.4.3
 };
 
 // Value masks for UNIT_FIELD_FLAGS_2
@@ -1132,14 +1132,14 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 {
     public:
         typedef std::set<Unit*> AttackerSet;
-        typedef std::multimap<uint32 /*spellId*/, SpellAuraHolder*> SpellAuraHolderMap;
+        typedef std::multimap < uint32 /*spellId*/, SpellAuraHolder* > SpellAuraHolderMap;
         typedef std::pair<SpellAuraHolderMap::iterator, SpellAuraHolderMap::iterator> SpellAuraHolderBounds;
         typedef std::pair<SpellAuraHolderMap::const_iterator, SpellAuraHolderMap::const_iterator> SpellAuraHolderConstBounds;
         typedef std::list<SpellAuraHolder*> SpellAuraHolderList;
         typedef std::list<Aura*> AuraList;
         typedef std::list<DiminishingReturn> Diminishing;
-        typedef std::set<uint32 /*playerGuidLow*/> ComboPointHolderSet;
-        typedef std::map<SpellEntry const*, ObjectGuid /*targetGuid*/> TrackedAuraTargetMap;
+        typedef std::set < uint32 /*playerGuidLow*/ > ComboPointHolderSet;
+        typedef std::map < SpellEntry const*, ObjectGuid /*targetGuid*/ > TrackedAuraTargetMap;
 
         virtual ~Unit();
 
@@ -1238,7 +1238,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool CanUseEquippedWeapon(WeaponAttackType attackType) const
         {
             if (IsInFeralForm())
-                return false;
+            { return false; }
 
             switch (attackType)
             {
@@ -1290,7 +1290,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         {
             AttackerSet::const_iterator itr = m_attackers.find(pAttacker);
             if (itr == m_attackers.end())
-                m_attackers.insert(pAttacker);
+            { m_attackers.insert(pAttacker); }
         }
         /**
          * Internal function, must only be called from Unit::AttackStop()
@@ -1308,10 +1308,10 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         Unit* getAttackerForHelper()                        // If someone wants to help, who to give them
         {
             if (getVictim() != NULL)
-                return getVictim();
+            { return getVictim(); }
 
             if (!m_attackers.empty())
-                return *(m_attackers.begin());
+            { return *(m_attackers.begin()); }
 
             return NULL;
         }
@@ -1724,7 +1724,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool IsContestedGuard() const
         {
             if (FactionTemplateEntry const* entry = getFactionTemplateEntry())
-                return entry->IsContestedGuardFaction();
+            { return entry->IsContestedGuardFaction(); }
 
             return false;
         }
@@ -2141,7 +2141,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         ObjectGuid const& GetCharmerOrOwnerOrOwnGuid() const
         {
             if (ObjectGuid const& guid = GetCharmerOrOwnerGuid())
-                return guid;
+            { return guid; }
             return GetObjectGuid();
         }
         bool isCharmedOwnedByPlayerOrPlayer() const { return GetCharmerOrOwnerOrOwnGuid().IsPlayer(); }
@@ -2157,7 +2157,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         Unit* GetCharmerOrOwnerOrSelf()
         {
             if (Unit* u = GetCharmerOrOwner())
-                return u;
+            { return u; }
 
             return this;
         }
@@ -2235,8 +2235,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply) { ApplyPercentModFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE + school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE + school, val, apply); }
         void InitStatBuffMods()
         {
-            for (int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_POSSTAT0 + i, 0);
-            for (int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_NEGSTAT0 + i, 0);
+            for (int i = STAT_STRENGTH; i < MAX_STATS; ++i) { SetFloatValue(UNIT_FIELD_POSSTAT0 + i, 0); }
+            for (int i = STAT_STRENGTH; i < MAX_STATS; ++i) { SetFloatValue(UNIT_FIELD_NEGSTAT0 + i, 0); }
         }
         void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? UNIT_FIELD_POSSTAT0 + stat : UNIT_FIELD_NEGSTAT0 + stat), val, apply); }
         void ApplyStatPercentBuffMod(Stats stat, float val, bool apply)
@@ -2272,7 +2272,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         Spell* FindCurrentSpellBySpellId(uint32 spell_id) const;
 
         bool CheckAndIncreaseCastCounter();
-        void DecreaseCastCounter() { if (m_castCounter) --m_castCounter; }
+        void DecreaseCastCounter() { if (m_castCounter) { --m_castCounter; } }
 
         ObjectGuid m_ObjectSlotGuid[4];
         uint32 m_detectInvisibilityMask;
@@ -2666,29 +2666,29 @@ void Unit::CallForAllControlledUnits(Func const& func, uint32 controlledMask)
 {
     if (controlledMask & CONTROLLED_PET)
         if (Pet* pet = GetPet())
-            func(pet);
+        { func(pet); }
 
     if (controlledMask & CONTROLLED_MINIPET)
         if (Pet* mini = GetMiniPet())
-            func(mini);
+        { func(mini); }
 
     if (controlledMask & CONTROLLED_GUARDIANS)
     {
         for (GuidSet::const_iterator itr = m_guardianPets.begin(); itr != m_guardianPets.end();)
             if (Pet* guardian = _GetPet(*(itr++)))
-                func(guardian);
+            { func(guardian); }
     }
 
     if (controlledMask & CONTROLLED_TOTEMS)
     {
         for (int i = 0; i < MAX_TOTEM_SLOT; ++i)
             if (Unit* totem = _GetTotem(TotemSlot(i)))
-                func(totem);
+            { func(totem); }
     }
 
     if (controlledMask & CONTROLLED_CHARM)
         if (Unit* charm = GetCharm())
-            func(charm);
+        { func(charm); }
 }
 
 
@@ -2698,19 +2698,19 @@ bool Unit::CheckAllControlledUnits(Func const& func, uint32 controlledMask) cons
     if (controlledMask & CONTROLLED_PET)
         if (Pet const* pet = GetPet())
             if (func(pet))
-                return true;
+            { return true; }
 
     if (controlledMask & CONTROLLED_MINIPET)
         if (Pet* mini = GetMiniPet())
             if (func(mini))
-                return true;
+            { return true; }
 
     if (controlledMask & CONTROLLED_GUARDIANS)
     {
         for (GuidSet::const_iterator itr = m_guardianPets.begin(); itr != m_guardianPets.end();)
             if (Pet const* guardian = _GetPet(*(itr++)))
                 if (func(guardian))
-                    return true;
+                { return true; }
     }
 
     if (controlledMask & CONTROLLED_TOTEMS)
@@ -2718,13 +2718,13 @@ bool Unit::CheckAllControlledUnits(Func const& func, uint32 controlledMask) cons
         for (int i = 0; i < MAX_TOTEM_SLOT; ++i)
             if (Unit const* totem = _GetTotem(TotemSlot(i)))
                 if (func(totem))
-                    return true;
+                { return true; }
     }
 
     if (controlledMask & CONTROLLED_CHARM)
         if (Unit const* charm = GetCharm())
             if (func(charm))
-                return true;
+            { return true; }
 
     return false;
 }

@@ -35,16 +35,16 @@ namespace Movement
         if (moveFlags & MOVEFLAG_FLYING)
         {
             if (moveFlags & MOVEFLAG_BACKWARD /*&& speed_obj.flight >= speed_obj.flight_back*/)
-                return MOVE_FLIGHT_BACK;
+            { return MOVE_FLIGHT_BACK; }
             else
-                return MOVE_FLIGHT;
+            { return MOVE_FLIGHT; }
         }
         else if (moveFlags & MOVEFLAG_SWIMMING)
         {
             if (moveFlags & MOVEFLAG_BACKWARD /*&& speed_obj.swim >= speed_obj.swim_back*/)
-                return MOVE_SWIM_BACK;
+            { return MOVE_SWIM_BACK; }
             else
-                return MOVE_SWIM;
+            { return MOVE_SWIM; }
         }
         else if (moveFlags & MOVEFLAG_WALK_MODE)
         {
@@ -52,7 +52,7 @@ namespace Movement
             return MOVE_WALK;
         }
         else if (moveFlags & MOVEFLAG_BACKWARD /*&& speed_obj.run >= speed_obj.run_back*/)
-            return MOVE_RUN_BACK;
+        { return MOVE_RUN_BACK; }
 
         return MOVE_RUN;
     }
@@ -66,12 +66,12 @@ namespace Movement
 
         // If boarded use current local position
         if (transportInfo)
-            transportInfo->GetLocalPosition(real_position.x, real_position.y, real_position.z, real_position.orientation);
+        { transportInfo->GetLocalPosition(real_position.x, real_position.y, real_position.z, real_position.orientation); }
 
         // there is a big chane that current position is unknown if current state is not finalized, need compute it
         // this also allows calculate spline position and update map position in much greater intervals
         if (!move_spline.Finalized())
-            real_position = move_spline.ComputePosition();
+        { real_position = move_spline.ComputePosition(); }
 
         if (args.path.empty())
         {
@@ -83,17 +83,17 @@ namespace Movement
         args.path[0] = real_position;
         uint32 moveFlags = unit.m_movementInfo.GetMovementFlags();
         if (args.flags.runmode)
-            moveFlags &= ~MOVEFLAG_WALK_MODE;
+        { moveFlags &= ~MOVEFLAG_WALK_MODE; }
         else
-            moveFlags |= MOVEFLAG_WALK_MODE;
+        { moveFlags |= MOVEFLAG_WALK_MODE; }
 
         moveFlags |= (MOVEFLAG_SPLINE_ENABLED | MOVEFLAG_FORWARD);
 
         if (args.velocity == 0.f)
-            args.velocity = unit.GetSpeed(SelectSpeedType(moveFlags));
+        { args.velocity = unit.GetSpeed(SelectSpeedType(moveFlags)); }
 
         if (!args.Validate(&unit))
-            return 0;
+        { return 0; }
 
         unit.m_movementInfo.SetMovementFlags((MovementFlags)moveFlags);
         move_spline.Initialize(args);

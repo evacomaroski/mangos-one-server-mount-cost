@@ -114,14 +114,14 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, IN_PROGRESS); }
     }
 
     void AttackStart(Unit* pWho) override
     {
         // Don't attack while banished
         if (m_creature->HasAura(SPELL_LEOTHERAS_BANISH))
-            return;
+        { return; }
 
         ScriptedAI::AttackStart(pWho);
     }
@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
     {
         // Don't attack while banished
         if (m_creature->HasAura(SPELL_LEOTHERAS_BANISH))
-            return;
+        { return; }
 
         ScriptedAI::MoveInLineOfSight(pWho);
     }
@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
     void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
-            return;
+        { return; }
 
         switch (urand(0, 2))
         {
@@ -162,13 +162,13 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, DONE);
+        { m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, DONE); }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, FAIL);
+        { m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, FAIL); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
@@ -179,15 +179,15 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
             if (m_uiBanishTimer <= uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_LEOTHERAS_BANISH) == CAST_OK)
-                    m_uiBanishTimer = 0;
+                { m_uiBanishTimer = 0; }
             }
             else
-                m_uiBanishTimer -= uiDiff;
+            { m_uiBanishTimer -= uiDiff; }
         }
 
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiFinalFormTimer)
         {
@@ -201,7 +201,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 m_uiFinalFormTimer = 0;
             }
             else
-                m_uiFinalFormTimer -= uiDiff;
+            { m_uiFinalFormTimer -= uiDiff; }
 
             // Wait until we finish the transition
             return;
@@ -213,10 +213,10 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
             if (m_uiWhirlwindTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_WHIRLWIND) == CAST_OK)
-                    m_uiWhirlwindTimer = 32000;
+                { m_uiWhirlwindTimer = 32000; }
             }
             else
-                m_uiWhirlwindTimer -= uiDiff;
+            { m_uiWhirlwindTimer -= uiDiff; }
 
             if (!m_bIsFinalForm)
             {
@@ -238,7 +238,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                     }
                 }
                 else
-                    m_uiSwitchTimer -= uiDiff;
+                { m_uiSwitchTimer -= uiDiff; }
             }
 
             DoMeleeAttackIfReady();
@@ -257,21 +257,21 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                     }
                 }
                 else
-                    m_uiInnerDemonTimer -= uiDiff;
+                { m_uiInnerDemonTimer -= uiDiff; }
             }
 
             if (m_uiChaosBlastTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_CHAOS_BLAST) == CAST_OK)
-                    m_uiChaosBlastTimer = urand(2000, 3000);
+                { m_uiChaosBlastTimer = urand(2000, 3000); }
             }
             else
-                m_uiChaosBlastTimer -= uiDiff;
+            { m_uiChaosBlastTimer -= uiDiff; }
 
             if (m_uiSwitchTimer < uiDiff)
             {
                 if (m_creature->IsNonMeleeSpellCasted(false))
-                    m_creature->InterruptNonMeleeSpells(false);
+                { m_creature->InterruptNonMeleeSpells(false); }
 
                 // switch to nightelf form
                 m_creature->RemoveAurasDueToSpell(SPELL_METAMORPHOSIS);
@@ -286,7 +286,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 m_uiSwitchTimer = 45000;
             }
             else
-                m_uiSwitchTimer -= uiDiff;
+            { m_uiSwitchTimer -= uiDiff; }
         }
 
         // Prepare to summon the Shadow of Leotheras
@@ -299,7 +299,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
             if (m_bDemonForm)
             {
                 if (m_creature->IsNonMeleeSpellCasted(false))
-                    m_creature->InterruptNonMeleeSpells(false);
+                { m_creature->InterruptNonMeleeSpells(false); }
 
                 // switch to nightelf form
                 m_creature->RemoveAurasDueToSpell(SPELL_METAMORPHOSIS);
@@ -324,10 +324,10 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
             if (m_uiEnrageTimer <= uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_BERSERK) == CAST_OK)
-                    m_uiEnrageTimer = 0;
+                { m_uiEnrageTimer = 0; }
             }
             else
-                m_uiEnrageTimer -= uiDiff;
+            { m_uiEnrageTimer -= uiDiff; }
         }
     }
 };

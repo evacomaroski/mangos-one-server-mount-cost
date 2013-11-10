@@ -76,7 +76,7 @@ class SystemMgr
             PointMoveMap::const_iterator itr = m_mPointMoveMap.find(uiCreatureEntry);
 
             if (itr == m_mPointMoveMap.end())
-                return vEmpty;
+            { return vEmpty; }
 
             return itr->second;
         }

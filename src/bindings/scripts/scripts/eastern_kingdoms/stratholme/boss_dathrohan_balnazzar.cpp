@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
         m_bTransformed = false;
 
         if (m_creature->GetEntry() == NPC_BALNAZZAR)
-            m_creature->UpdateEntry(NPC_DATHROHAN);
+        { m_creature->UpdateEntry(NPC_DATHROHAN); }
     }
 
     void Aggro(Unit* /*pWho*/) override
@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // START NOT TRANSFORMED
         if (!m_bTransformed)
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_MINDBLAST);
                 m_uiMindBlast_Timer = urand(15000, 20000);
             }
-            else m_uiMindBlast_Timer -= uiDiff;
+            else { m_uiMindBlast_Timer -= uiDiff; }
 
             // CrusadersHammer
             if (m_uiCrusadersHammer_Timer < uiDiff)
@@ -149,7 +149,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_CRUSADERSHAMMER);
                 m_uiCrusadersHammer_Timer = 12000;
             }
-            else m_uiCrusadersHammer_Timer -= uiDiff;
+            else { m_uiCrusadersHammer_Timer -= uiDiff; }
 
             // CrusaderStrike
             if (m_uiCrusaderStrike_Timer < uiDiff)
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_CRUSADERSTRIKE);
                 m_uiCrusaderStrike_Timer = 15000;
             }
-            else m_uiCrusaderStrike_Timer -= uiDiff;
+            else { m_uiCrusaderStrike_Timer -= uiDiff; }
 
             // HolyStrike
             if (m_uiHolyStrike_Timer < uiDiff)
@@ -165,7 +165,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_HOLYSTRIKE);
                 m_uiHolyStrike_Timer = 15000;
             }
-            else m_uiHolyStrike_Timer -= uiDiff;
+            else { m_uiHolyStrike_Timer -= uiDiff; }
 
             // BalnazzarTransform
             if (m_creature->GetHealthPercent() < 40.0f)
@@ -187,7 +187,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_MINDBLAST);
                 m_uiMindBlast_Timer = urand(15000, 20000);
             }
-            else m_uiMindBlast_Timer -= uiDiff;
+            else { m_uiMindBlast_Timer -= uiDiff; }
 
             // ShadowShock
             if (m_uiShadowShock_Timer < uiDiff)
@@ -195,27 +195,27 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_SHADOWSHOCK);
                 m_uiShadowShock_Timer = 11000;
             }
-            else m_uiShadowShock_Timer -= uiDiff;
+            else { m_uiShadowShock_Timer -= uiDiff; }
 
             // PsychicScream
             if (m_uiPsychicScream_Timer < uiDiff)
             {
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                    DoCastSpellIfCan(pTarget, SPELL_PSYCHICSCREAM);
+                { DoCastSpellIfCan(pTarget, SPELL_PSYCHICSCREAM); }
 
                 m_uiPsychicScream_Timer = 20000;
             }
-            else m_uiPsychicScream_Timer -= uiDiff;
+            else { m_uiPsychicScream_Timer -= uiDiff; }
 
             // DeepSleep
             if (m_uiDeepSleep_Timer < uiDiff)
             {
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                    DoCastSpellIfCan(pTarget, SPELL_SLEEP);
+                { DoCastSpellIfCan(pTarget, SPELL_SLEEP); }
 
                 m_uiDeepSleep_Timer = 15000;
             }
-            else m_uiDeepSleep_Timer -= uiDiff;
+            else { m_uiDeepSleep_Timer -= uiDiff; }
 
             // MindControl
             if (m_uiMindControl_Timer < uiDiff)
@@ -223,7 +223,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_MINDCONTROL);
                 m_uiMindControl_Timer = 15000;
             }
-            else m_uiMindControl_Timer -= uiDiff;
+            else { m_uiMindControl_Timer -= uiDiff; }
         }
 
         DoMeleeAttackIfReady();

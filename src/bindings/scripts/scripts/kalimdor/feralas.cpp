@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL npc_oox22feAI : public npc_escortAI
                 DoScriptText(SAY_OOX_END, m_creature);
                 // Award quest credit
                 if (Player* pPlayer = GetPlayerForEscort())
-                    pPlayer->GroupEventHappens(QUEST_RESCUE_OOX22FE, m_creature);
+                { pPlayer->GroupEventHappens(QUEST_RESCUE_OOX22FE, m_creature); }
                 break;
         }
     }
@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL npc_oox22feAI : public npc_escortAI
     void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
-            m_creature->SetStandState(UNIT_STAND_STATE_DEAD);
+        { m_creature->SetStandState(UNIT_STAND_STATE_DEAD); }
     }
 
     void Aggro(Unit* /*who*/) override
@@ -130,13 +130,13 @@ bool QuestAccept_npc_oox22fe(Player* pPlayer, Creature* pCreature, const Quest* 
         pCreature->SetStandState(UNIT_STAND_STATE_STAND);
 
         if (pPlayer->GetTeam() == ALLIANCE)
-            pCreature->SetFactionTemporary(FACTION_ESCORT_A_PASSIVE, TEMPFACTION_RESTORE_RESPAWN);
+        { pCreature->SetFactionTemporary(FACTION_ESCORT_A_PASSIVE, TEMPFACTION_RESTORE_RESPAWN); }
 
         if (pPlayer->GetTeam() == HORDE)
-            pCreature->SetFactionTemporary(FACTION_ESCORT_H_PASSIVE, TEMPFACTION_RESTORE_RESPAWN);
+        { pCreature->SetFactionTemporary(FACTION_ESCORT_H_PASSIVE, TEMPFACTION_RESTORE_RESPAWN); }
 
         if (npc_oox22feAI* pEscortAI = dynamic_cast<npc_oox22feAI*>(pCreature->AI()))
-            pEscortAI->Start(false, pPlayer, pQuest);
+        { pEscortAI->Start(false, pPlayer, pQuest); }
     }
     return true;
 }

@@ -49,7 +49,7 @@ bool GossipHello_npc_spirit_of_olum(Player* pPlayer, Creature* pCreature)
     ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 
     if (pInstance && (pInstance->GetData(TYPE_SUPREMUS) >= DONE) && (pInstance->GetData(TYPE_NAJENTUS) >= DONE))
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_OLUM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    { pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_OLUM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1); }
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
     return true;
@@ -58,7 +58,7 @@ bool GossipHello_npc_spirit_of_olum(Player* pPlayer, Creature* pCreature)
 bool GossipSelect_npc_spirit_of_olum(Player* pPlayer, Creature* /*pCreature*/, uint32 /*uiSender*/, uint32 uiAction)
 {
     if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)
-        pPlayer->CLOSE_GOSSIP_MENU();
+    { pPlayer->CLOSE_GOSSIP_MENU(); }
 
     pPlayer->InterruptNonMeleeSpells(false);
     pPlayer->CastSpell(pPlayer, SPELL_TELEPORT, false);

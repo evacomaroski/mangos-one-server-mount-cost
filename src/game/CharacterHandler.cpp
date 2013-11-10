@@ -94,7 +94,7 @@ bool LoginQueryHolder::Initialize()
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADHOMEBIND,        "SELECT map,zone,position_x,position_y,position_z FROM character_homebind WHERE guid = '%u'", m_guid.GetCounter());
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADSPELLCOOLDOWNS,  "SELECT spell,item,time FROM character_spell_cooldown WHERE guid = '%u'", m_guid.GetCounter());
     if (sWorld.getConfig(CONFIG_BOOL_DECLINED_NAMES_USED))
-        res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADDECLINEDNAMES,   "SELECT genitive, dative, accusative, instrumental, prepositional FROM character_declinedname WHERE guid = '%u'", m_guid.GetCounter());
+    { res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADDECLINEDNAMES,   "SELECT genitive, dative, accusative, instrumental, prepositional FROM character_declinedname WHERE guid = '%u'", m_guid.GetCounter()); }
     // in other case still be dummy query
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADGUILD,           "SELECT guildid,rank FROM guild_member WHERE guid = '%u'", m_guid.GetCounter());
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADARENAINFO,       "SELECT arenateamid, played_week, played_season, personal_rating FROM arena_team_member WHERE guid='%u'", m_guid.GetCounter());
@@ -124,7 +124,7 @@ class CharacterHandler
         }
         void HandlePlayerLoginCallback(QueryResult * /*dummy*/, SqlQueryHolder* holder)
         {
-            if (!holder) return;
+            if (!holder) { return; }
             WorldSession* session = sWorld.FindSession(((LoginQueryHolder*)holder)->GetAccountId());
             if (!session)
             {
@@ -150,7 +150,7 @@ void WorldSession::HandleCharEnum(QueryResult* result)
             uint32 guidlow = (*result)[0].GetUInt32();
             DETAIL_LOG("Build enum data for char guid %u from account %u.", guidlow, GetAccountId());
             if (Player::BuildEnumData(result, &data))
-                ++num;
+            { ++num; }
         }
         while (result->NextRow());
 
@@ -348,7 +348,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPacket& recv_data)
             while (skipCinematics == CINEMATICS_SKIP_SAME_RACE && !have_same_race)
             {
                 if (!result2->NextRow())
-                    break;
+                { break; }
 
                 field = result2->Fetch();
                 acc_race = field[0].GetUInt32();
@@ -372,7 +372,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPacket& recv_data)
     }
 
     if ((have_same_race && skipCinematics == CINEMATICS_SKIP_SAME_RACE) || skipCinematics == CINEMATICS_SKIP_ALL)
-        pNewChar->setCinematic(1);                          // not show intro
+    { pNewChar->setCinematic(1); }                          // not show intro
 
     pNewChar->SetAtLoginFlag(AT_LOGIN_FIRST);               // First login
 
@@ -400,7 +400,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket& recv_data)
 
     // can't delete loaded character
     if (sObjectMgr.GetPlayer(guid))
-        return;
+    { return; }
 
     uint32 accountId = 0;
     std::string name;
@@ -436,7 +436,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket& recv_data)
 
     // prevent deleting other players' characters using cheating tools
     if (accountId != GetAccountId())
-        return;
+    { return; }
 
     std::string IP_str = GetRemoteAddress();
     BASIC_LOG("Account: %d (IP: %s) Delete Character:[%s] (guid: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), lowguid);
@@ -512,7 +512,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     data.Initialize(SMSG_ACCOUNT_DATA_TIMES, 128);
     for (int i = 0; i < 32; ++i)
-        data << uint32(0);
+    { data << uint32(0); }
     SendPacket(&data);
 
     data.Initialize(SMSG_FEATURE_SYSTEM_STATUS, 2);         // added in 2.2.0
@@ -593,7 +593,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     }
 
     if (!pCurrChar->isAlive())
-        pCurrChar->SendCorpseReclaimDelay(true);
+    { pCurrChar->SendCorpseReclaimDelay(true); }
 
     pCurrChar->SendInitialPacketsBeforeAddToMap();
 
@@ -603,30 +603,30 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
         pCurrChar->setCinematic(1);
 
         if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->getRace()))
-            pCurrChar->SendCinematicStart(rEntry->CinematicSequence);
+        { pCurrChar->SendCinematicStart(rEntry->CinematicSequence); }
     }
 
     uint32 miscRequirement = 0;
     AreaLockStatus lockStatus = AREA_LOCKSTATUS_OK;
     if (AreaTrigger const* at = sObjectMgr.GetMapEntranceTrigger(pCurrChar->GetMapId()))
-        lockStatus = pCurrChar->GetAreaTriggerLockStatus(at, miscRequirement);
+    { lockStatus = pCurrChar->GetAreaTriggerLockStatus(at, miscRequirement); }
     else
     {
         // Some basic checks in case of a map without areatrigger
         MapEntry const* mapEntry = sMapStore.LookupEntry(pCurrChar->GetMapId());
         if (!mapEntry)
-            lockStatus = AREA_LOCKSTATUS_UNKNOWN_ERROR;
+        { lockStatus = AREA_LOCKSTATUS_UNKNOWN_ERROR; }
         else if (pCurrChar->GetSession()->Expansion() < mapEntry->Expansion())
-            lockStatus = AREA_LOCKSTATUS_INSUFFICIENT_EXPANSION;
+        { lockStatus = AREA_LOCKSTATUS_INSUFFICIENT_EXPANSION; }
     }
     if (lockStatus != AREA_LOCKSTATUS_OK || !pCurrChar->GetMap()->Add(pCurrChar))
     {
         // normal delayed teleport protection not applied (and this correct) for this case (Player object just created)
         AreaTrigger const* at = sObjectMgr.GetGoBackTrigger(pCurrChar->GetMapId());
         if (at)
-            lockStatus = pCurrChar->GetAreaTriggerLockStatus(at, miscRequirement);
+        { lockStatus = pCurrChar->GetAreaTriggerLockStatus(at, miscRequirement); }
         if (!at || lockStatus != AREA_LOCKSTATUS_OK || !pCurrChar->TeleportTo(at->target_mapId, at->target_X, at->target_Y, at->target_Z, pCurrChar->GetOrientation()))
-            pCurrChar->TeleportToHomebind();
+        { pCurrChar->TeleportToHomebind(); }
     }
 
     sObjectAccessor.AddObject(pCurrChar);
@@ -648,7 +648,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     // announce group about member online (must be after add to player list to receive announce to self)
     if (Group* group = pCurrChar->GetGroup())
-        group->SendUpdate();
+    { group->SendUpdate(); }
 
     // friend status
     sSocialMgr.SendFriendStatus(pCurrChar, FRIEND_ONLINE, pCurrChar->GetObjectGuid(), true);
@@ -661,7 +661,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     {
         // not blizz like, we must correctly save and load player instead...
         if (pCurrChar->getRace() == RACE_NIGHTELF)
-            pCurrChar->CastSpell(pCurrChar, 20584, true);   // auras SPELL_AURA_INCREASE_SPEED(+speed in wisp form), SPELL_AURA_INCREASE_SWIM_SPEED(+swim speed in wisp form), SPELL_AURA_TRANSFORM (to wisp form)
+        { pCurrChar->CastSpell(pCurrChar, 20584, true); }   // auras SPELL_AURA_INCREASE_SPEED(+speed in wisp form), SPELL_AURA_INCREASE_SWIM_SPEED(+swim speed in wisp form), SPELL_AURA_TRANSFORM (to wisp form)
         pCurrChar->CastSpell(pCurrChar, 8326, true);        // auras SPELL_AURA_GHOST, SPELL_AURA_INCREASE_SPEED(why?), SPELL_AURA_INCREASE_SWIM_SPEED(why?)
 
         pCurrChar->SetWaterWalk(true);
@@ -674,10 +674,10 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     // Set FFA PvP for non GM in non-rest mode
     if (sWorld.IsFFAPvPRealm() && !pCurrChar->isGameMaster() && !pCurrChar->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING))
-        pCurrChar->SetFFAPvP(true);
+    { pCurrChar->SetFFAPvP(true); }
 
     if (pCurrChar->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_CONTESTED_PVP))
-        pCurrChar->SetContestedPvP();
+    { pCurrChar->SetContestedPvP(); }
 
     // Apply at_login requests
     if (pCurrChar->HasAtLoginFlag(AT_LOGIN_RESET_SPELLS))
@@ -693,24 +693,24 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     }
 
     if (pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST))
-        pCurrChar->RemoveAtLoginFlag(AT_LOGIN_FIRST);
+    { pCurrChar->RemoveAtLoginFlag(AT_LOGIN_FIRST); }
 
     // show time before shutdown if shutdown planned.
     if (sWorld.IsShutdowning())
-        sWorld.ShutdownMsg(true, pCurrChar);
+    { sWorld.ShutdownMsg(true, pCurrChar); }
 
     if (sWorld.getConfig(CONFIG_BOOL_ALL_TAXI_PATHS))
-        pCurrChar->SetTaxiCheater(true);
+    { pCurrChar->SetTaxiCheater(true); }
 
     if (pCurrChar->isGameMaster())
-        SendNotification(LANG_GM_ON);
+    { SendNotification(LANG_GM_ON); }
 
     if (!pCurrChar->isGMVisible())
     {
         SendNotification(LANG_INVISIBLE_INVISIBLE);
         SpellEntry const* invisibleAuraInfo = sSpellStore.LookupEntry(sWorld.getConfig(CONFIG_UINT32_GM_INVISIBLE_AURA));
         if (invisibleAuraInfo && IsSpellAppliesAura(invisibleAuraInfo))
-            pCurrChar->CastSpell(pCurrChar, invisibleAuraInfo, true);
+        { pCurrChar->CastSpell(pCurrChar, invisibleAuraInfo, true); }
     }
 
     std::string IP_str = GetRemoteAddress();
@@ -718,7 +718,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                  GetAccountId(), IP_str.c_str(), pCurrChar->GetName(), pCurrChar->GetGUIDLow());
 
     if (!pCurrChar->IsStandState() && !pCurrChar->hasUnitState(UNIT_STAT_STUNNED))
-        pCurrChar->SetStandState(UNIT_STAND_STATE_STAND);
+    { pCurrChar->SetStandState(UNIT_STAND_STATE_STAND); }
 
     m_playerLoading = false;
     delete holder;
@@ -769,13 +769,13 @@ void WorldSession::HandleTutorialFlagOpcode(WorldPacket& recv_data)
 void WorldSession::HandleTutorialClearOpcode(WorldPacket & /*recv_data*/)
 {
     for (int i = 0; i < 8; ++i)
-        SetTutorialInt(i, 0xFFFFFFFF);
+    { SetTutorialInt(i, 0xFFFFFFFF); }
 }
 
 void WorldSession::HandleTutorialResetOpcode(WorldPacket & /*recv_data*/)
 {
     for (int i = 0; i < 8; ++i)
-        SetTutorialInt(i, 0x00000000);
+    { SetTutorialInt(i, 0x00000000); }
 }
 
 void WorldSession::HandleSetWatchedFactionOpcode(WorldPacket& recv_data)
@@ -860,7 +860,7 @@ void WorldSession::HandleChangePlayerNameOpcodeCallBack(QueryResult* result, uin
     WorldSession* session = sWorld.FindSession(accountId);
     if (!session)
     {
-        if (result) delete result;
+        if (result) { delete result; }
         return;
     }
 
@@ -965,7 +965,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
     }
 
     for (int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-        CharacterDatabase.escape_string(declinedname.name[i]);
+    { CharacterDatabase.escape_string(declinedname.name[i]); }
 
     CharacterDatabase.BeginTransaction();
     CharacterDatabase.PExecute("DELETE FROM character_declinedname WHERE guid = '%u'", guid.GetCounter());

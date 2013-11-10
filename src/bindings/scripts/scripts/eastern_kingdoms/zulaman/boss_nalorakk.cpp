@@ -101,20 +101,20 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
 
         if (m_pInstance && m_pInstance->IsBearPhaseInProgress())
-            return;
+        { return; }
 
         if (pWho->GetTypeId() == TYPEID_PLAYER && !((Player*)pWho)->isGameMaster() && m_creature->IsWithinDistInMap(pWho, aBearEventInfo[m_uiCurrentWave].fAggroDist))
         {
             DoScriptText(aBearEventInfo[m_uiCurrentWave].iYellId, m_creature);
             if (m_pInstance)
-                m_pInstance->SendNextBearWave(pWho);
+            { m_pInstance->SendNextBearWave(pWho); }
         }
     }
 
     void MovementInform(uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE)
-            return;
+        { return; }
 
         if (uiPointId)
         {
@@ -123,14 +123,14 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
             if (m_uiCurrentWave < MAX_BEAR_WAVES - 1)
             {
                 if (m_pInstance)
-                    m_pInstance->SetBearEventProgress(false);
+                { m_pInstance->SetBearEventProgress(false); }
                 ++m_uiCurrentWave;
             }
             else
             {
                 // Set the instance data to fail on movement inform because we are not moving the boss to home position
                 if (m_pInstance)
-                    m_pInstance->SetData(TYPE_NALORAKK, FAIL);
+                { m_pInstance->SetData(TYPE_NALORAKK, FAIL); }
             }
         }
     }
@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
 
         // Boss should evade on the top of the platform
         if (m_creature->isAlive())
-            m_creature->GetMotionMaster()->MovePoint(1, aBearEventInfo[m_uiCurrentWave].fX, aBearEventInfo[m_uiCurrentWave].fY, aBearEventInfo[m_uiCurrentWave].fZ);
+        { m_creature->GetMotionMaster()->MovePoint(1, aBearEventInfo[m_uiCurrentWave].fX, aBearEventInfo[m_uiCurrentWave].fY, aBearEventInfo[m_uiCurrentWave].fZ); }
 
         m_creature->SetLootRecipient(NULL);
 
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NALORAKK, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_NALORAKK, IN_PROGRESS); }
     }
 
     void KilledUnit(Unit* /*pVictim*/) override
@@ -170,7 +170,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (!m_pInstance)
-            return;
+        { return; }
 
         m_pInstance->SetData(TYPE_NALORAKK, DONE);
     }
@@ -179,7 +179,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Berserking
         if (m_uiBerserkTimer)
@@ -193,7 +193,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
                 }
             }
             else
-                m_uiBerserkTimer -= uiDiff;
+            { m_uiBerserkTimer -= uiDiff; }
         }
 
         // Spells for Troll Form (only to be casted if we NOT have bear phase aura)
@@ -203,19 +203,19 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
             if (m_uiBrutalSwipeTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_BRUTAL_SWIPE) == CAST_OK)
-                    m_uiBrutalSwipeTimer = urand(7000, 15000);
+                { m_uiBrutalSwipeTimer = urand(7000, 15000); }
             }
             else
-                m_uiBrutalSwipeTimer -= uiDiff;
+            { m_uiBrutalSwipeTimer -= uiDiff; }
 
             // Mangle
             if (m_uiMangleTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_MANGLE) == CAST_OK)
-                    m_uiMangleTimer = urand(3000, 15000);
+                { m_uiMangleTimer = urand(3000, 15000); }
             }
             else
-                m_uiMangleTimer -= uiDiff;
+            { m_uiMangleTimer -= uiDiff; }
 
             // Surge
             if (m_uiSurgeTimer < uiDiff)
@@ -225,7 +225,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
 
                 // if there aren't other units, cast on the tank
                 if (!pTtarget)
-                    pTtarget = m_creature->getVictim();
+                { pTtarget = m_creature->getVictim(); }
 
                 if (DoCastSpellIfCan(pTtarget, SPELL_SURGE) == CAST_OK)
                 {
@@ -234,7 +234,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
                 }
             }
             else
-                m_uiSurgeTimer -= uiDiff;
+            { m_uiSurgeTimer -= uiDiff; }
 
             // Change to Bear Form if we're in Troll Form for 45sec
             if (m_uiChangeFormTimer < uiDiff)
@@ -251,7 +251,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
                 }
             }
             else
-                m_uiChangeFormTimer -= uiDiff;
+            { m_uiChangeFormTimer -= uiDiff; }
         }
         // Spells for Bear Form (only to be casted if we have bear phase aura)
         else
@@ -268,34 +268,34 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
                 m_uiMangleTimer         = urand(3000, 20000);
             }
             else
-                m_uiChangeFormTimer -= uiDiff;
+            { m_uiChangeFormTimer -= uiDiff; }
 
             // Lacerating Slash
             if (m_uiLaceratingSlashTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_LACERATING_SLASH) == CAST_OK)
-                    m_uiLaceratingSlashTimer = urand(6000, 20000);
+                { m_uiLaceratingSlashTimer = urand(6000, 20000); }
             }
             else
-                m_uiLaceratingSlashTimer -= uiDiff;
+            { m_uiLaceratingSlashTimer -= uiDiff; }
 
             // Rend Flesh
             if (m_uiRendFleshTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_REND_FLESH) == CAST_OK)
-                    m_uiRendFleshTimer = urand(6000, 20000);
+                { m_uiRendFleshTimer = urand(6000, 20000); }
             }
             else
-                m_uiRendFleshTimer -= uiDiff;
+            { m_uiRendFleshTimer -= uiDiff; }
 
             // Deafening Roar
             if (m_uiDeafeningRoarTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_DEAFENING_ROAR) == CAST_OK)
-                    m_uiDeafeningRoarTimer = urand(15000, 25000);
+                { m_uiDeafeningRoarTimer = urand(15000, 25000); }
             }
             else
-                m_uiDeafeningRoarTimer -= uiDiff;
+            { m_uiDeafeningRoarTimer -= uiDiff; }
         }
 
         DoMeleeAttackIfReady();

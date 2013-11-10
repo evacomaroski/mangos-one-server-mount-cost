@@ -47,7 +47,7 @@ void BattleGroundEY::Update(uint32 diff)
     BattleGround::Update(diff);
 
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     // resource counter
     if (m_resourceUpdateTimer < diff)
@@ -56,7 +56,7 @@ void BattleGroundEY::Update(uint32 diff)
         m_resourceUpdateTimer = EY_RESOURCES_UPDATE_TIME;
     }
     else
-        m_resourceUpdateTimer -= diff;
+    { m_resourceUpdateTimer -= diff; }
 
     // flag respawn
     if (m_flagState == EY_FLAG_STATE_WAIT_RESPAWN || m_flagState == EY_FLAG_STATE_ON_GROUND)
@@ -65,12 +65,12 @@ void BattleGroundEY::Update(uint32 diff)
         {
             m_flagRespawnTimer = 0;
             if (m_flagState == EY_FLAG_STATE_WAIT_RESPAWN)
-                RespawnFlag();
+            { RespawnFlag(); }
             else
-                RespawnDroppedFlag();
+            { RespawnDroppedFlag(); }
         }
         else
-            m_flagRespawnTimer -= diff;
+        { m_flagRespawnTimer -= diff; }
     }
 }
 
@@ -117,18 +117,18 @@ void BattleGroundEY::UpdateTeamScore(Team team)
     }
 
     if (team == ALLIANCE)
-        UpdateWorldState(WORLD_STATE_EY_RESOURCES_ALLIANCE, score);
+    { UpdateWorldState(WORLD_STATE_EY_RESOURCES_ALLIANCE, score); }
     else
-        UpdateWorldState(WORLD_STATE_EY_RESOURCES_HORDE, score);
+    { UpdateWorldState(WORLD_STATE_EY_RESOURCES_HORDE, score); }
 }
 
 void BattleGroundEY::EndBattleGround(Team winner)
 {
     // win reward
     if (winner == ALLIANCE)
-        RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
+    { RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE); }
     if (winner == HORDE)
-        RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
+    { RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE); }
     // complete map reward
     RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
     RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
@@ -136,7 +136,7 @@ void BattleGroundEY::EndBattleGround(Team winner)
     // disable capture points
     for (uint8 i = 0; i < EY_NODES_MAX; ++i)
         if (GameObject* go = GetBgMap()->GetGameObject(m_towers[i]))
-            go->SetLootState(GO_JUST_DEACTIVATED);
+        { go->SetLootState(GO_JUST_DEACTIVATED); }
 
     BattleGround::EndBattleGround(winner);
 }
@@ -158,7 +158,7 @@ void BattleGroundEY::RemovePlayer(Player* plr, ObjectGuid guid)
         if (m_flagCarrier == guid)
         {
             if (plr)
-                EventPlayerDroppedFlag(plr);
+            { EventPlayerDroppedFlag(plr); }
             else
             {
                 ClearFlagCarrier();
@@ -276,28 +276,28 @@ void BattleGroundEY::ProcessCaptureEvent(GameObject* go, uint32 towerId, Team te
 void BattleGroundEY::HandleAreaTrigger(Player* source, uint32 trigger)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     if (!source->isAlive())                                 // hack code, must be removed later
-        return;
+    { return; }
 
     switch (trigger)
     {
         case AREATRIGGER_BLOOD_ELF_TOWER_POINT:
             if (m_towerOwner[NODE_BLOOD_ELF_TOWER] == source->GetTeam())
-                EventPlayerCapturedFlag(source, NODE_BLOOD_ELF_TOWER);
+            { EventPlayerCapturedFlag(source, NODE_BLOOD_ELF_TOWER); }
             break;
         case AREATRIGGER_FEL_REAVER_RUINS_POINT:
             if (m_towerOwner[NODE_FEL_REAVER_RUINS] == source->GetTeam())
-                EventPlayerCapturedFlag(source, NODE_FEL_REAVER_RUINS);
+            { EventPlayerCapturedFlag(source, NODE_FEL_REAVER_RUINS); }
             break;
         case AREATRIGGER_MAGE_TOWER_POINT:
             if (m_towerOwner[NODE_MAGE_TOWER] == source->GetTeam())
-                EventPlayerCapturedFlag(source, NODE_MAGE_TOWER);
+            { EventPlayerCapturedFlag(source, NODE_MAGE_TOWER); }
             break;
         case AREATRIGGER_DRAENEI_RUINS_POINT:
             if (m_towerOwner[NODE_DRAENEI_RUINS] == source->GetTeam())
-                EventPlayerCapturedFlag(source, NODE_DRAENEI_RUINS);
+            { EventPlayerCapturedFlag(source, NODE_DRAENEI_RUINS); }
             break;
     }
 }
@@ -357,9 +357,9 @@ void BattleGroundEY::RespawnDroppedFlag()
 
     GameObject* obj = GetBgMap()->GetGameObject(GetDroppedFlagGuid());
     if (obj)
-        obj->Delete();
+    { obj->Delete(); }
     else
-        sLog.outError("BattleGroundEY: Unknown dropped flag: %s", GetDroppedFlagGuid().GetString().c_str());
+    { sLog.outError("BattleGroundEY: Unknown dropped flag: %s", GetDroppedFlagGuid().GetString().c_str()); }
 
     ClearDroppedFlagGuid();
 }
@@ -367,7 +367,7 @@ void BattleGroundEY::RespawnDroppedFlag()
 void BattleGroundEY::HandleKillPlayer(Player* player, Player* killer)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     BattleGround::HandleKillPlayer(player, killer);
     EventPlayerDroppedFlag(player);
@@ -388,10 +388,10 @@ void BattleGroundEY::EventPlayerDroppedFlag(Player* source)
     }
 
     if (!IsFlagPickedUp())
-        return;
+    { return; }
 
     if (GetFlagCarrierGuid() != source->GetObjectGuid())
-        return;
+    { return; }
 
     ClearFlagCarrier();
     source->RemoveAurasDueToSpell(EY_NETHERSTORM_FLAG_SPELL);
@@ -415,10 +415,10 @@ void BattleGroundEY::EventPlayerDroppedFlag(Player* source)
 void BattleGroundEY::EventPlayerClickedOnFlag(Player* source, GameObject* target_obj)
 {
     if (GetStatus() != STATUS_IN_PROGRESS || IsFlagPickedUp() || !source->IsWithinDistInMap(target_obj, 10))
-        return;
+    { return; }
 
     if (m_flagState == EY_FLAG_STATE_ON_BASE)
-        UpdateWorldState(WORLD_STATE_EY_NETHERSTORM_FLAG_READY, WORLD_STATE_REMOVE);
+    { UpdateWorldState(WORLD_STATE_EY_NETHERSTORM_FLAG_READY, WORLD_STATE_REMOVE); }
 
     if (source->GetTeam() == ALLIANCE)
     {
@@ -444,15 +444,15 @@ void BattleGroundEY::EventPlayerClickedOnFlag(Player* source, GameObject* target
     source->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
 
     if (source->GetTeam() == ALLIANCE)
-        PSendMessageToAll(LANG_BG_EY_HAS_TAKEN_FLAG, CHAT_MSG_BG_SYSTEM_ALLIANCE, NULL, source->GetName());
+    { PSendMessageToAll(LANG_BG_EY_HAS_TAKEN_FLAG, CHAT_MSG_BG_SYSTEM_ALLIANCE, NULL, source->GetName()); }
     else
-        PSendMessageToAll(LANG_BG_EY_HAS_TAKEN_FLAG, CHAT_MSG_BG_SYSTEM_HORDE, NULL, source->GetName());
+    { PSendMessageToAll(LANG_BG_EY_HAS_TAKEN_FLAG, CHAT_MSG_BG_SYSTEM_HORDE, NULL, source->GetName()); }
 }
 
 void BattleGroundEY::EventPlayerCapturedFlag(Player* source, EYNodes node)
 {
     if (GetStatus() != STATUS_IN_PROGRESS || GetFlagCarrierGuid() != source->GetObjectGuid())
-        return;
+    { return; }
 
     ClearFlagCarrier();
 
@@ -467,7 +467,7 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player* source, EYNodes node)
         PlaySoundToAll(EY_SOUND_FLAG_CAPTURED_ALLIANCE);
 
         if (m_towersAlliance > 0)
-            AddPoints(ALLIANCE, eyFlagPoints[m_towersAlliance - 1]);
+        { AddPoints(ALLIANCE, eyFlagPoints[m_towersAlliance - 1]); }
 
         SendMessageToAll(LANG_BG_EY_CAPTURED_FLAG_A, CHAT_MSG_BG_SYSTEM_ALLIANCE, source);
     }
@@ -476,7 +476,7 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player* source, EYNodes node)
         PlaySoundToAll(EY_SOUND_FLAG_CAPTURED_HORDE);
 
         if (m_towersHorde > 0)
-            AddPoints(HORDE, eyFlagPoints[m_towersHorde - 1]);
+        { AddPoints(HORDE, eyFlagPoints[m_towersHorde - 1]); }
 
         SendMessageToAll(LANG_BG_EY_CAPTURED_FLAG_H, CHAT_MSG_BG_SYSTEM_HORDE, source);
     }
@@ -490,7 +490,7 @@ void BattleGroundEY::UpdatePlayerScore(Player* source, uint32 type, uint32 value
 {
     BattleGroundScoreMap::iterator itr = m_PlayerScores.find(source->GetObjectGuid());
     if (itr == m_PlayerScores.end())                        // player not found
-        return;
+    { return; }
 
     switch (type)
     {
@@ -575,7 +575,7 @@ WorldSafeLocsEntry const* BattleGroundEY::GetClosestGraveYard(Player* player)
         {
             entry = sWorldSafeLocsStore.LookupEntry(eyGraveyards[i]);
             if (!entry)
-                sLog.outError("BattleGroundEY: Not found graveyard: %u", eyGraveyards[i]);
+            { sLog.outError("BattleGroundEY: Not found graveyard: %u", eyGraveyards[i]); }
             else
             {
                 distance = (entry->x - plr_x) * (entry->x - plr_x) + (entry->y - plr_y) * (entry->y - plr_y) + (entry->z - plr_z) * (entry->z - plr_z);

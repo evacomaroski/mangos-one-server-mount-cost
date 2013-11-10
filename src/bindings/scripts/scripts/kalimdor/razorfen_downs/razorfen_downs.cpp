@@ -248,13 +248,13 @@ struct MANGOS_DLL_DECL npc_belnistraszAI : public npc_escortAI
                 ++m_uiRitualPhase;
             }
             else
-                m_uiRitualTimer -= uiDiff;
+            { m_uiRitualTimer -= uiDiff; }
 
             return;
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiFireballTimer < uiDiff)
         {
@@ -262,7 +262,7 @@ struct MANGOS_DLL_DECL npc_belnistraszAI : public npc_escortAI
             m_uiFireballTimer  = urand(2000, 3000);
         }
         else
-            m_uiFireballTimer -= uiDiff;
+        { m_uiFireballTimer -= uiDiff; }
 
         if (m_uiFrostNovaTimer < uiDiff)
         {
@@ -270,7 +270,7 @@ struct MANGOS_DLL_DECL npc_belnistraszAI : public npc_escortAI
             m_uiFrostNovaTimer = urand(10000, 15000);
         }
         else
-            m_uiFrostNovaTimer -= uiDiff;
+        { m_uiFrostNovaTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

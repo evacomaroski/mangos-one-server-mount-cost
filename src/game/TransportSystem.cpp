@@ -61,15 +61,15 @@ void TransportBase::Update(uint32 diff)
     if (m_updatePositionsTimer < diff)
     {
         if (fabs(m_owner->GetPositionX() - m_lastPosition.x) +
-                fabs(m_owner->GetPositionY() - m_lastPosition.y) +
-                fabs(m_owner->GetPositionZ() - m_lastPosition.z) > 1.0f ||
-                MapManager::NormalizeOrientation(m_owner->GetOrientation() - m_lastPosition.o) > 0.01f)
-            UpdateGlobalPositions();
+            fabs(m_owner->GetPositionY() - m_lastPosition.y) +
+            fabs(m_owner->GetPositionZ() - m_lastPosition.z) > 1.0f ||
+            MapManager::NormalizeOrientation(m_owner->GetOrientation() - m_lastPosition.o) > 0.01f)
+        { UpdateGlobalPositions(); }
 
         m_updatePositionsTimer = 500;
     }
     else
-        m_updatePositionsTimer -= diff;
+    { m_updatePositionsTimer -= diff; }
 }
 
 // Update the global positions of all passengers
@@ -106,7 +106,7 @@ void TransportBase::UpdateGlobalPositionOf(WorldObject* passenger, float lx, flo
             m_owner->GetMap()->PlayerRelocation((Player*)passenger, gx, gy, gz, go);
         }
         else
-            m_owner->GetMap()->CreatureRelocation((Creature*)passenger, gx, gy, gz, go);
+        { m_owner->GetMap()->CreatureRelocation((Creature*)passenger, gx, gy, gz, go); }
     }
     // ToDo: Add gameobject relocation
     // ToDo: Add passenger relocation for MO transports
@@ -153,7 +153,7 @@ void TransportBase::UnBoardPassenger(WorldObject* passenger)
     PassengerMap::iterator itr = m_passengers.find(passenger);
 
     if (itr == m_passengers.end())
-        return;
+    { return; }
 
     // Set passengers transportInfo to NULL
     passenger->SetTransportInfo(NULL);

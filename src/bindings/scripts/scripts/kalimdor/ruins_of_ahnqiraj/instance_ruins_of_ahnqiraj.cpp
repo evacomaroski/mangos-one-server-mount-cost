@@ -49,7 +49,7 @@ void instance_ruins_of_ahnqiraj::OnPlayerEnter(Player* /*pPlayer*/)
 {
     // Spawn andorov if necessary
     if (m_auiEncounter[TYPE_KURINNAXX] == DONE)
-        DoSapwnAndorovIfCan();
+    { DoSapwnAndorovIfCan(); }
 }
 
 void instance_ruins_of_ahnqiraj::OnCreatureCreate(Creature* pCreature)
@@ -59,7 +59,7 @@ void instance_ruins_of_ahnqiraj::OnCreatureCreate(Creature* pCreature)
         case NPC_OSSIRIAN_TRIGGER:
             // Only store static spawned
             if (pCreature->IsTemporarySummon())
-                break;
+            { break; }
         case NPC_BURU:
         case NPC_OSSIRIAN:
         case NPC_RAJAXX:
@@ -138,7 +138,7 @@ void instance_ruins_of_ahnqiraj::OnCreatureDeath(Creature* pCreature)
         {
             // If event isn't started by Andorov, return
             if (GetData(TYPE_RAJAXX) != IN_PROGRESS)
-                return;
+            { return; }
 
             // Check if the dead creature belongs to the current wave
             if (m_sArmyWavesGuids[m_uiCurrentArmyWave - 1].find(pCreature->GetObjectGuid()) != m_sArmyWavesGuids[m_uiCurrentArmyWave - 1].end())
@@ -147,7 +147,7 @@ void instance_ruins_of_ahnqiraj::OnCreatureDeath(Creature* pCreature)
 
                 // If all the soldiers from the current wave are dead, then send the next one
                 if (m_sArmyWavesGuids[m_uiCurrentArmyWave - 1].empty())
-                    DoSendNextArmyWave();
+                { DoSendNextArmyWave(); }
             }
             break;
         }
@@ -171,13 +171,13 @@ void instance_ruins_of_ahnqiraj::SetData(uint32 uiType, uint32 uiData)
         case TYPE_RAJAXX:
             m_auiEncounter[uiType] = uiData;
             if (uiData == IN_PROGRESS)
-                DoSortArmyWaves();
+            { DoSortArmyWaves(); }
             if (uiData == DONE)
             {
                 if (Creature* pAndorov = GetSingleCreatureFromStorage(NPC_GENERAL_ANDOROV))
                 {
                     if (pAndorov->isAlive())
-                        pAndorov->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    { pAndorov->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP); }
                 }
             }
             break;
@@ -207,7 +207,7 @@ void instance_ruins_of_ahnqiraj::SetData(uint32 uiType, uint32 uiData)
 uint32 instance_ruins_of_ahnqiraj::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
-        return m_auiEncounter[uiType];
+    { return m_auiEncounter[uiType]; }
 
     return 0;
 }
@@ -215,14 +215,14 @@ uint32 instance_ruins_of_ahnqiraj::GetData(uint32 uiType) const
 void instance_ruins_of_ahnqiraj::DoSapwnAndorovIfCan()
 {
     if (GetSingleCreatureFromStorage(NPC_GENERAL_ANDOROV))
-        return;
+    { return; }
 
     Player* pPlayer = GetPlayerInMap();
     if (!pPlayer)
-        return;
+    { return; }
 
     for (uint8 i = 0; i < MAX_HELPERS; ++i)
-        pPlayer->SummonCreature(aAndorovSpawnLocs[i].m_uiEntry, aAndorovSpawnLocs[i].m_fX, aAndorovSpawnLocs[i].m_fY, aAndorovSpawnLocs[i].m_fZ, aAndorovSpawnLocs[i].m_fO, TEMPSUMMON_DEAD_DESPAWN, 0);
+    { pPlayer->SummonCreature(aAndorovSpawnLocs[i].m_uiEntry, aAndorovSpawnLocs[i].m_fX, aAndorovSpawnLocs[i].m_fY, aAndorovSpawnLocs[i].m_fZ, aAndorovSpawnLocs[i].m_fO, TEMPSUMMON_DEAD_DESPAWN, 0); }
 }
 
 void instance_ruins_of_ahnqiraj::Load(const char* chrIn)
@@ -243,7 +243,7 @@ void instance_ruins_of_ahnqiraj::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
-            m_auiEncounter[i] = NOT_STARTED;
+        { m_auiEncounter[i] = NOT_STARTED; }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
@@ -261,7 +261,7 @@ void instance_ruins_of_ahnqiraj::Update(uint32 uiDiff)
                 m_uiArmyDelayTimer = 2 * MINUTE * IN_MILLISECONDS;
             }
             else
-                m_uiArmyDelayTimer -= uiDiff;
+            { m_uiArmyDelayTimer -= uiDiff; }
         }
     }
 }
@@ -286,11 +286,11 @@ void instance_ruins_of_ahnqiraj::DoSortArmyWaves()
             for (std::list<Creature*>::const_iterator itr = lCreatureList.begin(); itr != lCreatureList.end(); ++itr)
             {
                 if ((*itr)->isAlive())
-                    m_sArmyWavesGuids[i].insert((*itr)->GetObjectGuid());
+                { m_sArmyWavesGuids[i].insert((*itr)->GetObjectGuid()); }
             }
 
             if (pTemp->isAlive())
-                m_sArmyWavesGuids[i].insert(pTemp->GetObjectGuid());
+            { m_sArmyWavesGuids[i].insert(pTemp->GetObjectGuid()); }
         }
     }
 
@@ -303,7 +303,7 @@ void instance_ruins_of_ahnqiraj::DoSendNextArmyWave()
 {
     // The next army wave is sent into battle after 2 min or after the previous wave is finished
     if (GetData(TYPE_RAJAXX) != IN_PROGRESS)
-        return;
+    { return; }
 
     // The last wave is General Rajaxx itself
     if (m_uiCurrentArmyWave == MAX_ARMY_WAVES)
@@ -318,7 +318,7 @@ void instance_ruins_of_ahnqiraj::DoSendNextArmyWave()
     {
         // Increase the wave id if some are already dead
         while (m_sArmyWavesGuids[m_uiCurrentArmyWave].empty())
-            ++m_uiCurrentArmyWave;
+        { ++m_uiCurrentArmyWave; }
 
         float fX, fY, fZ;
         for (GuidSet::const_iterator itr = m_sArmyWavesGuids[m_uiCurrentArmyWave].begin(); itr != m_sArmyWavesGuids[m_uiCurrentArmyWave].end(); ++itr)
@@ -326,7 +326,7 @@ void instance_ruins_of_ahnqiraj::DoSendNextArmyWave()
             if (Creature* pTemp = instance->GetCreature(*itr))
             {
                 if (!pTemp->isAlive())
-                    continue;
+                { continue; }
 
                 pTemp->SetWalk(false);
                 pTemp->GetRandomPoint(aAndorovMoveLocs[4].m_fX, aAndorovMoveLocs[4].m_fY, aAndorovMoveLocs[4].m_fZ, 10.0f, fX, fY, fZ);
@@ -338,7 +338,7 @@ void instance_ruins_of_ahnqiraj::DoSendNextArmyWave()
         if (aArmySortingParameters[m_uiCurrentArmyWave].m_uiYellEntry)
         {
             if (Creature* pRajaxx = GetSingleCreatureFromStorage(NPC_RAJAXX))
-                DoScriptText(aArmySortingParameters[m_uiCurrentArmyWave].m_uiYellEntry, pRajaxx);
+            { DoScriptText(aArmySortingParameters[m_uiCurrentArmyWave].m_uiYellEntry, pRajaxx); }
         }
     }
 

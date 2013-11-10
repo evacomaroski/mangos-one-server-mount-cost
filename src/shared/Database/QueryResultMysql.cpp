@@ -34,7 +34,7 @@ QueryResultMysql::QueryResultMysql(MYSQL_RES* result, MYSQL_FIELD* fields, uint6
     MANGOS_ASSERT(mCurrentRow);
 
     for (uint32 i = 0; i < mFieldCount; ++i)
-        mCurrentRow[i].SetType(ConvertNativeType(fields[i].type));
+    { mCurrentRow[i].SetType(ConvertNativeType(fields[i].type)); }
 }
 
 QueryResultMysql::~QueryResultMysql()
@@ -47,7 +47,7 @@ bool QueryResultMysql::NextRow()
     MYSQL_ROW row;
 
     if (!mResult)
-        return false;
+    { return false; }
 
     row = mysql_fetch_row(mResult);
     if (!row)
@@ -57,7 +57,7 @@ bool QueryResultMysql::NextRow()
     }
 
     for (uint32 i = 0; i < mFieldCount; ++i)
-        mCurrentRow[i].SetValue(row[i]);
+    { mCurrentRow[i].SetValue(row[i]); }
 
     return true;
 }
@@ -79,16 +79,16 @@ enum Field::DataTypes QueryResultMysql::ConvertNativeType(enum_field_types mysql
     switch (mysqlType)
     {
         case FIELD_TYPE_TIMESTAMP:
-        case FIELD_TYPE_DATE:
-        case FIELD_TYPE_TIME:
-        case FIELD_TYPE_DATETIME:
-        case FIELD_TYPE_YEAR:
-        case FIELD_TYPE_STRING:
-        case FIELD_TYPE_VAR_STRING:
-        case FIELD_TYPE_BLOB:
-        case FIELD_TYPE_SET:
-        case FIELD_TYPE_NULL:
-            return Field::DB_TYPE_STRING;
+            case FIELD_TYPE_DATE:
+                case FIELD_TYPE_TIME:
+                    case FIELD_TYPE_DATETIME:
+                        case FIELD_TYPE_YEAR:
+                            case FIELD_TYPE_STRING:
+                                case FIELD_TYPE_VAR_STRING:
+                                    case FIELD_TYPE_BLOB:
+                                        case FIELD_TYPE_SET:
+                                            case FIELD_TYPE_NULL:
+                                                    return Field::DB_TYPE_STRING;
         case FIELD_TYPE_TINY:
         case FIELD_TYPE_SHORT:
         case FIELD_TYPE_LONG:

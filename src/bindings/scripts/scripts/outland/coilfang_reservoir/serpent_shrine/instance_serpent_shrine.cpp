@@ -58,7 +58,7 @@ bool instance_serpentshrine_cavern::IsEncounterInProgress() const
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
-            return true;
+        { return true; }
     }
 
     return false;
@@ -90,7 +90,7 @@ void instance_serpentshrine_cavern::OnCreatureCreate(Creature* pCreature)
         case NPC_GREYHEART_TECHNICIAN:
             // Filter only the mobs spawned on the platforms
             if (pCreature->GetPositionZ() > 0)
-                m_sPlatformMobsGUIDSet.insert(pCreature->GetObjectGuid());
+            { m_sPlatformMobsGUIDSet.insert(pCreature->GetObjectGuid()); }
             break;
     }
 }
@@ -122,7 +122,7 @@ void instance_serpentshrine_cavern::SetData(uint32 uiType, uint32 uiData)
                 for (GuidList::const_iterator itr = m_lSpellBindersGUIDList.begin(); itr != m_lSpellBindersGUIDList.end(); ++itr)
                 {
                     if (Creature* pSpellBinder = instance->GetCreature(*itr))
-                        pSpellBinder->Respawn();
+                    { pSpellBinder->Respawn(); }
                 }
 
                 m_uiSpellBinderCount = 0;
@@ -141,7 +141,7 @@ void instance_serpentshrine_cavern::SetData(uint32 uiType, uint32 uiData)
                 for (GuidList::const_iterator itr = m_lShieldGeneratorGUIDList.begin(); itr != m_lShieldGeneratorGUIDList.end(); ++itr)
                 {
                     if (Creature* pGenerator = instance->GetCreature(*itr))
-                        pGenerator->InterruptNonMeleeSpells(false);
+                    { pGenerator->InterruptNonMeleeSpells(false); }
                 }
 
                 // reset generators
@@ -185,7 +185,7 @@ void instance_serpentshrine_cavern::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
-            m_auiEncounter[i] = NOT_STARTED;
+        { m_auiEncounter[i] = NOT_STARTED; }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
@@ -194,7 +194,7 @@ void instance_serpentshrine_cavern::Load(const char* chrIn)
 uint32 instance_serpentshrine_cavern::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
-        return m_auiEncounter[uiType];
+    { return m_auiEncounter[uiType]; }
 
     return 0;
 }
@@ -206,7 +206,7 @@ void instance_serpentshrine_cavern::SetData64(uint32 uiData, uint64 uiGuid)
     if (uiData == DATA_WATERSTATE_EVENT)
     {
         if (m_sPlatformMobsGUIDSet.find(ObjectGuid(uiGuid)) != m_sPlatformMobsGUIDSet.end())
-            m_sPlatformMobsAliveGUIDSet.insert(ObjectGuid(uiGuid));
+        { m_sPlatformMobsAliveGUIDSet.insert(ObjectGuid(uiGuid)); }
     }
 }
 
@@ -229,7 +229,7 @@ void instance_serpentshrine_cavern::OnCreatureEnterCombat(Creature* pCreature)
 {
     // Interrupt spell casting on aggro
     if (pCreature->GetEntry() == NPC_GREYHEART_SPELLBINDER)
-        pCreature->InterruptNonMeleeSpells(false);
+    { pCreature->InterruptNonMeleeSpells(false); }
 }
 
 void instance_serpentshrine_cavern::OnCreatureDeath(Creature* pCreature)
@@ -253,7 +253,7 @@ void instance_serpentshrine_cavern::OnCreatureDeath(Creature* pCreature)
         case NPC_VASHJIR_HONOR_GUARD:
         case NPC_GREYHEART_TECHNICIAN:
             if (m_sPlatformMobsGUIDSet.find(pCreature->GetObjectGuid()) != m_sPlatformMobsGUIDSet.end())
-                m_sPlatformMobsAliveGUIDSet.erase(pCreature->GetObjectGuid());
+            { m_sPlatformMobsAliveGUIDSet.erase(pCreature->GetObjectGuid()); }
             break;
     }
 }

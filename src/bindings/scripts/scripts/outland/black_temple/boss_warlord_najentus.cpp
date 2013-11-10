@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAJENTUS, NOT_STARTED);
+        { m_pInstance->SetData(TYPE_NAJENTUS, NOT_STARTED); }
     }
 
     void KilledUnit(Unit* /*pVictim*/) override
@@ -101,7 +101,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAJENTUS, DONE);
+        { m_pInstance->SetData(TYPE_NAJENTUS, DONE); }
 
         DoScriptText(SAY_DEATH, m_creature);
     }
@@ -111,21 +111,21 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
         if (m_bIsShielded && pSpell->Id == SPELL_HURL_SPINE)
         {
             if (m_creature->HasAura(SPELL_TIDAL_SHIELD))
-                m_creature->RemoveAurasDueToSpell(SPELL_TIDAL_SHIELD);
+            { m_creature->RemoveAurasDueToSpell(SPELL_TIDAL_SHIELD); }
 
             DoCastSpellIfCan(m_creature, SPELL_TIDAL_BURST);
             m_bIsShielded = false;
 
             SetCombatMovement(true);
             if (m_creature->getVictim())
-                m_creature->GetMotionMaster()->MoveChase(m_creature->getVictim());
+            { m_creature->GetMotionMaster()->MoveChase(m_creature->getVictim()); }
         }
     }
 
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAJENTUS, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_NAJENTUS, IN_PROGRESS); }
 
         DoScriptText(SAY_AGGRO, m_creature);
     }
@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // If shield expired after 45s, attack again
         if (m_bIsShielded && m_uiTidalShieldTimer < 16000 && !m_creature->HasAura(SPELL_TIDAL_SHIELD))
@@ -153,7 +153,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
             }
         }
         else
-            m_uiEnrageTimer -= uiDiff;
+        { m_uiEnrageTimer -= uiDiff; }
 
         if (m_uiSpecialYellTimer < uiDiff)
         {
@@ -161,14 +161,14 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
             m_uiSpecialYellTimer = urand(25000, 100000);
         }
         else
-            m_uiSpecialYellTimer -= uiDiff;
+        { m_uiSpecialYellTimer -= uiDiff; }
 
         if (m_uiImpalingSpineTimer < uiDiff)
         {
             Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1, SPELL_IMPALING_SPINE, SELECT_FLAG_PLAYER);
 
             if (!pTarget)
-                pTarget = m_creature->getVictim();
+            { pTarget = m_creature->getVictim(); }
 
             if (pTarget && pTarget->GetTypeId() == TYPEID_PLAYER)
             {
@@ -179,7 +179,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
             }
         }
         else
-            m_uiImpalingSpineTimer -= uiDiff;
+        { m_uiImpalingSpineTimer -= uiDiff; }
 
         if (m_uiTidalShieldTimer < uiDiff)
         {
@@ -196,16 +196,16 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
             m_uiNeedleSpineTimer += 10000;
         }
         else
-            m_uiTidalShieldTimer -= uiDiff;
+        { m_uiTidalShieldTimer -= uiDiff; }
 
         // Needle
         if (m_uiNeedleSpineTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_NEEDLE_SPINE) == CAST_OK)
-                m_uiNeedleSpineTimer = 3000;
+            { m_uiNeedleSpineTimer = 3000; }
         }
         else
-            m_uiNeedleSpineTimer -= uiDiff;
+        { m_uiNeedleSpineTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

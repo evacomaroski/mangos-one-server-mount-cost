@@ -63,19 +63,19 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
     }
 
     if (!pet->isAlive())
-        return;
+    { return; }
 
     if (pet->GetTypeId() == TYPEID_PLAYER)
     {
         // controller player can only do melee attack
         if (!(flag == ACT_COMMAND && spellid == COMMAND_ATTACK))
-            return;
+        { return; }
     }
     else if (((Creature*)pet)->IsPet())
     {
         // pet can have action bar disabled
         if (((Pet*)pet)->GetModeFlags() & PET_MODE_DISABLE_ACTIONS)
-            return;
+        { return; }
     }
 
     CharmInfo* charmInfo = pet->GetCharmInfo();
@@ -105,20 +105,20 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
                 {
                     Unit* TargetUnit = _player->GetMap()->GetUnit(targetGuid);
                     if (!TargetUnit)
-                        return;
+                    { return; }
 
                     // not let attack friendly units.
                     if (GetPlayer()->IsFriendlyTo(TargetUnit))
-                        return;
+                    { return; }
                     // Not let attack through obstructions
                     if (!pet->IsWithinLOSInMap(TargetUnit))
-                        return;
+                    { return; }
 
                     // This is true if pet has no target or has target but targets differs.
                     if (pet->getVictim() != TargetUnit)
                     {
                         if (pet->getVictim())
-                            pet->AttackStop();
+                        { pet->AttackStop(); }
 
                         if (pet->hasUnitState(UNIT_STAT_CONTROLLED))
                         {
@@ -130,11 +130,11 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
                             pet->GetMotionMaster()->Clear();
 
                             if (((Creature*)pet)->AI())
-                                ((Creature*)pet)->AI()->AttackStart(TargetUnit);
+                            { ((Creature*)pet)->AI()->AttackStart(TargetUnit); }
 
                             // 10% chance to play special pet attack talk, else growl
                             if (((Creature*)pet)->IsPet() && ((Pet*)pet)->getPetType() == SUMMON_PET && pet != TargetUnit && roll_chance_i(10))
-                                pet->SendPetTalk((uint32)PET_TALK_ATTACK);
+                            { pet->SendPetTalk((uint32)PET_TALK_ATTACK); }
                             else
                             {
                                 // 90% chance for pet and 100% chance for charmed creature
@@ -149,13 +149,13 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
                     {
                         Pet* p = (Pet*)pet;
                         if (p->getPetType() == HUNTER_PET)
-                            p->Unsummon(PET_SAVE_AS_DELETED, _player);
+                        { p->Unsummon(PET_SAVE_AS_DELETED, _player); }
                         else
                             // dismissing a summoned pet is like killing them (this prevents returning a soulshard...)
-                            p->SetDeathState(CORPSE);
+                        { p->SetDeathState(CORPSE); }
                     }
                     else                                    // charmed
-                        _player->Uncharm();
+                    { _player->Uncharm(); }
                     break;
                 default:
                     sLog.outError("WORLD: unknown PET flag Action %i and spellid %i.", uint32(flag), spellid);
@@ -177,7 +177,7 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
         {
             Unit* unit_target = NULL;
             if (targetGuid)
-                unit_target = _player->GetMap()->GetUnit(targetGuid);
+            { unit_target = _player->GetMap()->GetUnit(targetGuid); }
 
             // do not cast unknown spells
             SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid);
@@ -188,17 +188,17 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
             }
 
             if (pet->GetCharmInfo() && pet->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo))
-                return;
+            { return; }
 
             for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
             {
                 if (spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_INSTANT || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
-                    return;
+                { return; }
             }
 
             // do not cast not learned spells
             if (!pet->HasSpell(spellid) || IsPassiveSpell(spellInfo))
-                return;
+            { return; }
 
             pet->clearUnitState(UNIT_STAT_MOVING);
 
@@ -213,17 +213,17 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
                 {
                     pet->SetInFront(unit_target);
                     if (unit_target->GetTypeId() == TYPEID_PLAYER)
-                        pet->SendCreateUpdateToPlayer((Player*)unit_target);
+                    { pet->SendCreateUpdateToPlayer((Player*)unit_target); }
                 }
                 else if (Unit* unit_target2 = spell->m_targets.getUnitTarget())
                 {
                     pet->SetInFront(unit_target2);
                     if (unit_target2->GetTypeId() == TYPEID_PLAYER)
-                        pet->SendCreateUpdateToPlayer((Player*)unit_target2);
+                    { pet->SendCreateUpdateToPlayer((Player*)unit_target2); }
                 }
                 if (Unit* powner = pet->GetCharmerOrOwner())
                     if (powner->GetTypeId() == TYPEID_PLAYER)
-                        pet->SendCreateUpdateToPlayer((Player*)powner);
+                    { pet->SendCreateUpdateToPlayer((Player*)powner); }
                 result = SPELL_CAST_OK;
             }
 
@@ -231,14 +231,14 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
             {
                 ((Creature*)pet)->AddCreatureSpellCooldown(spellid);
                 if (((Creature*)pet)->IsPet())
-                    ((Pet*)pet)->CheckLearning(spellid);
+                { ((Pet*)pet)->CheckLearning(spellid); }
 
                 unit_target = spell->m_targets.getUnitTarget();
 
                 // 10% chance to play special pet attack talk, else growl
                 // actually this only seems to happen on special spells, fire shield for imp, torment for voidwalker, but it's stupid to check every spell
                 if (((Creature*)pet)->IsPet() && (((Pet*)pet)->getPetType() == SUMMON_PET) && (pet != unit_target) && (urand(0, 100) < 10))
-                    pet->SendPetTalk((uint32)PET_TALK_SPECIAL_SPELL);
+                { pet->SendPetTalk((uint32)PET_TALK_SPECIAL_SPELL); }
                 else
                 {
                     pet->SendPetAIReaction();
@@ -250,10 +250,10 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
                     if (pet->getVictim() != unit_target)
                     {
                         if (pet->getVictim())
-                            pet->AttackStop();
+                        { pet->AttackStop(); }
                         pet->GetMotionMaster()->Clear();
                         if (((Creature*)pet)->AI())
-                            ((Creature*)pet)->AI()->AttackStart(unit_target);
+                        { ((Creature*)pet)->AI()->AttackStart(unit_target); }
                     }
                 }
 
@@ -262,16 +262,16 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
             else
             {
                 if (pet->HasAuraType(SPELL_AURA_MOD_POSSESS))
-                    Spell::SendCastResult(GetPlayer(), spellInfo, 0, result);
+                { Spell::SendCastResult(GetPlayer(), spellInfo, 0, result); }
                 else
                 {
                     Unit* owner = pet->GetCharmerOrOwner();
                     if (owner && owner->GetTypeId() == TYPEID_PLAYER)
-                        Spell::SendCastResult((Player*)owner, spellInfo, 0, result, true);
+                    { Spell::SendCastResult((Player*)owner, spellInfo, 0, result, true); }
                 }
 
                 if (!((Creature*)pet)->HasSpellCooldown(spellid))
-                    GetPlayer()->SendClearCooldown(spellid, pet);
+                { GetPlayer()->SendClearCooldown(spellid, pet); }
 
                 spell->finish(false);
                 delete spell;
@@ -304,7 +304,7 @@ void WorldSession::HandlePetStopAttack(WorldPacket& recv_data)
     }
 
     if (!pet->isAlive())
-        return;
+    { return; }
 
     pet->AttackStop();
 }
@@ -326,7 +326,7 @@ void WorldSession::SendPetNameQuery(ObjectGuid petguid, uint32 petnumber)
 {
     Creature* pet = _player->GetMap()->GetAnyTypeCreature(petguid);
     if (!pet || !pet->GetCharmInfo() || pet->GetCharmInfo()->GetPetNumber() != petnumber)
-        return;
+    { return; }
 
     char const* name = pet->GetName();
 
@@ -346,10 +346,10 @@ void WorldSession::SendPetNameQuery(ObjectGuid petguid, uint32 petnumber)
     {
         data << uint8(1);
         for (int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-            data << ((Pet*)pet)->GetDeclinedNames()->name[i];
+        { data << ((Pet*)pet)->GetDeclinedNames()->name[i]; }
     }
     else
-        data << uint8(0);
+    { data << uint8(0); }
 
     _player->GetSession()->SendPacket(&data);
 }
@@ -373,7 +373,7 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
 
     // pet can have action bar disabled
     if (pet->IsPet() && ((Pet*)pet)->GetModeFlags() & PET_MODE_DISABLE_ACTIONS)
-        return;
+    { return; }
 
     CharmInfo* charmInfo = pet->GetCharmInfo();
     if (!charmInfo)
@@ -397,7 +397,7 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
 
         // ignore invalid position
         if (position[i] >= MAX_UNIT_ACTION_BAR_INDEX)
-            return;
+        { return; }
 
         // in the normal case, command and reaction buttons can only be moved, not removed
         // at moving count ==2, at removing count == 1
@@ -405,7 +405,7 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
         if (act_state == ACT_COMMAND || act_state == ACT_REACTION)
         {
             if (count == 1)
-                return;
+            { return; }
 
             move_command = true;
         }
@@ -420,8 +420,8 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
             uint32 spell_id_0 = UNIT_ACTION_BUTTON_ACTION(data[0]);
             UnitActionBarEntry const* actionEntry_1 = charmInfo->GetActionBarEntry(position[1]);
             if (!actionEntry_1 || spell_id_0 != actionEntry_1->GetAction() ||
-                    act_state_0 != actionEntry_1->GetType())
-                return;
+                act_state_0 != actionEntry_1->GetType())
+            { return; }
         }
 
         uint8 act_state_1 = UNIT_ACTION_BUTTON_TYPE(data[1]);
@@ -430,8 +430,8 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
             uint32 spell_id_1 = UNIT_ACTION_BUTTON_ACTION(data[1]);
             UnitActionBarEntry const* actionEntry_0 = charmInfo->GetActionBarEntry(position[0]);
             if (!actionEntry_0 || spell_id_1 != actionEntry_0->GetAction() ||
-                    act_state_1 != actionEntry_0->GetType())
-                return;
+                act_state_1 != actionEntry_0->GetType())
+            { return; }
         }
     }
 
@@ -449,17 +449,17 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
             if (act_state == ACT_ENABLED && spell_id)
             {
                 if (pet->isCharmed())
-                    charmInfo->ToggleCreatureAutocast(spell_id, true);
+                { charmInfo->ToggleCreatureAutocast(spell_id, true); }
                 else
-                    ((Pet*)pet)->ToggleAutocast(spell_id, true);
+                { ((Pet*)pet)->ToggleAutocast(spell_id, true); }
             }
             // sign for no/turn off autocast
             else if (act_state == ACT_DISABLED && spell_id)
             {
                 if (pet->isCharmed())
-                    charmInfo->ToggleCreatureAutocast(spell_id, false);
+                { charmInfo->ToggleCreatureAutocast(spell_id, false); }
                 else
-                    ((Pet*)pet)->ToggleAutocast(spell_id, false);
+                { ((Pet*)pet)->ToggleAutocast(spell_id, false); }
             }
 
             charmInfo->SetActionBar(position[i], spell_id, ActiveStates(act_state));
@@ -484,9 +484,9 @@ void WorldSession::HandlePetRename(WorldPacket& recv_data)
     Pet* pet = _player->GetMap()->GetPet(petGuid);
     // check it!
     if (!pet || pet->getPetType() != HUNTER_PET ||
-            !pet->HasByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED) ||
-            pet->GetOwnerGuid() != _player->GetObjectGuid() || !pet->GetCharmInfo())
-        return;
+        !pet->HasByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED) ||
+        pet->GetOwnerGuid() != _player->GetObjectGuid() || !pet->GetCharmInfo())
+    { return; }
 
     PetNameInvalidReason res = ObjectMgr::CheckPetName(name);
     if (res != PET_NAME_SUCCESS)
@@ -504,7 +504,7 @@ void WorldSession::HandlePetRename(WorldPacket& recv_data)
     pet->SetName(name);
 
     if (_player->GetGroup())
-        _player->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_PET_NAME);
+    { _player->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_PET_NAME); }
 
     pet->RemoveByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED);
 
@@ -528,7 +528,7 @@ void WorldSession::HandlePetRename(WorldPacket& recv_data)
     if (isdeclined)
     {
         for (int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-            CharacterDatabase.escape_string(declinedname.name[i]);
+        { CharacterDatabase.escape_string(declinedname.name[i]); }
         CharacterDatabase.PExecute("DELETE FROM character_pet_declinedname WHERE owner = '%u' AND id = '%u'", _player->GetGUIDLow(), pet->GetCharmInfo()->GetPetNumber());
         CharacterDatabase.PExecute("INSERT INTO character_pet_declinedname (id, owner, genitive, dative, accusative, instrumental, prepositional) VALUES ('%u','%u','%s','%s','%s','%s','%s')",
                                    pet->GetCharmInfo()->GetPetNumber(), _player->GetGUIDLow(), declinedname.name[0].c_str(), declinedname.name[1].c_str(), declinedname.name[2].c_str(), declinedname.name[3].c_str(), declinedname.name[4].c_str());
@@ -549,7 +549,7 @@ void WorldSession::HandlePetAbandon(WorldPacket& recv_data)
     DETAIL_LOG("HandlePetAbandon. CMSG_PET_ABANDON pet guid is %s", guid.GetString().c_str());
 
     if (!_player->IsInWorld())
-        return;
+    { return; }
 
     // pet/charmed
     if (Creature* pet = _player->GetMap()->GetAnyTypeCreature(guid))
@@ -557,7 +557,7 @@ void WorldSession::HandlePetAbandon(WorldPacket& recv_data)
         if (pet->IsPet())
         {
             if (pet->GetObjectGuid() == _player->GetPetGuid())
-                pet->ModifyPower(POWER_HAPPINESS, -50000);
+            { pet->ModifyPower(POWER_HAPPINESS, -50000); }
 
             ((Pet*)pet)->Unsummon(PET_SAVE_AS_DELETED, _player);
         }
@@ -584,7 +584,7 @@ void WorldSession::HandlePetUnlearnOpcode(WorldPacket& recvPacket)
     }
 
     if (pet->getPetType() != HUNTER_PET || pet->m_spells.size() <= 1)
-        return;
+    { return; }
 
     CharmInfo* charmInfo = pet->GetCharmInfo();
     if (!charmInfo)
@@ -608,12 +608,12 @@ void WorldSession::HandlePetUnlearnOpcode(WorldPacket& recvPacket)
         pet->unlearnSpell(spell_id, false);
     }
 
-    pet->SetTP(pet->getLevel() *(pet->GetLoyaltyLevel() - 1));
+    pet->SetTP(pet->getLevel() * (pet->GetLoyaltyLevel() - 1));
 
     for (int i = 0; i < MAX_UNIT_ACTION_BAR_INDEX; ++i)
         if (UnitActionBarEntry const* ab = charmInfo->GetActionBarEntry(i))
             if (ab->GetAction() && ab->IsActionBarForSpell())
-                charmInfo->SetActionBar(i, 0, ACT_DISABLED);
+            { charmInfo->SetActionBar(i, 0, ACT_DISABLED); }
 
     // relearn pet passives
     pet->LearnPetPassives();
@@ -643,7 +643,7 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPacket& recvPacket)
 
     // do not add not learned spells/ passive spells
     if (!pet->HasSpell(spellid) || IsPassiveSpell(spellid))
-        return;
+    { return; }
 
     CharmInfo* charmInfo = pet->GetCharmInfo();
     if (!charmInfo)
@@ -654,9 +654,9 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPacket& recvPacket)
 
     if (pet->isCharmed())
         // state can be used as boolean
-        pet->GetCharmInfo()->ToggleCreatureAutocast(spellid, state);
+    { pet->GetCharmInfo()->ToggleCreatureAutocast(spellid, state); }
     else
-        ((Pet*)pet)->ToggleAutocast(spellid, state);
+    { ((Pet*)pet)->ToggleAutocast(spellid, state); }
 
     charmInfo->SetSpellAutocast(spellid, state);
 }
@@ -688,12 +688,12 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
     }
 
     if (pet->GetCharmInfo() && pet->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo))
-        return;
+    { return; }
 
 
     // do not cast not learned spells
     if (!pet->HasSpell(spellid) || IsPassiveSpell(spellInfo))
-        return;
+    { return; }
 
     SpellCastTargets targets;
 
@@ -715,9 +715,9 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
             // 10% chance to play special pet attack talk, else growl
             // actually this only seems to happen on special spells, fire shield for imp, torment for voidwalker, but it's stupid to check every spell
             if (((Pet*)pet)->getPetType() == SUMMON_PET && (urand(0, 100) < 10))
-                pet->SendPetTalk((uint32)PET_TALK_SPECIAL_SPELL);
+            { pet->SendPetTalk((uint32)PET_TALK_SPECIAL_SPELL); }
             else
-                pet->SendPetAIReaction();
+            { pet->SendPetAIReaction(); }
         }
 
         spell->prepare(&(spell->m_targets));
@@ -726,10 +726,10 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
     {
         Unit* owner = pet->GetCharmerOrOwner();
         if (owner && owner->GetTypeId() == TYPEID_PLAYER)
-            Spell::SendCastResult((Player*)owner, spellInfo, 0, result, true);
+        { Spell::SendCastResult((Player*)owner, spellInfo, 0, result, true); }
 
         if (!pet->HasSpellCooldown(spellid))
-            GetPlayer()->SendClearCooldown(spellid, pet);
+        { GetPlayer()->SendClearCooldown(spellid, pet); }
 
         spell->finish(false);
         delete spell;
@@ -745,9 +745,9 @@ void WorldSession::SendPetNameInvalid(uint32 error, const std::string& name, Dec
     {
         data << uint8(1);
         for (uint32 i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-            data << declinedName->name[i];
+        { data << declinedName->name[i]; }
     }
     else
-        data << uint8(0);
+    { data << uint8(0); }
     SendPacket(&data);
 }

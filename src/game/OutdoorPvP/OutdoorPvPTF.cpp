@@ -46,7 +46,7 @@ OutdoorPvPTF::OutdoorPvPTF() : OutdoorPvP(),
     m_towerWorldState[4] = WORLD_STATE_TF_SOUTH_TOWER_NEUTRAL;
 
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
-        m_towerOwner[i] = TEAM_NONE;
+    { m_towerOwner[i] = TEAM_NONE; }
 }
 
 void OutdoorPvPTF::FillInitialWorldStates(WorldPacket& data, uint32& count)
@@ -58,10 +58,10 @@ void OutdoorPvPTF::FillInitialWorldStates(WorldPacket& data, uint32& count)
         FillInitialWorldState(data, count, WORLD_STATE_TF_TOWER_COUNT_A, m_towersAlliance);
 
         for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
-            FillInitialWorldState(data, count, m_towerWorldState[i], WORLD_STATE_ADD);
+        { FillInitialWorldState(data, count, m_towerWorldState[i], WORLD_STATE_ADD); }
     }
     else
-        UpdateTimerWorldState();
+    { UpdateTimerWorldState(); }
 }
 
 void OutdoorPvPTF::SendRemoveWorldStates(Player* player)
@@ -69,7 +69,7 @@ void OutdoorPvPTF::SendRemoveWorldStates(Player* player)
     player->SendUpdateWorldState(m_zoneWorldState, WORLD_STATE_REMOVE);
 
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
-        player->SendUpdateWorldState(m_towerWorldState[i], WORLD_STATE_REMOVE);
+    { player->SendUpdateWorldState(m_towerWorldState[i], WORLD_STATE_REMOVE); }
 }
 
 void OutdoorPvPTF::HandlePlayerEnterZone(Player* player, bool isMainZone)
@@ -81,7 +81,7 @@ void OutdoorPvPTF::HandlePlayerEnterZone(Player* player, bool isMainZone)
 
     // Handle the buffs
     if (player->GetTeam() == m_zoneOwner)
-        player->CastSpell(player, SPELL_AUCHINDOUN_BLESSING, true);
+    { player->CastSpell(player, SPELL_AUCHINDOUN_BLESSING, true); }
 }
 
 void OutdoorPvPTF::HandlePlayerLeaveZone(Player* player, bool isMainZone)
@@ -132,7 +132,7 @@ void OutdoorPvPTF::HandleObjectiveComplete(uint32 eventId, std::list<Player*> pl
                 for (std::list<Player*>::iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
                     if ((*itr) && (*itr)->GetTeam() == team)
-                        (*itr)->AreaExploredOrEventHappens(team == ALLIANCE ? QUEST_SPIRITS_OF_AUCHINDOUM_ALLIANCE : QUEST_SPIRITS_OF_AUCHINDOUM_HORDE);
+                    { (*itr)->AreaExploredOrEventHappens(team == ALLIANCE ? QUEST_SPIRITS_OF_AUCHINDOUM_ALLIANCE : QUEST_SPIRITS_OF_AUCHINDOUM_HORDE); }
                 }
                 return;
             }
@@ -258,7 +258,7 @@ void OutdoorPvPTF::LockZone(GameObject* go, uint32 towerId, Team team, uint32 ne
 
     // remove tower states when zone has been captured and locked
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
-        SendUpdateWorldState(m_towerWorldState[i], WORLD_STATE_REMOVE);
+    { SendUpdateWorldState(m_towerWorldState[i], WORLD_STATE_REMOVE); }
 
     m_towerWorldState[towerId] = newWorldState;
 }
@@ -283,7 +283,7 @@ void OutdoorPvPTF::UnlockZone()
     m_towerWorldState[3] = WORLD_STATE_TF_SOUTH_EAST_TOWER_NEUTRAL;
     m_towerWorldState[4] = WORLD_STATE_TF_SOUTH_TOWER_NEUTRAL;
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
-        SendUpdateWorldState(m_towerWorldState[i], WORLD_STATE_ADD);
+    { SendUpdateWorldState(m_towerWorldState[i], WORLD_STATE_ADD); }
 
     // update tower count
     m_towersAlliance = 0;
@@ -295,7 +295,7 @@ void OutdoorPvPTF::UnlockZone()
     {
         // Find player who is in main zone (Terokkar Forest) to get correct map reference
         if (!itr->second)
-            continue;
+        { continue; }
 
         if (Player* player = sObjectMgr.GetPlayer(itr->first))
         {
@@ -352,10 +352,10 @@ void OutdoorPvPTF::LockTowers(const WorldObject* objRef)
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
     {
         if (GameObject* go = objRef->GetMap()->GetGameObject(m_towerBanners[i]))
-            go->SetLootState(GO_JUST_DEACTIVATED);
+        { go->SetLootState(GO_JUST_DEACTIVATED); }
         else
             // if grid is unloaded, changing the saved slider value is enough
-            sOutdoorPvPMgr.SetCapturePointSlider(terokkarTowers[i], m_zoneOwner == ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+        { sOutdoorPvPMgr.SetCapturePointSlider(terokkarTowers[i], m_zoneOwner == ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE); }
     }
 }
 
@@ -372,6 +372,6 @@ void OutdoorPvPTF::ResetTowers(const WorldObject* objRef)
         }
         else
             // if grid is unloaded, resetting the saved slider value is enough
-            sOutdoorPvPMgr.SetCapturePointSlider(terokkarTowers[i], CAPTURE_SLIDER_MIDDLE);
+        { sOutdoorPvPMgr.SetCapturePointSlider(terokkarTowers[i], CAPTURE_SLIDER_MIDDLE); }
     }
 }

@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL npc_medivh_black_morassAI : public ScriptedAI
     void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE || !uiPointId)
-            return;
+        { return; }
 
         pSummoned->CastSpell(m_creature, SPELL_CORRUPT, false);
     }
@@ -86,7 +86,7 @@ struct MANGOS_DLL_DECL npc_medivh_black_morassAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MEDIVH, FAIL);
+        { m_pInstance->SetData(TYPE_MEDIVH, FAIL); }
 
         DoScriptText(SAY_DEATH, m_creature);
     }
@@ -105,7 +105,7 @@ bool EffectDummyCreature_npc_medivh_black_morass(Unit* /*pCaster*/, uint32 uiSpe
     if ((uiSpellId == SPELL_CORRUPT && uiEffIndex == EFFECT_INDEX_0) || (uiSpellId == SPELL_CORRUPT_AEONUS && uiEffIndex == EFFECT_INDEX_0))
     {
         if (instance_dark_portal* pInstance = (instance_dark_portal*)pCreatureTarget->GetInstanceData())
-            pInstance->SetData(TYPE_SHIELD, SPECIAL);
+        { pInstance->SetData(TYPE_SHIELD, SPECIAL); }
 
         // always return true when we are handling this spell and effect
         return true;
@@ -173,18 +173,18 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
             m_uiRiftNumber = m_pInstance->GetCurrentRiftId();
 
             if (m_uiRiftNumber < 6)
-                m_uiRiftWaveId = 0;
+            { m_uiRiftWaveId = 0; }
             else if (m_uiRiftNumber > 12)
-                m_uiRiftWaveId = 2;
+            { m_uiRiftWaveId = 2; }
             else
-                m_uiRiftWaveId = 1;
+            { m_uiRiftWaveId = 1; }
         }
     }
 
     void DoSummonCreatureAtRift(uint32 uiCreatureEntry, Creature* pSummoner)
     {
         if (!uiCreatureEntry)
-            return;
+        { return; }
 
         float fX, fY, fZ;
         m_creature->GetRandomPoint(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 10.0f, fX, fY, fZ);
@@ -194,7 +194,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
     void DoSummon()
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         uint32 uiSummonEntry = 0;
 
@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
 
             // Set the next rift delay
             if (uiSummonEntry != NPC_AEONUS)
-                m_pInstance->SetData(TYPE_TIME_RIFT, SPECIAL);
+            { m_pInstance->SetData(TYPE_TIME_RIFT, SPECIAL); }
 
             DoSummonCreatureAtRift(uiSummonEntry, m_creature);
             m_bIsFirstSummon = false;
@@ -230,11 +230,11 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
             // Some creatures are summoned by Medivh, because we can better handle the movement this way
             Creature* pMedivh = m_pInstance->GetSingleCreatureFromStorage(NPC_MEDIVH);
             if (!pMedivh)
-                return;
+            { return; }
 
             // Reset the RiftWaveCount if we reached the maximum number of the currentRiftWave is 0
             if ((m_uiRiftWaveCount > 2 && !m_uiRiftWaveId) || m_uiRiftWaveCount > 3)
-                m_uiRiftWaveCount = 0;
+            { m_uiRiftWaveCount = 0; }
 
             uiSummonEntry = aPortalWaves[m_uiRiftWaveId].uiPortalMob[m_uiRiftWaveCount];
             ++m_uiRiftWaveCount;
@@ -244,10 +244,10 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
             if (uiSummonEntry == NPC_WHELP)
             {
                 for (uint8 i = 0; i < 3; ++i)
-                    DoSummonCreatureAtRift(uiSummonEntry, pMedivh);
+                { DoSummonCreatureAtRift(uiSummonEntry, pMedivh); }
             }
             else
-                DoSummonCreatureAtRift(uiSummonEntry, pMedivh);
+            { DoSummonCreatureAtRift(uiSummonEntry, pMedivh); }
         }
     }
 
@@ -304,7 +304,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
                 m_creature->ForcedDespawn(3000);
                 // No need to set the data to DONE if there is a new portal spawned already
                 if (m_pInstance && m_uiRiftNumber == m_pInstance->GetCurrentRiftId())
-                    m_pInstance->SetData(TYPE_TIME_RIFT, DONE);
+                { m_pInstance->SetData(TYPE_TIME_RIFT, DONE); }
                 break;
         }
     }
@@ -329,7 +329,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
     void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE || !uiPointId || pSummoned->GetEntry() != NPC_AEONUS)
-            return;
+        { return; }
 
         pSummoned->CastSpell(pSummoned, SPELL_CORRUPT_AEONUS, false);
     }
@@ -348,7 +348,7 @@ bool EffectDummyCreature_npc_time_rift_channel(Unit* /*pCaster*/, uint32 uiSpell
     if (uiSpellId == SPELL_RIFT_PERIODIC && uiEffIndex == EFFECT_INDEX_0)
     {
         if (npc_time_riftAI* pTimeRiftAI = dynamic_cast<npc_time_riftAI*>(pCreatureTarget->AI()))
-            pTimeRiftAI->DoSummon();
+        { pTimeRiftAI->DoSummon(); }
 
         // always return true when we are handling this spell and effect
         return true;

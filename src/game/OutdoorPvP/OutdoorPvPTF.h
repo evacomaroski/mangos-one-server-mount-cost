@@ -161,7 +161,7 @@ static const uint32 terokkarTowers[MAX_TF_TOWERS] = {GO_TOWER_BANNER_WEST, GO_TO
 
 class OutdoorPvPTF : public OutdoorPvP
 {
-    friend class OutdoorPvPMgr;
+        friend class OutdoorPvPMgr;
 
     public:
         OutdoorPvPTF();

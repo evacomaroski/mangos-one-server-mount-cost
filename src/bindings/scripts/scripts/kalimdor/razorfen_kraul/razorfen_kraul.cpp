@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL npc_willix_the_importerAI : public npc_escortAI
                 m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                 // Complete event
                 if (Player* pPlayer = GetPlayerForEscort())
-                    pPlayer->GroupEventHappens(QUEST_WILLIX_THE_IMPORTER, m_creature);
+                { pPlayer->GroupEventHappens(QUEST_WILLIX_THE_IMPORTER, m_creature); }
                 SetEscortPaused(true);
                 break;
         }
@@ -186,7 +186,7 @@ struct MANGOS_DLL_DECL npc_snufflenose_gopherAI : public ScriptedPetAI
     void MovementInform(uint32 uiMoveType, uint32 uiPointId) override
     {
         if (uiMoveType != POINT_MOTION_TYPE || !uiPointId)
-            return;
+        { return; }
 
         if (GameObject* pGo = m_creature->GetMap()->GetGameObject(m_targetTubberGuid))
         {
@@ -206,7 +206,7 @@ struct MANGOS_DLL_DECL npc_snufflenose_gopherAI : public ScriptedPetAI
         GetGameObjectListWithEntryInGrid(lTubbersInRange, m_creature, GO_BLUELEAF_TUBBER, 40.0f);
 
         if (lTubbersInRange.empty())
-            return;
+        { return; }
 
         lTubbersInRange.sort(ObjectDistanceOrder(m_creature));
         GameObject* pNearestTubber = NULL;
@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL npc_snufflenose_gopherAI : public ScriptedPetAI
         }
 
         if (!pNearestTubber)
-            return;
+        { return; }
         m_targetTubberGuid = pNearestTubber->GetObjectGuid();
 
         float fX, fY, fZ;
@@ -234,7 +234,7 @@ struct MANGOS_DLL_DECL npc_snufflenose_gopherAI : public ScriptedPetAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_bIsMovementActive)
-            ScriptedPetAI::UpdateAI(uiDiff);
+        { ScriptedPetAI::UpdateAI(uiDiff); }
     }
 };
 
@@ -251,7 +251,7 @@ bool EffectDummyCreature_npc_snufflenose_gopher(Unit* pCaster, uint32 uiSpellId,
         if (pCreatureTarget->GetEntry() == NPC_SNUFFLENOSE_GOPHER)
         {
             if (npc_snufflenose_gopherAI* pGopherAI = dynamic_cast<npc_snufflenose_gopherAI*>(pCreatureTarget->AI()))
-                pGopherAI->DoFindNewTubber();
+            { pGopherAI->DoFindNewTubber(); }
         }
 
         // always return true when we are handling this spell and effect

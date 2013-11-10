@@ -64,7 +64,7 @@ TrainerSpell const* TrainerSpellData::Find(uint32 spell_id) const
 {
     TrainerSpellMap::const_iterator itr = spellList.find(spell_id);
     if (itr != spellList.end())
-        return &itr->second;
+    { return &itr->second; }
 
     return NULL;
 }
@@ -86,7 +86,7 @@ size_t VendorItemData::FindItemSlot(uint32 item_id) const
 {
     for (size_t i = 0; i < m_items.size(); ++i)
         if (m_items[i]->item == item_id)
-            return i;
+        { return i; }
     return m_items.size();
 }
 
@@ -96,7 +96,7 @@ VendorItem const* VendorItemData::FindItem(uint32 item_id) const
     {
         // Skip checking for conditions, condition system is powerfull enough to not require additional entries only for the conditions
         if ((*i)->item == item_id)
-            return *i;
+        { return *i; }
     }
     return NULL;
 }
@@ -119,7 +119,7 @@ void CreatureCreatePos::SelectFinalPoint(Creature* cr)
             m_pos.z = m_closeObject->GetPositionZ();
         }
         else
-            m_closeObject->GetClosePoint(m_pos.x, m_pos.y, m_pos.z, cr->GetObjectBoundingRadius(), m_dist, m_angle);
+        { m_closeObject->GetClosePoint(m_pos.x, m_pos.y, m_pos.z, cr->GetObjectBoundingRadius(), m_dist, m_angle); }
     }
 }
 
@@ -154,7 +154,7 @@ Creature::Creature(CreatureSubtype subtype) : Unit(),
     m_valuesCount = UNIT_END;
 
     for (int i = 0; i < CREATURE_MAX_SPELLS; ++i)
-        m_spells[i] = 0;
+    { m_spells[i] = 0; }
 
     m_CreatureSpellCooldowns.clear();
     m_CreatureCategoryCooldowns.clear();
@@ -176,7 +176,7 @@ void Creature::AddToWorld()
 {
     ///- Register the creature for guid lookup
     if (!IsInWorld() && GetObjectGuid().GetHigh() == HIGHGUID_UNIT)
-        GetMap()->GetObjectsStore().insert<Creature>(GetObjectGuid(), (Creature*)this);
+    { GetMap()->GetObjectsStore().insert<Creature>(GetObjectGuid(), (Creature*)this); }
 
     Unit::AddToWorld();
 }
@@ -185,7 +185,7 @@ void Creature::RemoveFromWorld()
 {
     ///- Remove the creature from the accessor
     if (IsInWorld() && GetObjectGuid().GetHigh() == HIGHGUID_UNIT)
-        GetMap()->GetObjectsStore().erase<Creature>(GetObjectGuid(), (Creature*)NULL);
+    { GetMap()->GetObjectsStore().erase<Creature>(GetObjectGuid(), (Creature*)NULL); }
 
     Unit::RemoveFromWorld();
 }
@@ -194,13 +194,13 @@ void Creature::RemoveCorpse()
 {
     // since pool system can fail to roll unspawned object, this one can remain spawned, so must set respawn nevertheless
     if (uint16 poolid = sPoolMgr.IsPartOfAPool<Creature>(GetGUIDLow()))
-        sPoolMgr.UpdatePool<Creature>(*GetMap()->GetPersistentState(), poolid, GetGUIDLow());
+    { sPoolMgr.UpdatePool<Creature>(*GetMap()->GetPersistentState(), poolid, GetGUIDLow()); }
 
     if (!IsInWorld())                                       // can be despawned by update pool
-        return;
+    { return; }
 
     if ((getDeathState() != CORPSE && !m_isDeadByDefault) || (getDeathState() != ALIVE && m_isDeadByDefault))
-        return;
+    { return; }
 
     DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Removing corpse of %s ", GetGuidStr().c_str());
 
@@ -215,11 +215,11 @@ void Creature::RemoveCorpse()
     uint32 respawnDelay = 0;
 
     if (AI())
-        AI()->CorpseRemoved(respawnDelay);
+    { AI()->CorpseRemoved(respawnDelay); }
 
     // script can set time (in seconds) explicit, override the original
     if (respawnDelay)
-        m_respawnTime = time(NULL) + respawnDelay;
+    { m_respawnTime = time(NULL) + respawnDelay; }
 
     float x, y, z, o;
     GetRespawnCoord(x, y, z, &o);
@@ -240,7 +240,7 @@ bool Creature::InitEntry(uint32 Entry, CreatureData const* data /*=NULL*/, GameE
 {
     // use game event entry if any instead default suggested
     if (eventData && eventData->entry_id)
-        Entry = eventData->entry_id;
+    { Entry = eventData->entry_id; }
 
     CreatureInfo const* normalInfo = ObjectMgr::GetCreatureTemplate(Entry);
     if (!normalInfo)
@@ -308,9 +308,9 @@ bool Creature::InitEntry(uint32 Entry, CreatureData const* data /*=NULL*/, GameE
     else if (!data || data->equipmentId == 0)
     {
         if (cinfo->equipmentId == 0)
-            LoadEquipment(normalInfo->equipmentId);         // use default from normal template if diff does not have any
+        { LoadEquipment(normalInfo->equipmentId); }         // use default from normal template if diff does not have any
         else
-            LoadEquipment(cinfo->equipmentId);              // else use from diff template
+        { LoadEquipment(cinfo->equipmentId); }              // else use from diff template
     }
     else if (data && data->equipmentId != -1)
     {
@@ -337,7 +337,7 @@ bool Creature::InitEntry(uint32 Entry, CreatureData const* data /*=NULL*/, GameE
 bool Creature::UpdateEntry(uint32 Entry, Team team, const CreatureData* data /*=NULL*/, GameEventCreatureData const* eventData /*=NULL*/, bool preserveHPAndPower /*=true*/)
 {
     if (!InitEntry(Entry, data, eventData))
-        return false;
+    { return false; }
 
     m_regenHealth = GetCreatureInfo()->RegenHealth;
 
@@ -348,9 +348,9 @@ bool Creature::UpdateEntry(uint32 Entry, Team team, const CreatureData* data /*=
     SelectLevel(GetCreatureInfo(), preserveHPAndPower ? GetHealthPercent() : 100.0f, 100.0f);
 
     if (team == HORDE)
-        setFaction(GetCreatureInfo()->faction_H);
+    { setFaction(GetCreatureInfo()->faction_H); }
     else
-        setFaction(GetCreatureInfo()->faction_A);
+    { setFaction(GetCreatureInfo()->faction_A); }
 
     SetUInt32Value(UNIT_NPC_FLAGS, GetCreatureInfo()->npcflag);
 
@@ -364,7 +364,7 @@ bool Creature::UpdateEntry(uint32 Entry, Team team, const CreatureData* data /*=
 
     // we may need to append or remove additional flags
     if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT))
-        unitFlags |= UNIT_FLAG_IN_COMBAT;
+    { unitFlags |= UNIT_FLAG_IN_COMBAT; }
 
     SetUInt32Value(UNIT_FIELD_FLAGS, unitFlags);
 
@@ -387,22 +387,22 @@ bool Creature::UpdateEntry(uint32 Entry, Team team, const CreatureData* data /*=
     if (FactionTemplateEntry const* factionTemplate = sFactionTemplateStore.LookupEntry(GetCreatureInfo()->faction_A))
     {
         if (factionTemplate->factionFlags & FACTION_TEMPLATE_FLAG_PVP)
-            SetPvP(true);
+        { SetPvP(true); }
         else
-            SetPvP(false);
+        { SetPvP(false); }
     }
 
     // Try difficulty dependend version before falling back to base entry
     CreatureTemplateSpells const* templateSpells = sCreatureTemplateSpellsStorage.LookupEntry<CreatureTemplateSpells>(GetCreatureInfo()->Entry);
     if (!templateSpells)
-        templateSpells = sCreatureTemplateSpellsStorage.LookupEntry<CreatureTemplateSpells>(GetEntry());
+    { templateSpells = sCreatureTemplateSpellsStorage.LookupEntry<CreatureTemplateSpells>(GetEntry()); }
     if (templateSpells)
         for (int i = 0; i < CREATURE_MAX_SPELLS; ++i)
-            m_spells[i] = templateSpells->spells[i];
+        { m_spells[i] = templateSpells->spells[i]; }
 
     // if eventData set then event active and need apply spell_start
     if (eventData)
-        ApplyGameEventSpells(eventData, true);
+    { ApplyGameEventSpells(eventData, true); }
 
     return true;
 }
@@ -411,11 +411,11 @@ uint32 Creature::ChooseDisplayId(const CreatureInfo* cinfo, const CreatureData* 
 {
     // Use creature event model explicit, override any other static models
     if (eventData && eventData->modelid)
-        return eventData->modelid;
+    { return eventData->modelid; }
 
     // Use creature model explicit, override template (creature.modelid)
     if (data && data->modelid_override)
-        return data->modelid_override;
+    { return data->modelid_override; }
 
     // use defaults from the template
     uint32 display_id = 0;
@@ -456,7 +456,7 @@ uint32 Creature::ChooseDisplayId(const CreatureInfo* cinfo, const CreatureData* 
         sLog.outErrorDb("Call customer support, ChooseDisplayId can not select native model for creature entry %u, model from creature entry 1 will be used instead.", cinfo->Entry);
 
         if (const CreatureInfo* creatureDefault = ObjectMgr::GetCreatureTemplate(1))
-            display_id = creatureDefault->ModelId[0];
+        { display_id = creatureDefault->ModelId[0]; }
     }
 
     return display_id;
@@ -507,14 +507,14 @@ void Creature::Update(uint32 update_diff, uint32 diff)
                     LoadCreatureAddon(true);
                 }
                 else
-                    SetDeathState(JUST_ALIVED);
+                { SetDeathState(JUST_ALIVED); }
 
                 // Call AI respawn virtual function
                 if (AI())
-                    AI()->JustRespawned();
+                { AI()->JustRespawned(); }
 
                 if (m_isCreatureLinkingTrigger)
-                    GetMap()->GetCreatureLinkingHolder()->DoCreatureLinkingEvent(LINKING_EVENT_RESPAWN, this);
+                { GetMap()->GetCreatureLinkingHolder()->DoCreatureLinkingEvent(LINKING_EVENT_RESPAWN, this); }
 
                 GetMap()->Add(this);
             }
@@ -525,7 +525,7 @@ void Creature::Update(uint32 update_diff, uint32 diff)
             Unit::Update(update_diff, diff);
 
             if (m_isDeadByDefault)
-                break;
+            { break; }
 
             if (m_corpseDecayTimer <= update_diff)
             {
@@ -533,14 +533,14 @@ void Creature::Update(uint32 update_diff, uint32 diff)
                 break;
             }
             else
-                m_corpseDecayTimer -= update_diff;
+            { m_corpseDecayTimer -= update_diff; }
 
             if (m_groupLootId)                              // Loot is stopped already if corpse got removed.
             {
                 if (m_groupLootTimer <= update_diff)
-                    StopGroupLoot();
+                { StopGroupLoot(); }
                 else
-                    m_groupLootTimer -= update_diff;
+                { m_groupLootTimer -= update_diff; }
             }
 
             break;
@@ -555,7 +555,7 @@ void Creature::Update(uint32 update_diff, uint32 diff)
                     break;
                 }
                 else
-                    m_corpseDecayTimer -= update_diff;
+                { m_corpseDecayTimer -= update_diff; }
             }
 
             Unit::Update(update_diff, diff);
@@ -563,7 +563,7 @@ void Creature::Update(uint32 update_diff, uint32 diff)
             // creature can be dead after Unit::Update call
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
             if (!isAlive())
-                break;
+            { break; }
 
             if (!IsInEvadeMode())
             {
@@ -579,7 +579,7 @@ void Creature::Update(uint32 update_diff, uint32 diff)
             // creature can be dead after UpdateAI call
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
             if (!isAlive())
-                break;
+            { break; }
             RegenerateAll(update_diff);
             break;
         }
@@ -597,10 +597,10 @@ void Creature::StartGroupLoot(Group* group, uint32 timer)
 void Creature::StopGroupLoot()
 {
     if (!m_groupLootId)
-        return;
+    { return; }
 
     if (Group* group = sObjectMgr.GetGroupById(m_groupLootId))
-        group->EndRoll();
+    { group->EndRoll(); }
 
     m_groupLootTimer = 0;
     m_groupLootId = 0;
@@ -611,15 +611,15 @@ void Creature::RegenerateAll(uint32 update_diff)
     if (m_regenTimer > 0)
     {
         if (update_diff >= m_regenTimer)
-            m_regenTimer = 0;
+        { m_regenTimer = 0; }
         else
-            m_regenTimer -= update_diff;
+        { m_regenTimer -= update_diff; }
     }
     if (m_regenTimer != 0)
-        return;
+    { return; }
 
     if (!isInCombat() || IsPolymorphed())
-        RegenerateHealth();
+    { RegenerateHealth(); }
 
     RegenerateMana();
 
@@ -632,7 +632,7 @@ void Creature::RegenerateMana()
     uint32 maxValue = GetMaxPower(POWER_MANA);
 
     if (curValue >= maxValue)
-        return;
+    { return; }
 
     uint32 addvalue = 0;
 
@@ -648,7 +648,7 @@ void Creature::RegenerateMana()
         }
     }
     else
-        addvalue = maxValue / 3;
+    { addvalue = maxValue / 3; }
 
     ModifyPower(POWER_MANA, addvalue);
 }
@@ -656,13 +656,13 @@ void Creature::RegenerateMana()
 void Creature::RegenerateHealth()
 {
     if (!IsRegeneratingHealth())
-        return;
+    { return; }
 
     uint32 curValue = GetHealth();
     uint32 maxValue = GetMaxHealth();
 
     if (curValue >= maxValue)
-        return;
+    { return; }
 
     uint32 addvalue = 0;
 
@@ -673,12 +673,12 @@ void Creature::RegenerateHealth()
         float Spirit = GetStat(STAT_SPIRIT);
 
         if (GetPower(POWER_MANA) > 0)
-            addvalue = uint32(Spirit * 0.25 * HealthIncreaseRate);
+        { addvalue = uint32(Spirit * 0.25 * HealthIncreaseRate); }
         else
-            addvalue = uint32(Spirit * 0.80 * HealthIncreaseRate);
+        { addvalue = uint32(Spirit * 0.80 * HealthIncreaseRate); }
     }
     else
-        addvalue = maxValue / 3;
+    { addvalue = maxValue / 3; }
 
     ModifyHealth(addvalue);
 }
@@ -686,7 +686,7 @@ void Creature::RegenerateHealth()
 void Creature::DoFleeToGetAssistance()
 {
     if (!getVictim())
-        return;
+    { return; }
 
     float radius = sWorld.getConfig(CONFIG_FLOAT_CREATURE_FAMILY_FLEE_ASSISTANCE_RADIUS);
     if (radius > 0)
@@ -701,9 +701,9 @@ void Creature::DoFleeToGetAssistance()
         UpdateSpeed(MOVE_RUN, false);
 
         if (!pCreature)
-            SetFeared(true, getVictim()->GetObjectGuid(), 0 , sWorld.getConfig(CONFIG_UINT32_CREATURE_FAMILY_FLEE_DELAY));
+        { SetFeared(true, getVictim()->GetObjectGuid(), 0 , sWorld.getConfig(CONFIG_UINT32_CREATURE_FAMILY_FLEE_DELAY)); }
         else
-            GetMotionMaster()->MoveSeekAssistance(pCreature->GetPositionX(), pCreature->GetPositionY(), pCreature->GetPositionZ());
+        { GetMotionMaster()->MoveSeekAssistance(pCreature->GetPositionX(), pCreature->GetPositionY(), pCreature->GetPositionZ()); }
     }
 }
 
@@ -728,22 +728,22 @@ bool Creature::Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo cons
     SetMap(cPos.GetMap());
 
     if (!CreateFromProto(guidlow, cinfo, team, data, eventData))
-        return false;
+    { return false; }
 
     cPos.SelectFinalPoint(this);
 
     if (!cPos.Relocate(this))
-        return false;
+    { return false; }
 
     // Notify the outdoor pvp script
     if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(GetZoneId()))
-        outdoorPvP->HandleCreatureCreate(this);
+    { outdoorPvP->HandleCreatureCreate(this); }
 
     // Notify the map's instance data.
     // Only works if you create the object in it, not if it is moves to that map.
     // Normally non-players do not teleport to other maps.
     if (InstanceData* iData = GetMap()->GetInstanceData())
-        iData->OnCreatureCreate(this);
+    { iData->OnCreatureCreate(this); }
 
     switch (GetCreatureInfo()->rank)
     {
@@ -766,7 +766,7 @@ bool Creature::Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo cons
 
     // Add to CreatureLinkingHolder if needed
     if (sCreatureLinkingMgr.GetLinkedTriggerInformation(this))
-        cPos.GetMap()->GetCreatureLinkingHolder()->AddSlaveToHolder(this);
+    { cPos.GetMap()->GetCreatureLinkingHolder()->AddSlaveToHolder(this); }
     if (sCreatureLinkingMgr.IsLinkedEventTrigger(this))
     {
         m_isCreatureLinkingTrigger = true;
@@ -781,7 +781,7 @@ bool Creature::Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo cons
 bool Creature::IsTrainerOf(Player* pPlayer, bool msg) const
 {
     if (!isTrainer())
-        return false;
+    { return false; }
 
     TrainerSpellData const* cSpells = GetTrainerSpells();
     TrainerSpellData const* tSpells = GetTrainerTemplateSpells();
@@ -807,12 +807,12 @@ bool Creature::IsTrainerOf(Player* pPlayer, bool msg) const
                         case CLASS_DRUID:  pPlayer->PlayerTalkClass->SendGossipMenu(4913, GetObjectGuid()); break;
                         case CLASS_HUNTER: pPlayer->PlayerTalkClass->SendGossipMenu(10090, GetObjectGuid()); break;
                         case CLASS_MAGE:   pPlayer->PlayerTalkClass->SendGossipMenu(328, GetObjectGuid()); break;
-                        case CLASS_PALADIN:pPlayer->PlayerTalkClass->SendGossipMenu(1635, GetObjectGuid()); break;
+                        case CLASS_PALADIN: pPlayer->PlayerTalkClass->SendGossipMenu(1635, GetObjectGuid()); break;
                         case CLASS_PRIEST: pPlayer->PlayerTalkClass->SendGossipMenu(4436, GetObjectGuid()); break;
                         case CLASS_ROGUE:  pPlayer->PlayerTalkClass->SendGossipMenu(4797, GetObjectGuid()); break;
                         case CLASS_SHAMAN: pPlayer->PlayerTalkClass->SendGossipMenu(5003, GetObjectGuid()); break;
-                        case CLASS_WARLOCK:pPlayer->PlayerTalkClass->SendGossipMenu(5836, GetObjectGuid()); break;
-                        case CLASS_WARRIOR:pPlayer->PlayerTalkClass->SendGossipMenu(4985, GetObjectGuid()); break;
+                        case CLASS_WARLOCK: pPlayer->PlayerTalkClass->SendGossipMenu(5836, GetObjectGuid()); break;
+                        case CLASS_WARRIOR: pPlayer->PlayerTalkClass->SendGossipMenu(4985, GetObjectGuid()); break;
                     }
                 }
                 return false;
@@ -836,7 +836,7 @@ bool Creature::IsTrainerOf(Player* pPlayer, bool msg) const
                 if (FactionTemplateEntry const* faction_template = getFactionTemplateEntry())
                 {
                     if (pPlayer->GetReputationRank(faction_template->faction) == REP_EXALTED)
-                        return true;
+                    { return true; }
                 }
 
                 if (msg)
@@ -879,14 +879,14 @@ bool Creature::IsTrainerOf(Player* pPlayer, bool msg) const
 bool Creature::CanInteractWithBattleMaster(Player* pPlayer, bool msg) const
 {
     if (!isBattleMaster())
-        return false;
+    { return false; }
 
     BattleGroundTypeId bgTypeId = sBattleGroundMgr.GetBattleMasterBG(GetEntry());
     if (bgTypeId == BATTLEGROUND_TYPE_NONE)
-        return false;
+    { return false; }
 
     if (!msg)
-        return pPlayer->GetBGAccessByLevel(bgTypeId);
+    { return pPlayer->GetBGAccessByLevel(bgTypeId); }
 
     if (!pPlayer->GetBGAccessByLevel(bgTypeId))
     {
@@ -924,8 +924,8 @@ void Creature::PrepareBodyLootState()
     {
         // have normal loot
         if (GetCreatureInfo()->maxgold > 0 || GetCreatureInfo()->lootid ||
-                // ... or can have skinning after
-                (GetCreatureInfo()->SkinLootId && sWorld.getConfig(CONFIG_BOOL_CORPSE_EMPTY_LOOT_SHOW)))
+            // ... or can have skinning after
+            (GetCreatureInfo()->SkinLootId && sWorld.getConfig(CONFIG_BOOL_CORPSE_EMPTY_LOOT_SHOW)))
         {
             SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
             return;
@@ -980,18 +980,18 @@ Player* Creature::GetLootRecipient() const
 
     // if group not set or disbanded return original recipient player if any
     if (!group)
-        return player;
+    { return player; }
 
     // group case
 
     // return player if it still be in original recipient group
     if (player && player->GetGroup() == group)
-        return player;
+    { return player; }
 
     // find any in group
     for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
         if (Player* p = itr->getSource())
-            return p;
+        { return p; }
 
     return NULL;
 }
@@ -1015,14 +1015,14 @@ void Creature::SetLootRecipient(Unit* unit)
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();
     if (!player)                                            // normal creature, no player involved
-        return;
+    { return; }
 
     // set player for non group case or if group will disbanded
     m_lootRecipientGuid = player->GetObjectGuid();
 
     // set group for group existing case including if player will leave group at loot time
     if (Group* group = player->GetGroup())
-        m_lootGroupRecipientId = group->GetId();
+    { m_lootGroupRecipientId = group->GetId(); }
 
     SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_TAPPED);
 }
@@ -1053,16 +1053,16 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask)
     if (cinfo)
     {
         if (displayId != cinfo->ModelId[0] && displayId != cinfo->ModelId[1] &&
-                displayId != cinfo->ModelId[2] && displayId != cinfo->ModelId[3])
+            displayId != cinfo->ModelId[2] && displayId != cinfo->ModelId[3])
         {
             for (int i = 0; i < MAX_CREATURE_MODEL && displayId; ++i)
                 if (cinfo->ModelId[i])
                     if (CreatureModelInfo const* minfo = sObjectMgr.GetCreatureModelInfo(cinfo->ModelId[i]))
                         if (displayId == minfo->modelid_other_gender)
-                            displayId = 0;
+                        { displayId = 0; }
         }
         else
-            displayId = 0;
+        { displayId = 0; }
     }
 
     // data->guid = guid don't must be update at save
@@ -1139,9 +1139,9 @@ void Creature::SelectLevel(const CreatureInfo* cinfo, float percentHealth, float
     SetMaxHealth(health);
 
     if (percentHealth == 100.0f)
-        SetHealth(health);
+    { SetHealth(health); }
     else
-        SetHealthPercent(percentHealth);
+    { SetHealthPercent(percentHealth); }
 
     // mana
     uint32 minmana = std::min(cinfo->maxmana, cinfo->minmana);
@@ -1236,7 +1236,7 @@ bool Creature::CreateFromProto(uint32 guidlow, CreatureInfo const* cinfo, Team t
     Object::_Create(guidlow, cinfo->Entry, cinfo->GetHighGuid());
 
     if (!UpdateEntry(cinfo->Entry, team, data, eventData, false))
-        return false;
+    { return false; }
 
     return true;
 }
@@ -1262,12 +1262,12 @@ bool Creature::LoadFromDB(uint32 guidlow, Map* map)
 
     // Creature can be loaded already in map if grid has been unloaded while creature walk to another grid
     if (map->GetCreature(cinfo->GetObjectGuid(guidlow)))
-        return false;
+    { return false; }
 
     CreatureCreatePos pos(map, data->posX, data->posY, data->posZ, data->orientation);
 
     if (!Create(guidlow, pos, cinfo, TEAM_NONE, data, eventData))
-        return false;
+    { return false; }
 
     SetRespawnCoord(pos);
     m_respawnradius = data->spawndist;
@@ -1286,7 +1286,7 @@ bool Creature::LoadFromDB(uint32 guidlow, Map* map)
         {
             float tz = GetTerrain()->GetHeightStatic(data->posX, data->posY, data->posZ, false);
             if (data->posZ - tz > 0.1)
-                Relocate(data->posX, data->posY, tz);
+            { Relocate(data->posX, data->posY, tz); }
         }
     }
     else if (m_respawnTime)                                 // respawn time set but expired
@@ -1301,7 +1301,7 @@ bool Creature::LoadFromDB(uint32 guidlow, Map* map)
     {
         curhealth = uint32(curhealth * _GetHealthMod(GetCreatureInfo()->rank));
         if (curhealth < 1)
-            curhealth = 1;
+        { curhealth = 1; }
     }
 
     if (sCreatureLinkingMgr.IsSpawnedByLinkedMob(this))
@@ -1316,7 +1316,7 @@ bool Creature::LoadFromDB(uint32 guidlow, Map* map)
             {
                 float tz = GetTerrain()->GetHeightStatic(data->posX, data->posY, data->posZ, false);
                 if (data->posZ - tz > 0.1)
-                    Relocate(data->posX, data->posY, tz);
+                { Relocate(data->posX, data->posY, tz); }
             }
         }
     }
@@ -1333,7 +1333,7 @@ bool Creature::LoadFromDB(uint32 guidlow, Map* map)
 
     // Creature Linking, Initial load is handled like respawn
     if (m_isCreatureLinkingTrigger && isAlive())
-        GetMap()->GetCreatureLinkingHolder()->DoCreatureLinkingEvent(LINKING_EVENT_RESPAWN, this);
+    { GetMap()->GetCreatureLinkingHolder()->DoCreatureLinkingEvent(LINKING_EVENT_RESPAWN, this); }
 
     // check if it is rabbit day
     if (isAlive() && sWorld.getConfig(CONFIG_UINT32_RABBIT_DAY))
@@ -1343,7 +1343,7 @@ bool Creature::LoadFromDB(uint32 guidlow, Map* map)
         tm now_tm = *localtime(&sWorld.GetGameTime());
 
         if (now_tm.tm_mon == rabbit_day_tm.tm_mon && now_tm.tm_mday == rabbit_day_tm.tm_mday)
-            CastSpell(this, 10710 + urand(0, 2), true);
+        { CastSpell(this, 10710 + urand(0, 2), true); }
     }
 
     return true;
@@ -1356,7 +1356,7 @@ void Creature::LoadEquipment(uint32 equip_entry, bool force)
         if (force)
         {
             for (uint8 i = 0; i < MAX_VIRTUAL_ITEM_SLOT; ++i)
-                SetVirtualItem(VirtualItemSlot(i), 0);
+            { SetVirtualItem(VirtualItemSlot(i), 0); }
             m_equipmentId = 0;
         }
         return;
@@ -1366,13 +1366,13 @@ void Creature::LoadEquipment(uint32 equip_entry, bool force)
     {
         m_equipmentId = equip_entry;
         for (uint8 i = 0; i < MAX_VIRTUAL_ITEM_SLOT; ++i)
-            SetVirtualItem(VirtualItemSlot(i), einfo->equipentry[i]);
+        { SetVirtualItem(VirtualItemSlot(i), einfo->equipentry[i]); }
     }
     else if (EquipmentInfoRaw const* einfo = sObjectMgr.GetEquipmentInfoRaw(equip_entry))
     {
         m_equipmentId = equip_entry;
         for (uint8 i = 0; i < MAX_VIRTUAL_ITEM_SLOT; ++i)
-            SetVirtualItemRaw(VirtualItemSlot(i), einfo->equipmodel[i], einfo->equipinfo[i], einfo->equipslot[i]);
+        { SetVirtualItemRaw(VirtualItemSlot(i), einfo->equipmodel[i], einfo->equipinfo[i], einfo->equipslot[i]); }
     }
 }
 
@@ -1382,7 +1382,7 @@ bool Creature::HasQuest(uint32 quest_id) const
     for (QuestRelationsMap::const_iterator itr = bounds.first; itr != bounds.second; ++itr)
     {
         if (itr->second == quest_id)
-            return true;
+        { return true; }
     }
     return false;
 }
@@ -1393,7 +1393,7 @@ bool Creature::HasInvolvedQuest(uint32 quest_id) const
     for (QuestRelationsMap::const_iterator itr = bounds.first; itr != bounds.second; ++itr)
     {
         if (itr->second == quest_id)
-            return true;
+        { return true; }
     }
     return false;
 }
@@ -1445,7 +1445,7 @@ float Creature::GetAttackDistance(Unit const* pl) const
 {
     float aggroRate = sWorld.getConfig(CONFIG_FLOAT_RATE_CREATURE_AGGRO);
     if (aggroRate == 0)
-        return 0.0f;
+    { return 0.0f; }
 
     uint32 playerlevel   = pl->GetLevelForTarget(this);
     uint32 creaturelevel = GetLevelForTarget(pl);
@@ -1454,7 +1454,7 @@ float Creature::GetAttackDistance(Unit const* pl) const
 
     // "The maximum Aggro Radius has a cap of 25 levels under. Example: A level 30 char has the same Aggro Radius of a level 5 char on a level 60 mob."
     if (leveldif < - 25)
-        leveldif = -25;
+    { leveldif = -25; }
 
     // "The aggro radius of a mob having the same level as the player is roughly 20 yards"
     float RetDistance = 20;
@@ -1474,7 +1474,7 @@ float Creature::GetAttackDistance(Unit const* pl) const
 
     // "Minimum Aggro Radius for a mob seems to be combat range (5 yards)"
     if (RetDistance < 5)
-        RetDistance = 5;
+    { RetDistance = 5; }
 
     return (RetDistance * aggroRate);
 }
@@ -1488,7 +1488,7 @@ void Creature::SetDeathState(DeathState s)
 
         // always save boss respawn time at death to prevent crash cheating
         if (sWorld.getConfig(CONFIG_BOOL_SAVE_RESPAWN_TIME_IMMEDIATELY) || IsWorldBoss())
-            SaveRespawnTime();
+        { SaveRespawnTime(); }
     }
 
     Unit::SetDeathState(s);
@@ -1505,7 +1505,7 @@ void Creature::SetDeathState(DeathState s)
         }
 
         if (CanFly())
-            i_motionMaster.MoveFall();
+        { i_motionMaster.MoveFall(); }
 
         Unit::SetDeathState(CORPSE);
     }
@@ -1519,7 +1519,7 @@ void Creature::SetDeathState(DeathState s)
         SetHealth(GetMaxHealth());
         SetLootRecipient(NULL);
         if (GetTemporaryFactionFlags() & TEMPFACTION_RESTORE_RESPAWN)
-            ClearTemporaryFaction();
+        { ClearTemporaryFaction(); }
 
         SetMeleeDamageSchool(SpellSchools(GetCreatureInfo()->dmgschool));
 
@@ -1542,12 +1542,12 @@ void Creature::Respawn()
 {
     RemoveCorpse();
     if (!IsInWorld())                                       // Could be removed as part of a pool (in which case respawn-time is handled with pool-system)
-        return;
+    { return; }
 
     if (IsDespawned())
     {
         if (HasStaticDBSpawnData())
-            GetMap()->GetPersistentState()->SaveCreatureRespawnTime(GetGUIDLow(), 0);
+        { GetMap()->GetPersistentState()->SaveCreatureRespawnTime(GetGUIDLow(), 0); }
         m_respawnTime = time(NULL);                         // respawn at next tick
     }
 }
@@ -1563,10 +1563,10 @@ void Creature::ForcedDespawn(uint32 timeMSToDespawn)
     }
 
     if (IsDespawned())
-        return;
+    { return; }
 
     if (isAlive())
-        SetDeathState(JUST_DIED);
+    { SetDeathState(JUST_DIED); }
 
     RemoveCorpse();
 
@@ -1576,10 +1576,10 @@ void Creature::ForcedDespawn(uint32 timeMSToDespawn)
 bool Creature::IsImmuneToSpell(SpellEntry const* spellInfo, bool castOnSelf)
 {
     if (!spellInfo)
-        return false;
+    { return false; }
 
     if (!castOnSelf && GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->Mechanic - 1)))
-        return true;
+    { return true; }
 
     return Unit::IsImmuneToSpell(spellInfo, castOnSelf);
 }
@@ -1587,7 +1587,7 @@ bool Creature::IsImmuneToSpell(SpellEntry const* spellInfo, bool castOnSelf)
 bool Creature::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index, bool castOnSelf) const
 {
     if (!castOnSelf && GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->EffectMechanic[index] - 1)))
-        return true;
+    { return true; }
 
     // Taunt immunity special flag check
     if (GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NOT_TAUNTABLE)
@@ -1596,11 +1596,11 @@ bool Creature::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectInd
         if (spellInfo->Effect[index] == SPELL_EFFECT_APPLY_AURA)
         {
             if (spellInfo->EffectApplyAuraName[index] == SPELL_AURA_MOD_TAUNT)
-                return true;
+            { return true; }
         }
         // Spell effect taunt check
         else if (spellInfo->Effect[index] == SPELL_EFFECT_ATTACK_ME)
-            return true;
+        { return true; }
     }
 
     return Unit::IsImmuneToSpellEffect(spellInfo, index, castOnSelf);
@@ -1609,12 +1609,12 @@ bool Creature::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectInd
 SpellEntry const* Creature::ReachWithSpellAttack(Unit* pVictim)
 {
     if (!pVictim)
-        return NULL;
+    { return NULL; }
 
     for (uint32 i = 0; i < CREATURE_MAX_SPELLS; ++i)
     {
         if (!m_spells[i])
-            continue;
+        { continue; }
         SpellEntry const* spellInfo = sSpellStore.LookupEntry(m_spells[i]);
         if (!spellInfo)
         {
@@ -1626,19 +1626,19 @@ SpellEntry const* Creature::ReachWithSpellAttack(Unit* pVictim)
         for (int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
             if ((spellInfo->Effect[j] == SPELL_EFFECT_SCHOOL_DAMAGE)       ||
-                    (spellInfo->Effect[j] == SPELL_EFFECT_INSTAKILL)            ||
-                    (spellInfo->Effect[j] == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
-                    (spellInfo->Effect[j] == SPELL_EFFECT_HEALTH_LEECH)
+                (spellInfo->Effect[j] == SPELL_EFFECT_INSTAKILL)            ||
+                (spellInfo->Effect[j] == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
+                (spellInfo->Effect[j] == SPELL_EFFECT_HEALTH_LEECH)
                )
             {
                 bcontinue = false;
                 break;
             }
         }
-        if (bcontinue) continue;
+        if (bcontinue) { continue; }
 
         if (spellInfo->manaCost > GetPower(POWER_MANA))
-            continue;
+        { continue; }
         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
         float range = GetSpellMaxRange(srange);
         float minrange = GetSpellMinRange(srange);
@@ -1648,11 +1648,11 @@ SpellEntry const* Creature::ReachWithSpellAttack(Unit* pVictim)
         // if(!isInFront( pVictim, range ) && spellInfo->AttributesEx )
         //    continue;
         if (dist > range || dist < minrange)
-            continue;
+        { continue; }
         if (spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-            continue;
+        { continue; }
         if (spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-            continue;
+        { continue; }
         return spellInfo;
     }
     return NULL;
@@ -1661,12 +1661,12 @@ SpellEntry const* Creature::ReachWithSpellAttack(Unit* pVictim)
 SpellEntry const* Creature::ReachWithSpellCure(Unit* pVictim)
 {
     if (!pVictim)
-        return NULL;
+    { return NULL; }
 
     for (uint32 i = 0; i < CREATURE_MAX_SPELLS; ++i)
     {
         if (!m_spells[i])
-            continue;
+        { continue; }
         SpellEntry const* spellInfo = sSpellStore.LookupEntry(m_spells[i]);
         if (!spellInfo)
         {
@@ -1684,10 +1684,10 @@ SpellEntry const* Creature::ReachWithSpellCure(Unit* pVictim)
             }
         }
         if (bcontinue)
-            continue;
+        { continue; }
 
         if (spellInfo->manaCost > GetPower(POWER_MANA))
-            continue;
+        { continue; }
         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
         float range = GetSpellMaxRange(srange);
         float minrange = GetSpellMinRange(srange);
@@ -1697,11 +1697,11 @@ SpellEntry const* Creature::ReachWithSpellCure(Unit* pVictim)
         // if(!isInFront( pVictim, range ) && spellInfo->AttributesEx )
         //    continue;
         if (dist > range || dist < minrange)
-            continue;
+        { continue; }
         if (spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-            continue;
+        { continue; }
         if (spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-            continue;
+        { continue; }
         return spellInfo;
     }
     return NULL;
@@ -1711,10 +1711,10 @@ bool Creature::IsVisibleInGridForPlayer(Player* pl) const
 {
     // gamemaster in GM mode see all, including ghosts
     if (pl->isGameMaster())
-        return true;
+    { return true; }
 
     if (GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_INVISIBLE)
-        return false;
+    { return false; }
 
     // Live player (or with not release body see live creatures or death creatures with corpse disappearing time > 0
     if (pl->isAlive() || pl->GetDeathTimer() > 0)
@@ -1730,13 +1730,13 @@ bool Creature::IsVisibleInGridForPlayer(Player* pl) const
         {
             // 20 - aggro distance for same level, 25 - max additional distance if player level less that creature level
             if (corpse->IsWithinDistInMap(this, (20 + 25)*sWorld.getConfig(CONFIG_FLOAT_RATE_CREATURE_AGGRO)))
-                return true;
+            { return true; }
         }
     }
 
     // Dead player can see ghosts
     if (GetCreatureInfo()->type_flags & CREATURE_TYPEFLAGS_GHOST_VISIBLE)
-        return true;
+    { return true; }
 
     // and not see any other
     return false;
@@ -1767,7 +1767,7 @@ void Creature::CallAssistance()
 void Creature::CallForHelp(float fRadius)
 {
     if (fRadius <= 0.0f || !getVictim() || IsPet() || isCharmed())
-        return;
+    { return; }
 
     MaNGOS::CallOfHelpCreatureInRangeDo u_do(this, getVictim(), fRadius);
     MaNGOS::CreatureWorker<MaNGOS::CallOfHelpCreatureInRangeDo> worker(this, u_do);
@@ -1779,38 +1779,38 @@ bool Creature::CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction /
 {
     // we don't need help from zombies :)
     if (!isAlive())
-        return false;
+    { return false; }
 
     // we don't need help from non-combatant ;)
     if (IsCivilian())
-        return false;
+    { return false; }
 
     if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PASSIVE))
-        return false;
+    { return false; }
 
     // skip fighting creature
     if (enemy && isInCombat())
-        return false;
+    { return false; }
 
     // only free creature
     if (GetCharmerOrOwnerGuid())
-        return false;
+    { return false; }
 
     // only from same creature faction
     if (checkfaction)
     {
         if (getFaction() != u->getFaction())
-            return false;
+        { return false; }
     }
     else
     {
         if (!IsFriendlyTo(u))
-            return false;
+        { return false; }
     }
 
     // skip non hostile to caster enemy creatures
     if (enemy && !IsHostileTo(enemy))
-        return false;
+    { return false; }
 
     return true;
 }
@@ -1818,13 +1818,13 @@ bool Creature::CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction /
 bool Creature::CanInitiateAttack()
 {
     if (hasUnitState(UNIT_STAT_STUNNED | UNIT_STAT_DIED))
-        return false;
+    { return false; }
 
     if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE))
-        return false;
+    { return false; }
 
     if (isPassiveToHostile())
-        return false;
+    { return false; }
 
     return true;
 }
@@ -1832,33 +1832,33 @@ bool Creature::CanInitiateAttack()
 void Creature::SaveRespawnTime()
 {
     if (IsPet() || !HasStaticDBSpawnData())
-        return;
+    { return; }
 
     if (m_respawnTime > time(NULL))                         // dead (no corpse)
-        GetMap()->GetPersistentState()->SaveCreatureRespawnTime(GetGUIDLow(), m_respawnTime);
+    { GetMap()->GetPersistentState()->SaveCreatureRespawnTime(GetGUIDLow(), m_respawnTime); }
     else if (m_corpseDecayTimer > 0)                        // dead (corpse)
-        GetMap()->GetPersistentState()->SaveCreatureRespawnTime(GetGUIDLow(), time(NULL) + m_respawnDelay + m_corpseDecayTimer / IN_MILLISECONDS);
+    { GetMap()->GetPersistentState()->SaveCreatureRespawnTime(GetGUIDLow(), time(NULL) + m_respawnDelay + m_corpseDecayTimer / IN_MILLISECONDS); }
 }
 
 bool Creature::IsOutOfThreatArea(Unit* pVictim) const
 {
     if (!pVictim)
-        return true;
+    { return true; }
 
     if (!pVictim->IsInMap(this))
-        return true;
+    { return true; }
 
     if (!pVictim->isTargetableForAttack())
-        return true;
+    { return true; }
 
     if (!pVictim->isInAccessablePlaceFor(this))
-        return true;
+    { return true; }
 
     if (!pVictim->isVisibleForOrDetect(this, this, false))
-        return true;
+    { return true; }
 
     if (sMapStore.LookupEntry(GetMapId())->IsDungeon())
-        return false;
+    { return false; }
 
     float AttackDist = GetAttackDistance(pVictim);
     float ThreatRadius = sWorld.getConfig(CONFIG_FLOAT_THREAT_RADIUS);
@@ -1871,14 +1871,14 @@ bool Creature::IsOutOfThreatArea(Unit* pVictim) const
 CreatureDataAddon const* Creature::GetCreatureAddon() const
 {
     if (CreatureDataAddon const* addon = ObjectMgr::GetCreatureAddon(GetGUIDLow()))
-        return addon;
+    { return addon; }
 
     // dependent from difficulty mode entry
     if (GetEntry() != GetCreatureInfo()->Entry)
     {
         // If CreatureTemplateAddon for heroic exist, it's there for a reason
         if (CreatureDataAddon const* addon =  ObjectMgr::GetCreatureTemplateAddon(GetCreatureInfo()->Entry))
-            return addon;
+        { return addon; }
     }
 
     // Return CreatureTemplateAddon when nothing else exist
@@ -1890,10 +1890,10 @@ bool Creature::LoadCreatureAddon(bool reload)
 {
     CreatureDataAddon const* cainfo = GetCreatureAddon();
     if (!cainfo)
-        return false;
+    { return false; }
 
     if (cainfo->mount != 0)
-        Mount(cainfo->mount);
+    { Mount(cainfo->mount); }
 
     if (cainfo->bytes1 != 0)
     {
@@ -1917,13 +1917,13 @@ bool Creature::LoadCreatureAddon(bool reload)
     SetByteValue(UNIT_FIELD_BYTES_2, 0, cainfo->sheath_state);
 
     if (cainfo->flags != 0)
-        SetByteValue(UNIT_FIELD_BYTES_2, 1, cainfo->flags);
+    { SetByteValue(UNIT_FIELD_BYTES_2, 1, cainfo->flags); }
 
     // SetByteValue(UNIT_FIELD_BYTES_2, 2, 0);
     // SetByteValue(UNIT_FIELD_BYTES_2, 3, 0);
 
     if (cainfo->emote != 0)
-        SetUInt32Value(UNIT_NPC_EMOTESTATE, cainfo->emote);
+    { SetUInt32Value(UNIT_NPC_EMOTESTATE, cainfo->emote); }
 
     if (cainfo->auras)
     {
@@ -1932,7 +1932,7 @@ bool Creature::LoadCreatureAddon(bool reload)
             if (HasAura(*cAura))
             {
                 if (!reload)
-                    sLog.outErrorDb("Creature (GUIDLow: %u Entry: %u) has spell %u in `auras` field, but aura is already applied.", GetGUIDLow(), GetEntry(), *cAura);
+                { sLog.outErrorDb("Creature (GUIDLow: %u Entry: %u) has spell %u in `auras` field, but aura is already applied.", GetGUIDLow(), GetEntry(), *cAura); }
 
                 continue;
             }
@@ -1968,14 +1968,14 @@ void Creature::SetInCombatWithZone()
     Map::PlayerList const& PlList = pMap->GetPlayers();
 
     if (PlList.isEmpty())
-        return;
+    { return; }
 
     for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
     {
         if (Player* pPlayer = i->getSource())
         {
             if (pPlayer->isGameMaster())
-                continue;
+            { continue; }
 
             if (pPlayer->isAlive() && !IsFriendlyTo(pPlayer))
             {
@@ -1989,22 +1989,22 @@ void Creature::SetInCombatWithZone()
 bool Creature::MeetsSelectAttackingRequirement(Unit* pTarget, SpellEntry const* pSpellInfo, uint32 selectFlags) const
 {
     if (selectFlags & SELECT_FLAG_PLAYER && pTarget->GetTypeId() != TYPEID_PLAYER)
-        return false;
+    { return false; }
 
     if (selectFlags & SELECT_FLAG_POWER_MANA && pTarget->getPowerType() != POWER_MANA)
-        return false;
+    { return false; }
     else if (selectFlags & SELECT_FLAG_POWER_RAGE && pTarget->getPowerType() != POWER_RAGE)
-        return false;
+    { return false; }
     else if (selectFlags & SELECT_FLAG_POWER_ENERGY && pTarget->getPowerType() != POWER_ENERGY)
-        return false;
+    { return false; }
 
     if (selectFlags & SELECT_FLAG_IN_MELEE_RANGE && !CanReachWithMeleeAttack(pTarget))
-        return false;
+    { return false; }
     if (selectFlags & SELECT_FLAG_NOT_IN_MELEE_RANGE && CanReachWithMeleeAttack(pTarget))
-        return false;
+    { return false; }
 
     if (selectFlags & SELECT_FLAG_IN_LOS && !IsWithinLOSInMap(pTarget))
-        return false;
+    { return false; }
 
     if (pSpellInfo)
     {
@@ -2034,7 +2034,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, u
 Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, SpellEntry const* pSpellInfo /*= NULL*/, uint32 selectFlags/*= 0*/) const
 {
     if (!CanHaveThreatList())
-        return NULL;
+    { return NULL; }
 
     // ThreatList m_threatlist;
     ThreatList const& threatlist = getThreatManager().getThreatList();
@@ -2042,7 +2042,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
     ThreatList::const_reverse_iterator ritr = threatlist.rbegin();
 
     if (position >= threatlist.size() || !threatlist.size())
-        return NULL;
+    { return NULL; }
 
     switch (target)
     {
@@ -2054,10 +2054,10 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
             for (; itr != threatlist.end(); ++itr)
                 if (Unit* pTarget = GetMap()->GetUnit((*itr)->getUnitGuid()))
                     if (!selectFlags || MeetsSelectAttackingRequirement(pTarget, pSpellInfo, selectFlags))
-                        suitableUnits.push_back(pTarget);
+                    { suitableUnits.push_back(pTarget); }
 
             if (!suitableUnits.empty())
-                return suitableUnits[urand(0, suitableUnits.size()-1)];
+            { return suitableUnits[urand(0, suitableUnits.size() - 1)]; }
 
             break;
         }
@@ -2067,7 +2067,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
             for (; itr != threatlist.end(); ++itr)
                 if (Unit* pTarget = GetMap()->GetUnit((*itr)->getUnitGuid()))
                     if (!selectFlags || MeetsSelectAttackingRequirement(pTarget, pSpellInfo, selectFlags))
-                        return pTarget;
+                    { return pTarget; }
 
             break;
         }
@@ -2077,7 +2077,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
             for (; ritr != threatlist.rend(); ++ritr)
                 if (Unit* pTarget = GetMap()->GetUnit((*itr)->getUnitGuid()))
                     if (!selectFlags || MeetsSelectAttackingRequirement(pTarget, pSpellInfo, selectFlags))
-                        return pTarget;
+                    { return pTarget; }
 
             break;
         }
@@ -2100,21 +2100,21 @@ void Creature::AddCreatureSpellCooldown(uint32 spellid)
 {
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid);
     if (!spellInfo)
-        return;
+    { return; }
 
     uint32 cooldown = GetSpellRecoveryTime(spellInfo);
     if (cooldown)
-        _AddCreatureSpellCooldown(spellid, time(NULL) + cooldown / IN_MILLISECONDS);
+    { _AddCreatureSpellCooldown(spellid, time(NULL) + cooldown / IN_MILLISECONDS); }
 
     if (spellInfo->Category)
-        _AddCreatureCategoryCooldown(spellInfo->Category, time(NULL));
+    { _AddCreatureCategoryCooldown(spellInfo->Category, time(NULL)); }
 }
 
 bool Creature::HasCategoryCooldown(uint32 spell_id) const
 {
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(spell_id);
     if (!spellInfo)
-        return false;
+    { return false; }
 
     CreatureSpellCooldowns::const_iterator itr = m_CreatureCategoryCooldowns.find(spellInfo->Category);
     return (itr != m_CreatureCategoryCooldowns.end() && time_t(itr->second + (spellInfo->CategoryRecoveryTime / IN_MILLISECONDS)) > time(NULL));
@@ -2136,7 +2136,7 @@ bool Creature::HasSpell(uint32 spellID) const
     uint8 i;
     for (i = 0; i < CREATURE_MAX_SPELLS; ++i)
         if (spellID == m_spells[i])
-            break;
+        { break; }
     return i < CREATURE_MAX_SPELLS;                         // break before end of iteration of known spells
 }
 
@@ -2144,11 +2144,11 @@ time_t Creature::GetRespawnTimeEx() const
 {
     time_t now = time(NULL);
     if (m_respawnTime > now)                                // dead (no corpse)
-        return m_respawnTime;
+    { return m_respawnTime; }
     else if (m_corpseDecayTimer > 0)                        // dead (corpse)
-        return now + m_respawnDelay + m_corpseDecayTimer / IN_MILLISECONDS;
+    { return now + m_respawnDelay + m_corpseDecayTimer / IN_MILLISECONDS; }
     else
-        return now;
+    { return now; }
 }
 
 void Creature::GetRespawnCoord(float& x, float& y, float& z, float* ori, float* dist) const
@@ -2158,10 +2158,10 @@ void Creature::GetRespawnCoord(float& x, float& y, float& z, float* ori, float* 
     z = m_respawnPos.z;
 
     if (ori)
-        *ori = m_respawnPos.o;
+    { *ori = m_respawnPos.o; }
 
     if (dist)
-        *dist = GetRespawnRadius();
+    { *dist = GetRespawnRadius(); }
 
     // lets check if our creatures have valid spawn coordinates
     MANGOS_ASSERT(MaNGOS::IsValidMapCoord(x, y, z) || PrintCoordinatesError(x, y, z, "respawn"));
@@ -2190,12 +2190,12 @@ void Creature::AllLootRemovedFromCorpse()
             // spawntimesecs=3min:  corpse decay after 1min
             // spawntimesecs=4hour: corpse decay after 1hour 20min
             if (sWorld.getConfig(CONFIG_FLOAT_RATE_CORPSE_DECAY_LOOTED) > 0.0f)
-                corpseLootedDelay = (uint32)((m_corpseDelay * IN_MILLISECONDS) * sWorld.getConfig(CONFIG_FLOAT_RATE_CORPSE_DECAY_LOOTED));
+            { corpseLootedDelay = (uint32)((m_corpseDelay * IN_MILLISECONDS) * sWorld.getConfig(CONFIG_FLOAT_RATE_CORPSE_DECAY_LOOTED)); }
             else
-                corpseLootedDelay = (m_respawnDelay * IN_MILLISECONDS) / 3;
+            { corpseLootedDelay = (m_respawnDelay * IN_MILLISECONDS) / 3; }
         }
         else                                                // corpse was skinned, corpse will despawn next update
-            corpseLootedDelay = 0;
+        { corpseLootedDelay = 0; }
 
         // if m_respawnTime is not expired already
         if (m_respawnTime >= time(NULL))
@@ -2209,7 +2209,7 @@ void Creature::AllLootRemovedFromCorpse()
             {
                 // if m_respawnDelay is relatively short and corpseDecayTimer is larger than corpseLootedDelay
                 if (m_corpseDecayTimer > corpseLootedDelay)
-                    m_corpseDecayTimer = corpseLootedDelay;
+                { m_corpseDecayTimer = corpseLootedDelay; }
             }
         }
         else
@@ -2230,13 +2230,13 @@ void Creature::AllLootRemovedFromCorpse()
 uint32 Creature::GetLevelForTarget(Unit const* target) const
 {
     if (!IsWorldBoss())
-        return Unit::GetLevelForTarget(target);
+    { return Unit::GetLevelForTarget(target); }
 
     uint32 level = target->getLevel() + sWorld.getConfig(CONFIG_UINT32_WORLD_BOSS_LEVEL_DIFF);
     if (level < 1)
-        return 1;
+    { return 1; }
     if (level > 255)
-        return 255;
+    { return 255; }
     return level;
 }
 
@@ -2269,15 +2269,15 @@ VendorItemData const* Creature::GetVendorTemplateItems() const
 uint32 Creature::GetVendorItemCurrentCount(VendorItem const* vItem)
 {
     if (!vItem->maxcount)
-        return vItem->maxcount;
+    { return vItem->maxcount; }
 
     VendorItemCounts::iterator itr = m_vendorItemCounts.begin();
     for (; itr != m_vendorItemCounts.end(); ++itr)
         if (itr->itemId == vItem->item)
-            break;
+        { break; }
 
     if (itr == m_vendorItemCounts.end())
-        return vItem->maxcount;
+    { return vItem->maxcount; }
 
     VendorItemCount* vCount = &*itr;
 
@@ -2304,12 +2304,12 @@ uint32 Creature::GetVendorItemCurrentCount(VendorItem const* vItem)
 uint32 Creature::UpdateVendorItemCurrentCount(VendorItem const* vItem, uint32 used_count)
 {
     if (!vItem->maxcount)
-        return 0;
+    { return 0; }
 
     VendorItemCounts::iterator itr = m_vendorItemCounts.begin();
     for (; itr != m_vendorItemCounts.end(); ++itr)
         if (itr->itemId == vItem->item)
-            break;
+        { break; }
 
     if (itr == m_vendorItemCounts.end())
     {
@@ -2328,9 +2328,9 @@ uint32 Creature::UpdateVendorItemCurrentCount(VendorItem const* vItem, uint32 us
 
         uint32 diff = uint32((ptime - vCount->lastIncrementTime) / vItem->incrtime);
         if ((vCount->count + diff * pProto->BuyCount) < vItem->maxcount)
-            vCount->count += diff * pProto->BuyCount;
+        { vCount->count += diff * pProto->BuyCount; }
         else
-            vCount->count = vItem->maxcount;
+        { vCount->count = vItem->maxcount; }
     }
 
     vCount->count = vCount->count > used_count ? vCount->count - used_count : 0;
@@ -2363,11 +2363,11 @@ void Creature::SetFactionTemporary(uint32 factionId, uint32 tempFactionFlags)
     setFaction(factionId);
 
     if (m_temporaryFactionFlags & TEMPFACTION_TOGGLE_NON_ATTACKABLE)
-        RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+    { RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE); }
     if (m_temporaryFactionFlags & TEMPFACTION_TOGGLE_OOC_NOT_ATTACK)
-        RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+    { RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE); }
     if (m_temporaryFactionFlags & TEMPFACTION_TOGGLE_PASSIVE)
-        RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+    { RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE); }
 }
 
 void Creature::ClearTemporaryFaction()
@@ -2376,17 +2376,17 @@ void Creature::ClearTemporaryFaction()
     // For later we may consider extend to restore to charmer faction where charmer is creature.
     // This can also be done by update any pet/charmed of creature at any faction change to charmer.
     if (isCharmed())
-        return;
+    { return; }
 
     // Reset to original faction
     setFaction(GetCreatureInfo()->faction_A);
     // Reset UNIT_FLAG_NON_ATTACKABLE, UNIT_FLAG_OOC_NOT_ATTACKABLE or UNIT_FLAG_PASSIVE flags
     if (m_temporaryFactionFlags & TEMPFACTION_TOGGLE_NON_ATTACKABLE && GetCreatureInfo()->unit_flags & UNIT_FLAG_NON_ATTACKABLE)
-        SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+    { SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE); }
     if (m_temporaryFactionFlags & TEMPFACTION_TOGGLE_OOC_NOT_ATTACK && GetCreatureInfo()->unit_flags & UNIT_FLAG_OOC_NOT_ATTACKABLE && !isInCombat())
-        SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+    { SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE); }
     if (m_temporaryFactionFlags & TEMPFACTION_TOGGLE_PASSIVE && GetCreatureInfo()->unit_flags & UNIT_FLAG_PASSIVE)
-        SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+    { SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE); }
 
     m_temporaryFactionFlags = TEMPFACTION_NONE;
 }
@@ -2395,7 +2395,7 @@ void Creature::SendAreaSpiritHealerQueryOpcode(Player* pl)
 {
     uint32 next_resurrect = 0;
     if (Spell* pcurSpell = GetCurrentSpell(CURRENT_CHANNELED_SPELL))
-        next_resurrect = pcurSpell->GetCastedTime();
+    { next_resurrect = pcurSpell->GetCastedTime(); }
     WorldPacket data(SMSG_AREA_SPIRIT_HEALER_TIME, 8 + 4);
     data << ObjectGuid(GetObjectGuid());
     data << uint32(next_resurrect);
@@ -2410,16 +2410,16 @@ void Creature::ApplyGameEventSpells(GameEventCreatureData const* eventData, bool
     if (remove_spell)
         if (SpellEntry const* spellEntry = sSpellStore.LookupEntry(remove_spell))
             if (IsSpellAppliesAura(spellEntry))
-                RemoveAurasDueToSpell(remove_spell);
+            { RemoveAurasDueToSpell(remove_spell); }
 
     if (cast_spell)
-        CastSpell(this, cast_spell, true);
+    { CastSpell(this, cast_spell, true); }
 }
 
 void Creature::FillGuidsListFromThreatList(GuidVector& guids, uint32 maxamount /*= 0*/)
 {
     if (!CanHaveThreatList())
-        return;
+    { return; }
 
     ThreatList const& threats = getThreatManager().getThreatList();
 
@@ -2428,7 +2428,7 @@ void Creature::FillGuidsListFromThreatList(GuidVector& guids, uint32 maxamount /
     guids.reserve(guids.size() + maxamount);
 
     for (ThreatList::const_iterator itr = threats.begin(); maxamount && itr != threats.end(); ++itr, --maxamount)
-        guids.push_back((*itr)->getUnitGuid());
+    { guids.push_back((*itr)->getUnitGuid()); }
 }
 
 struct AddCreatureToRemoveListInMapsWorker
@@ -2438,7 +2438,7 @@ struct AddCreatureToRemoveListInMapsWorker
     void operator()(Map* map)
     {
         if (Creature* pCreature = map->GetCreature(i_guid))
-            pCreature->AddObjectToRemoveList();
+        { pCreature->AddObjectToRemoveList(); }
     }
 
     ObjectGuid i_guid;
@@ -2526,19 +2526,19 @@ void Creature::SetWalk(bool enable, bool asDefault)
     if (asDefault)
     {
         if (enable)
-            clearUnitState(UNIT_STAT_RUNNING);
+        { clearUnitState(UNIT_STAT_RUNNING); }
         else
-            addUnitState(UNIT_STAT_RUNNING);
+        { addUnitState(UNIT_STAT_RUNNING); }
     }
 
     // Nothing changed?
     if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE))
-        return;
+    { return; }
 
     if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_WALK_MODE);
+    { m_movementInfo.AddMovementFlag(MOVEFLAG_WALK_MODE); }
     else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_WALK_MODE);
+    { m_movementInfo.RemoveMovementFlag(MOVEFLAG_WALK_MODE); }
 
     WorldPacket data(enable ? SMSG_SPLINE_MOVE_SET_WALK_MODE : SMSG_SPLINE_MOVE_SET_RUN_MODE, 9);
     data << GetPackGUID();
@@ -2548,9 +2548,9 @@ void Creature::SetWalk(bool enable, bool asDefault)
 void Creature::SetLevitate(bool enable)
 {
     if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING);
+    { m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING); }
     else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_LEVITATING);
+    { m_movementInfo.RemoveMovementFlag(MOVEFLAG_LEVITATING); }
 
     // TODO: there should be analogic opcode for 2.43
     // WorldPacket data(enable ? SMSG_SPLINE_MOVE_GRAVITY_DISABLE : SMSG_SPLINE_MOVE_GRAVITY_ENABLE, 9);
@@ -2561,9 +2561,9 @@ void Creature::SetLevitate(bool enable)
 void Creature::SetRoot(bool enable)
 {
     if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT);
+    { m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT); }
     else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+    { m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT); }
 
     WorldPacket data(enable ? SMSG_SPLINE_MOVE_ROOT : SMSG_SPLINE_MOVE_UNROOT, 9);
     data << GetPackGUID();
@@ -2573,9 +2573,9 @@ void Creature::SetRoot(bool enable)
 void Creature::SetWaterWalk(bool enable)
 {
     if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_WATERWALKING);
+    { m_movementInfo.AddMovementFlag(MOVEFLAG_WATERWALKING); }
     else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_WATERWALKING);
+    { m_movementInfo.RemoveMovementFlag(MOVEFLAG_WATERWALKING); }
 
     WorldPacket data(enable ? SMSG_SPLINE_MOVE_WATER_WALK : SMSG_SPLINE_MOVE_LAND_WALK, 9);
     data << GetPackGUID();

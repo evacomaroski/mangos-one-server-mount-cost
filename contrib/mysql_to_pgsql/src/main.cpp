@@ -182,8 +182,8 @@ int main(int argc, char* argv[])
         ostringstream prim_key_str;
         ostringstream index_str;
         for (v_iter = (*citr).second.begin();
-                v_iter != (*citr).second.end();
-                ++v_iter)
+             v_iter != (*citr).second.end();
+             ++v_iter)
         {
             sql_str << " " << (*v_iter).name;
             if (((*v_iter).flags & AUTO_INCREMENT_FLAG) != 0)
@@ -200,7 +200,7 @@ int main(int argc, char* argv[])
             if (IS_PRI_KEY((*v_iter).flags) != 0)
             {
                 if (prim_key_str.str().size())
-                    prim_key_str << ", ";
+                { prim_key_str << ", "; }
                 else
                 {
                     prim_key_str << "ALTER TABLE ";
@@ -241,9 +241,9 @@ int main(int argc, char* argv[])
             }
             /// don't output "," for last column
             if (v_iter + 1 != (*citr).second.end())
-                sql_str << ",\n";
+            { sql_str << ",\n"; }
             else
-                sql_str << "\n";
+            { sql_str << "\n"; }
         }
         sql_str << ")\n";
 
@@ -259,7 +259,7 @@ int main(int argc, char* argv[])
 
         /// out INDEX's
         if (index_str.str().size())
-            PG_Exec_str(index_str.str(), mPGconn);
+        { PG_Exec_str(index_str.str(), mPGconn); }
 
         ++count;
         printf("Convert [%d] tables...\r", count);
@@ -278,9 +278,9 @@ int main(int argc, char* argv[])
         sql_str << mTableList[j].c_str();
 
         if (mysql_query(mysqlInit, sql_str.str().c_str()))
-            continue;
+        { continue; }
         if (!(result = mysql_store_result(mysqlInit)))
-            continue;
+        { continue; }
 
         while ((row = mysql_fetch_row(result)) != NULL)
         {
@@ -294,7 +294,7 @@ int main(int argc, char* argv[])
             for (uint32 i = 0 ; i < fieldCount ; ++i)
             {
                 if (!row[i])
-                    insert_str << "NULL";
+                { insert_str << "NULL"; }
                 else
                 {
                     if (IsNeeedEscapeString(fields[i].type))
@@ -320,9 +320,9 @@ int main(int argc, char* argv[])
 
                 /// don't output "," for last column
                 if (i + 1 != fieldCount)
-                    insert_str << ",";
+                { insert_str << ","; }
                 else
-                    insert_str << ")\n";
+                { insert_str << ")\n"; }
             }
             PG_Exec_str(insert_str.str(), mPGconn);
         }

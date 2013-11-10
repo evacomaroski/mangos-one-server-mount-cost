@@ -170,11 +170,11 @@ bool find_path()
         strncat(path_prefix, "../", MAX_PATH);
 
         ptr = strrchr(base_path, '\\');
-        if (ptr) *ptr = '\0';
+        if (ptr) { *ptr = '\0'; }
         else
         {
             ptr = strrchr(base_path, '/');
-            if (ptr) *ptr = '\0';
+            if (ptr) { *ptr = '\0'; }
         }
     }
 
@@ -185,7 +185,7 @@ bool find_origin()
 {
     printf("+ finding origin\n");
     if ((cmd_pipe = popen("git remote -v", "r")) == NULL)
-        return false;
+    { return false; }
 
     bool ret = false;
     while (fgets(buffer, MAX_BUF, cmd_pipe))
@@ -219,14 +219,14 @@ bool check_fwd()
     printf("+ checking fast forward\n");
     snprintf(cmd, MAX_CMD, "git log -n 1 --pretty=\"format:%%H\" %s/%s", (origins[1][0] ? origins[1] : origins[0]), remote_branch);
     if ((cmd_pipe = popen(cmd, "r")) == NULL)
-        return false;
+    { return false; }
 
-    if (!fgets(buffer, MAX_BUF, cmd_pipe)) return false;
+    if (!fgets(buffer, MAX_BUF, cmd_pipe)) { return false; }
     strncpy(origin_hash, buffer, MAX_HASH);
     pclose(cmd_pipe);
 
     if ((cmd_pipe = popen("git log --pretty=\"format:%H\"", "r")) == NULL)
-        return false;
+    { return false; }
 
     bool found = false;
     while (fgets(buffer, MAX_BUF, cmd_pipe))
@@ -244,7 +244,7 @@ bool check_fwd()
     {
         // with fetch you still get the latest rev, you just rebase afterwards and push
         // without it you may not get the right rev
-        if (do_fetch) printf("WARNING: non-fastforward, use rebase!\n");
+        if (do_fetch) { printf("WARNING: non-fastforward, use rebase!\n"); }
         else { printf("ERROR: non-fastforward, use rebase!\n"); return false; }
     }
     return true;
@@ -254,9 +254,9 @@ int get_rev(const char* from_msg)
 {
     // accept only the rev number format, not the sql update format
     char nr_str[256];
-    if (sscanf(from_msg, "[" REV_PREFIX "%[0123456789]]", nr_str) != 1) return 0;
+    if (sscanf(from_msg, "[" REV_PREFIX "%[0123456789]]", nr_str) != 1) { return 0; }
     // ("[")+(REV_PREFIX)+("]")-1
-    if (from_msg[strlen(nr_str) + strlen(REV_PREFIX) + 2 - 1] != ']') return 0;
+    if (from_msg[strlen(nr_str) + strlen(REV_PREFIX) + 2 - 1] != ']') { return 0; }
 
     return atoi(nr_str);
 }
@@ -267,24 +267,24 @@ bool find_rev()
     // find the highest rev number on either of the remotes
     for (int i = 0; i < NUM_REMOTES; i++)
     {
-        if (!local && !origins[i][0]) continue;
+        if (!local && !origins[i][0]) { continue; }
 
-        if (local) snprintf(cmd, MAX_CMD, "git log HEAD --pretty=\"format:%%s\"");
-        else sprintf(cmd, "git log %s/%s --pretty=\"format:%%s\"", origins[i], remote_branch);
+        if (local) { snprintf(cmd, MAX_CMD, "git log HEAD --pretty=\"format:%%s\""); }
+        else { sprintf(cmd, "git log %s/%s --pretty=\"format:%%s\"", origins[i], remote_branch); }
         if ((cmd_pipe = popen(cmd, "r")) == NULL)
-            continue;
+        { continue; }
 
         int nr;
         while (fgets(buffer, MAX_BUF, cmd_pipe))
         {
             nr = get_rev(buffer);
             if (nr >= rev)
-                rev = nr + 1;
+            { rev = nr + 1; }
         }
         pclose(cmd_pipe);
     }
 
-    if (rev > 0) printf("Found " REV_FORMAT ".\n", rev);
+    if (rev > 0) { printf("Found " REV_FORMAT ".\n", rev); }
 
     return rev > 0;
 }
@@ -319,10 +319,10 @@ void system_switch_index(const char* cmd)
     // but the new index will contains only the desired changes
     // while the old may contain others
     system(cmd);
-    if (!use_new_index) return;
-    if (putenv(new_index_cmd) != 0) return;
+    if (!use_new_index) { return; }
+    if (putenv(new_index_cmd) != 0) { return; }
     system(cmd);
-    if (putenv(old_index_cmd) != 0) return;
+    if (putenv(old_index_cmd) != 0) { return; }
 }
 
 bool write_rev_nr()
@@ -352,7 +352,7 @@ bool write_rev_nr()
 
 bool write_rev_sql()
 {
-    if (new_sql_updates.empty()) return true;
+    if (new_sql_updates.empty()) { return true; }
     printf("+ writing revision_sql.h\n");
     std::string header = generateSqlHeader();
 
@@ -378,7 +378,7 @@ bool find_head_msg()
 {
     printf("+ finding last message on HEAD\n");
     if ((cmd_pipe = popen("git log -n 1 --pretty=\"format:%s%n%n%b\"", "r")) == NULL)
-        return false;
+    { return false; }
 
     int poz = 0;
     while (poz < 16384 - 1 && EOF != (head_message[poz++] = fgetc(cmd_pipe)));
@@ -398,7 +398,7 @@ bool find_head_msg()
         char* p = strchr(head_message, ']'), *q = head_message;
         assert(p && *(p + 1));
         p += 2;
-        while (*p) *q = *p, p++, q++;
+        while (*p) { *q = *p, p++, q++; }
         *q = 0;
         return true;
     }
@@ -411,14 +411,14 @@ bool amend_commit()
     printf("+ amending last commit\n");
 
     // commit the contents of the (new) index
-    if (use_new_index && putenv(new_index_cmd) != 0) return false;
+    if (use_new_index && putenv(new_index_cmd) != 0) { return false; }
     snprintf(cmd, MAX_CMD, "git commit --amend -F-");
     if ((cmd_pipe = popen(cmd, "w")) == NULL)
-        return false;
+    { return false; }
 
     fprintf(cmd_pipe, REV_FORMAT " %s", rev, head_message);
     pclose(cmd_pipe);
-    if (use_new_index && putenv(old_index_cmd) != 0) return false;
+    if (use_new_index && putenv(old_index_cmd) != 0) { return false; }
 
     return true;
 }
@@ -440,16 +440,16 @@ bool get_sql_update_info(const char* buffer, sql_update_info& info)
     int dummy[3];
     char dummyStr[MAX_BUF];
     if (sscanf(buffer, REV_SCAN "_%[^_]_%d_%d", &dummy[0], &dummyStr, &dummy[1], &dummy[2]) == 4)
-        return false;
+    { return false; }
 
     if (sscanf(buffer, REV_SCAN "_%[^_]_%d_%[^_]_%[^.].sql", &info.rev, &info.parentRev, &info.nr, info.db, info.table) != 5 &&
-            sscanf(buffer, REV_SCAN "_%[^_]_%d_%[^.].sql", &info.rev, &info.parentRev, &info.nr, info.db) != 3)
+        sscanf(buffer, REV_SCAN "_%[^_]_%d_%[^.].sql", &info.rev, &info.parentRev, &info.nr, info.db) != 3)
     {
         return false;
     }
 
     for (info.db_idx = 0; info.db_idx < NUM_DATABASES; info.db_idx++)
-        if (strncmp(info.db, databases[info.db_idx], MAX_DB) == 0) break;
+        if (strncmp(info.db, databases[info.db_idx], MAX_DB) == 0) { break; }
     info.has_table = (info.table[0] != '\0');
     return true;
 }
@@ -460,7 +460,7 @@ bool find_sql_updates()
     // add all updates from HEAD
     snprintf(cmd, MAX_CMD, "git show HEAD:%s", sql_update_dir);
     if ((cmd_pipe = popen(cmd, "r")) == NULL)
-        return false;
+    { return false; }
 
     // skip first two lines
     if (!fgets(buffer, MAX_BUF, cmd_pipe)) { pclose(cmd_pipe); return false; }
@@ -471,11 +471,11 @@ bool find_sql_updates()
     while (fgets(buffer, MAX_BUF, cmd_pipe))
     {
         buffer[strlen(buffer) - 1] = '\0';
-        if (!get_sql_update_info(buffer, info)) continue;
+        if (!get_sql_update_info(buffer, info)) { continue; }
 
         if (info.db_idx == NUM_DATABASES)
         {
-            if (info.rev > 0) printf("WARNING: incorrect database name for sql update %s\n", buffer);
+            if (info.rev > 0) { printf("WARNING: incorrect database name for sql update %s\n", buffer); }
             continue;
         }
 
@@ -495,7 +495,7 @@ bool find_sql_updates()
     // remove updates from the last commit also found on origin
     snprintf(cmd, MAX_CMD, "git show %s:%s", origin_hash, sql_update_dir);
     if ((cmd_pipe = popen(cmd, "r")) == NULL)
-        return false;
+    { return false; }
 
     // skip first two lines
     if (!fgets(buffer, MAX_BUF, cmd_pipe)) { pclose(cmd_pipe); return false; }
@@ -504,7 +504,7 @@ bool find_sql_updates()
     while (fgets(buffer, MAX_BUF, cmd_pipe))
     {
         buffer[strlen(buffer) - 1] = '\0';
-        if (!get_sql_update_info(buffer, info)) continue;
+        if (!get_sql_update_info(buffer, info)) { continue; }
 
         // find the old update with the highest rev for each database
         // (will be the required version for the new update)
@@ -517,9 +517,9 @@ bool find_sql_updates()
                 last_sql_rev[info.db_idx] = info.rev;
                 last_sql_nr[info.db_idx] = info.nr;
                 if (db_sql_rev_parent[info.db_idx])
-                    snprintf(last_sql_update[info.db_idx], MAX_PATH, "%s_%0*d_%s%s%s", info.parentRev, 2, info.nr, info.db, info.has_table ? "_" : "", info.table);
+                { snprintf(last_sql_update[info.db_idx], MAX_PATH, "%s_%0*d_%s%s%s", info.parentRev, 2, info.nr, info.db, info.has_table ? "_" : "", info.table); }
                 else
-                    sscanf(buffer, "%[^.]", last_sql_update[info.db_idx]);
+                { sscanf(buffer, "%[^.]", last_sql_update[info.db_idx]); }
             }
             new_sql_updates.erase(itr);
         }
@@ -530,10 +530,10 @@ bool find_sql_updates()
     if (!new_sql_updates.empty())
     {
         for (std::set<std::string>::iterator itr = new_sql_updates.begin(); itr != new_sql_updates.end(); ++itr)
-            printf("%s\n", itr->c_str());
+        { printf("%s\n", itr->c_str()); }
     }
     else
-        printf("WARNING: no new sql updates found.\n");
+    { printf("WARNING: no new sql updates found.\n"); }
 
     return true;
 }
@@ -541,7 +541,7 @@ bool find_sql_updates()
 bool copy_file(const char* src_file, const char* dst_file)
 {
     FILE* fin = fopen(src_file, "rb");
-    if (!fin) return false;
+    if (!fin) { return false; }
     FILE* fout = fopen(dst_file, "wb");
     if (!fout) { fclose(fin); return false; }
 
@@ -554,7 +554,7 @@ bool copy_file(const char* src_file, const char* dst_file)
 
 bool convert_sql_updates()
 {
-    if (new_sql_updates.empty()) return true;
+    if (new_sql_updates.empty()) { return true; }
 
     printf("+ converting sql updates\n");
 
@@ -562,8 +562,8 @@ bool convert_sql_updates()
     for (std::set<std::string>::iterator itr = new_sql_updates.begin(); itr != new_sql_updates.end(); ++itr)
     {
         sql_update_info info;
-        if (!get_sql_update_info(itr->c_str(), info)) return false;
-        if (info.db_idx == NUM_DATABASES) return false;
+        if (!get_sql_update_info(itr->c_str(), info)) { return false; }
+        if (info.db_idx == NUM_DATABASES) { return false; }
 
         // generating the new name should work for updates with or without a rev
         char src_file[MAX_PATH], new_name[MAX_PATH], new_req_name[MAX_PATH], dst_file[MAX_PATH];
@@ -572,12 +572,12 @@ bool convert_sql_updates()
         snprintf(dst_file, MAX_PATH, "%s%s/%s.sql", path_prefix, sql_update_dir, new_name);
 
         if (db_sql_rev_parent[info.db_idx])
-            snprintf(new_req_name, MAX_PATH, "%s_%0*d_%s%s%s", info.parentRev, 2, info.nr, info.db, info.has_table ? "_" : "", info.table);
+        { snprintf(new_req_name, MAX_PATH, "%s_%0*d_%s%s%s", info.parentRev, 2, info.nr, info.db, info.has_table ? "_" : "", info.table); }
         else
-            strncpy(new_req_name, new_name, MAX_PATH);
+        { strncpy(new_req_name, new_name, MAX_PATH); }
 
         FILE* fin = fopen(src_file, "r");
-        if (!fin) return false;
+        if (!fin) { return false; }
 
         std::ostringstream out_buff;
 
@@ -597,16 +597,16 @@ bool convert_sql_updates()
                 if (sscanf(buffer, "ALTER TABLE %s CHANGE COLUMN required_%s required_%s bit", dummy, dummy, dummy) == 3)
                 {
                     if (fgets(buffer, MAX_BUF, fin) && buffer[0] != '\n')
-                        out_buff << buffer;
+                    { out_buff << buffer; }
                 }
                 else
-                    out_buff << buffer;
+                { out_buff << buffer; }
             }
         }
 
         // copy the rest of the file
         while (fgets(buffer, MAX_BUF, fin))
-            out_buff << buffer;
+        { out_buff << buffer; }
 
         fclose(fin);
 
@@ -637,12 +637,12 @@ bool convert_sql_updates()
 
 bool generate_sql_makefile()
 {
-    if (new_sql_updates.empty()) return true;
+    if (new_sql_updates.empty()) { return true; }
 
     // find all files in the update dir
     snprintf(cmd, MAX_CMD, "git show HEAD:%s", sql_update_dir);
     if ((cmd_pipe = popen(cmd, "r")) == NULL)
-        return false;
+    { return false; }
 
     // skip first two lines
     if (!fgets(buffer, MAX_BUF, cmd_pipe)) { pclose(cmd_pipe); return false; }
@@ -656,16 +656,16 @@ bool generate_sql_makefile()
     {
         buffer[strlen(buffer) - 1] = '\0';
         if (buffer[strlen(buffer) - 1] != '/' &&
-                strncmp(buffer, "Makefile.am", MAX_BUF) != 0)
+            strncmp(buffer, "Makefile.am", MAX_BUF) != 0)
         {
             if (new_sql_updates.find(buffer) != new_sql_updates.end())
             {
-                if (!get_sql_update_info(buffer, info)) return false;
+                if (!get_sql_update_info(buffer, info)) { return false; }
                 snprintf(newname, MAX_PATH, REV_PRINT "_%s_%0*d_%s%s%s.sql", rev, info.parentRev, 2, info.nr, info.db, info.has_table ? "_" : "", info.table);
                 file_list.insert(newname);
             }
             else
-                file_list.insert(buffer);
+            { file_list.insert(buffer); }
         }
     }
 
@@ -707,9 +707,9 @@ bool generate_sql_makefile()
             "#  Install basic SQL files to datadir\n"
             "pkgdata_DATA = \\\n",
             sql_update_dir, sql_update_dir
-    );
+           );
 
-    for(std::set<std::string>::iterator itr = file_list.begin(), next; itr != file_list.end(); ++itr)
+    for (std::set<std::string>::iterator itr = file_list.begin(), next; itr != file_list.end(); ++itr)
     {
         next = itr; ++next;
         fprintf(fout, "\t%s%s\n", itr->c_str(), next == file_list.end() ? "" : " \\");
@@ -737,14 +737,14 @@ bool generate_sql_makefile()
 
 bool change_sql_database()
 {
-    if (new_sql_updates.empty()) return true;
+    if (new_sql_updates.empty()) { return true; }
     printf("+ changing database sql files\n");
 
     // rename the database files, copy their contents back
     // and change the required update line
     for (int i = 0; i < NUM_DATABASES; i++)
     {
-        if (last_sql_update[i][0] == '\0') continue;
+        if (last_sql_update[i][0] == '\0') { continue; }
 
         char old_file[MAX_PATH], tmp_file[MAX_PATH], dummy[MAX_BUF];
 
@@ -754,29 +754,29 @@ bool change_sql_database()
         rename(old_file, tmp_file);
 
         FILE* fin = fopen(tmp_file, "r");
-        if (!fin) return false;
+        if (!fin) { return false; }
         FILE* fout = fopen(old_file, "w");
-        if (!fout) return false;
+        if (!fout) { return false; }
 
         snprintf(dummy, MAX_CMD, "CREATE TABLE `%s` (\n", db_version_table[i]);
         while (fgets(buffer, MAX_BUF, fin))
         {
             fputs(buffer, fout);
             if (strncmp(buffer, dummy, MAX_BUF) == 0)
-                break;
+            { break; }
         }
 
         while (1)
         {
-            if (!fgets(buffer, MAX_BUF, fin)) return false;
-            if (sscanf(buffer, "  `required_%s`", dummy) == 1) break;
+            if (!fgets(buffer, MAX_BUF, fin)) { return false; }
+            if (sscanf(buffer, "  `required_%s`", dummy) == 1) { break; }
             fputs(buffer, fout);
         }
 
         fprintf(fout, "  `required_%s` bit(1) default NULL\n", last_sql_update[i]);
 
         while (fgets(buffer, MAX_BUF, fin))
-            fputs(buffer, fout);
+        { fputs(buffer, fout); }
 
         fclose(fin);
         fclose(fout);
@@ -792,20 +792,20 @@ bool change_sql_history()
 {
     snprintf(cmd, MAX_CMD, "git log HEAD --pretty=\"format:%%H\"");
     if ((cmd_pipe = popen(cmd, "r")) == NULL)
-        return false;
+    { return false; }
 
     std::list<std::string> hashes;
     while (fgets(buffer, MAX_BUF, cmd_pipe))
     {
         buffer[strlen(buffer) - 1] = '\0';
         if (strncmp(origin_hash, buffer, MAX_HASH) == 0)
-            break;
+        { break; }
 
         hashes.push_back(buffer);
     }
     pclose(cmd_pipe);
-    if (hashes.empty()) return false;   // must have at least one commit
-    if (hashes.size() < 2) return true; // only one commit, ok but nothing to do
+    if (hashes.empty()) { return false; }   // must have at least one commit
+    if (hashes.size() < 2) { return true; } // only one commit, ok but nothing to do
 
     snprintf(cmd, MAX_CMD, "git reset --hard %s", origin_hash);
     system(cmd);
@@ -823,7 +823,7 @@ bool change_sql_history()
         // remove the newly added files
         snprintf(cmd, MAX_CMD, "git diff --cached --diff-filter=A --name-only %s%s", path_prefix, sql_update_dir);
         if ((cmd_pipe = popen(cmd, "r")) == NULL)
-            return false;
+        { return false; }
 
         while (fgets(buffer, MAX_BUF, cmd_pipe))
         {
@@ -848,7 +848,7 @@ bool change_sql_history()
 
 bool prepare_new_index()
 {
-    if (!use_new_index) return true;
+    if (!use_new_index) { return true; }
 
     // only use a new index if there are staged changes that should be preserved
     if ((cmd_pipe = popen("git diff --cached", "r")) == NULL)
@@ -872,28 +872,28 @@ bool prepare_new_index()
     char src_file[MAX_PATH], dst_file[MAX_PATH];
 
     char* old_index = getenv("GIT_INDEX_FILE");
-    if (old_index) strncpy(src_file, old_index, MAX_PATH);
-    else snprintf(src_file, MAX_PATH, "%s.git/index", path_prefix);
+    if (old_index) { strncpy(src_file, old_index, MAX_PATH); }
+    else { snprintf(src_file, MAX_PATH, "%s.git/index", path_prefix); }
     snprintf(dst_file, MAX_PATH, "%s%s", path_prefix, new_index_file);
 
-    if (!copy_file(src_file, dst_file)) return false;
+    if (!copy_file(src_file, dst_file)) { return false; }
 
     // doesn't seem to work with path_prefix
     snprintf(new_index_cmd, MAX_CMD, "GIT_INDEX_FILE=%s/%s", base_path, new_index_file);
-    if (putenv(new_index_cmd) != 0) return false;
+    if (putenv(new_index_cmd) != 0) { return false; }
 
     // clear the new index
     system("git reset -q --mixed HEAD");
 
     // revert to old index
     snprintf(old_index_cmd, MAX_CMD, "GIT_INDEX_FILE=");
-    if (putenv(old_index_cmd) != 0) return false;
+    if (putenv(old_index_cmd) != 0) { return false; }
     return true;
 }
 
 bool cleanup_new_index()
 {
-    if (!use_new_index) return true;
+    if (!use_new_index) { return true; }
     printf("+ cleaning up the new index\n");
     char idx_file[MAX_PATH];
     snprintf(idx_file, MAX_PATH, "%s%s", path_prefix, new_index_file);
@@ -907,17 +907,17 @@ int main(int argc, char* argv[])
 {
     for (int i = 1; i < argc; i++)
     {
-        if (argv[i] == NULL) continue;
+        if (argv[i] == NULL) { continue; }
         if (strncmp(argv[i], "-r", 2) == 0 || strncmp(argv[i], "--replace", 9) == 0)
-            allow_replace = true;
+        { allow_replace = true; }
         else if (strncmp(argv[i], "-l", 2) == 0 || strncmp(argv[i], "--local", 7) == 0)
-            local = true;
+        { local = true; }
         else if (strncmp(argv[i], "-f", 2) == 0 || strncmp(argv[i], "--fetch", 7) == 0)
-            do_fetch = true;
+        { do_fetch = true; }
         else if (strncmp(argv[i], "-s", 2) == 0 || strncmp(argv[i], "--sql", 5) == 0)
-            do_sql = true;
+        { do_sql = true; }
         else if (strncmp(argv[i], "--branch=", 9) == 0)
-            snprintf(remote_branch, MAX_REMOTE, "%s", argv[i] + 9);
+        { snprintf(remote_branch, MAX_REMOTE, "%s", argv[i] + 9); }
         else if (strncmp(argv[i], "-h", 2) == 0 || strncmp(argv[i], "--help", 6) == 0)
         {
             printf("Usage: git_id [OPTION]\n");
@@ -947,20 +947,20 @@ int main(int argc, char* argv[])
     {
         DO(find_origin());
         if (do_fetch)
-            DO(fetch_origin());
+        { DO(fetch_origin()); }
         DO(check_fwd());
     }
     DO(find_rev());
     DO(find_head_msg());
     if (do_sql)
-        DO(find_sql_updates());
+    { DO(find_sql_updates()); }
     DO(prepare_new_index());
     DO(write_rev_nr());
     if (do_sql)
     {
         DO(convert_sql_updates());
         if (generate_makefile)
-            DO(generate_sql_makefile());
+        { DO(generate_sql_makefile()); }
         DO(change_sql_database());
         DO(write_rev_sql());
     }

@@ -77,7 +77,7 @@ struct MANGOS_DLL_DECL boss_headless_horsemanAI : public ScriptedAI
     void UpdateAI(const uint32 /*uiDiff*/) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }

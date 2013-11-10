@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL world_map_kalimdor : public ScriptedMap
     void OnCreatureCreate(Creature* pCreature)
     {
         if (pCreature->GetEntry() == NPC_MURKDEEP)
-            m_mNpcEntryGuidStore[NPC_MURKDEEP] = pCreature->GetObjectGuid();
+        { m_mNpcEntryGuidStore[NPC_MURKDEEP] = pCreature->GetObjectGuid(); }
     }
 
     void OnCreatureDeath(Creature* pCreature)
@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL world_map_outland : public ScriptedMap
     void OnCreatureCreate(Creature* pCreature)
     {
         if (pCreature->GetEntry() == NPC_EMISSARY_OF_HATE)
-            m_mNpcEntryGuidStore[NPC_EMISSARY_OF_HATE] = pCreature->GetObjectGuid();
+        { m_mNpcEntryGuidStore[NPC_EMISSARY_OF_HATE] = pCreature->GetObjectGuid(); }
     }
 
     void OnCreatureDeath(Creature* pCreature)

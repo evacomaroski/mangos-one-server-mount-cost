@@ -152,13 +152,13 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_RELIQUIARY, DONE);
+        { m_pInstance->SetData(TYPE_RELIQUIARY, DONE); }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_RELIQUIARY, FAIL);
+        { m_pInstance->SetData(TYPE_RELIQUIARY, FAIL); }
     }
 
     void AttackStart(Unit* /*pWho*/) override { }
@@ -166,7 +166,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
     void MoveInLineOfSight(Unit* pWho) override
     {
         if (m_uiPhase == PHASE_0_NOT_BEGUN && pWho->GetTypeId() == TYPEID_PLAYER && !((Player*)pWho)->isGameMaster() &&
-                m_creature->IsWithinDistInMap(pWho, m_creature->GetAttackDistance(pWho)) && m_creature->IsWithinLOSInMap(pWho))
+            m_creature->IsWithinDistInMap(pWho, m_creature->GetAttackDistance(pWho)) && m_creature->IsWithinLOSInMap(pWho))
         {
             // Start phase 1
             m_uiPhase = PHASE_1_SUFFERING;
@@ -181,7 +181,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
             m_creature->SetStandState(UNIT_STAND_STATE_STAND);
 
             if (m_pInstance)
-                m_pInstance->SetData(TYPE_RELIQUIARY, IN_PROGRESS);
+            { m_pInstance->SetData(TYPE_RELIQUIARY, IN_PROGRESS); }
         }
     }
 
@@ -208,13 +208,13 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
     {
         // Self kill when the Essence of Anger is killed
         if (pSummoned->GetEntry() == NPC_ESSENCE_ANGER)
-            m_creature->DealDamage(m_creature, m_creature->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+        { m_creature->DealDamage(m_creature, m_creature->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false); }
     }
 
     void SummonedMovementInform(Creature* pSummoned, uint32 uiMoveType, uint32 uiPointId) override
     {
         if (uiMoveType != POINT_MOTION_TYPE || !uiPointId)
-            return;
+        { return; }
 
         // Switch to next phase when the essence gets back
         switch (pSummoned->GetEntry())
@@ -261,10 +261,10 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
             {
                 // Visual effect similar to EMOTE_ONESHOT_SUBMERGE
                 if (DoCastSpellIfCan(m_creature, SPELL_SUBMERGE_VISUAL) == CAST_OK)
-                    m_uiAnimationTimer = 0;
+                { m_uiAnimationTimer = 0; }
             }
             else
-                m_uiAnimationTimer -= uiDiff;
+            { m_uiAnimationTimer -= uiDiff; }
         }
 
         // Animation for reset Reliquary
@@ -277,7 +277,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
                 m_uiAnimResetTimer = 0;
             }
             else
-                m_uiAnimResetTimer -= uiDiff;
+            { m_uiAnimResetTimer -= uiDiff; }
         }
 
         // Summon the Essence on timer
@@ -300,7 +300,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
                 }
             }
             else
-                m_uiSummonEssenceTimer -= uiDiff;
+            { m_uiSummonEssenceTimer -= uiDiff; }
         }
 
         // Summon Enslaved souls between the essence
@@ -320,7 +320,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public Scripted_NoMovementAI
                         }
                     }
                     else
-                        m_uiSummonSoulTimer -= uiDiff;
+                    { m_uiSummonSoulTimer -= uiDiff; }
                 }
 
                 break;
@@ -352,7 +352,7 @@ struct MANGOS_DLL_DECL essence_base_AI : public ScriptedAI
         if (m_pInstance)
         {
             if (Creature* pReliquary = m_pInstance->GetSingleCreatureFromStorage(NPC_RELIQUARY_OF_SOULS))
-                pReliquary->AI()->EnterEvadeMode();
+            { pReliquary->AI()->EnterEvadeMode(); }
         }
 
         m_creature->ForcedDespawn();
@@ -361,7 +361,7 @@ struct MANGOS_DLL_DECL essence_base_AI : public ScriptedAI
     void DamageTaken(Unit* /*pKiller*/, uint32& uiDamage) override
     {
         if (uiDamage < m_creature->GetHealth())
-            return;
+        { return; }
 
         // Prevent glitch if in fake death
         if (m_bIsPhaseFinished)
@@ -384,11 +384,11 @@ struct MANGOS_DLL_DECL essence_base_AI : public ScriptedAI
         m_creature->GetMotionMaster()->Clear();
 
         if (!m_pInstance)
-            return;
+        { return; }
 
         // Move to home position
         if (Creature* pReliquary = m_pInstance->GetSingleCreatureFromStorage(NPC_RELIQUARY_OF_SOULS))
-            m_creature->GetMotionMaster()->MovePoint(1, pReliquary->GetPositionX(), pReliquary->GetPositionY(), pReliquary->GetPositionZ());
+        { m_creature->GetMotionMaster()->MovePoint(1, pReliquary->GetPositionX(), pReliquary->GetPositionY(), pReliquary->GetPositionZ()); }
 
         m_bIsPhaseFinished = true;
 
@@ -429,7 +429,7 @@ struct MANGOS_DLL_DECL boss_essence_of_sufferingAI : public essence_base_AI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiEnrageTimer < uiDiff)
         {
@@ -441,15 +441,15 @@ struct MANGOS_DLL_DECL boss_essence_of_sufferingAI : public essence_base_AI
             }
         }
         else
-            m_uiEnrageTimer -= uiDiff;
+        { m_uiEnrageTimer -= uiDiff; }
 
         if (m_uiSoulDrainTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SOUL_DRAIN) == CAST_OK)
-                m_uiSoulDrainTimer = urand(45000, 60000);
+            { m_uiSoulDrainTimer = urand(45000, 60000); }
         }
         else
-            m_uiSoulDrainTimer -= uiDiff;
+        { m_uiSoulDrainTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -494,15 +494,15 @@ struct MANGOS_DLL_DECL boss_essence_of_desireAI : public essence_base_AI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiRuneShieldTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_RUNE_SHIELD) == CAST_OK)
-                m_uiRuneShieldTimer = 15000;
+            { m_uiRuneShieldTimer = 15000; }
         }
         else
-            m_uiRuneShieldTimer -= uiDiff;
+        { m_uiRuneShieldTimer -= uiDiff; }
 
         if (m_uiDeadenTimer < uiDiff)
         {
@@ -513,15 +513,15 @@ struct MANGOS_DLL_DECL boss_essence_of_desireAI : public essence_base_AI
             }
         }
         else
-            m_uiDeadenTimer -= uiDiff;
+        { m_uiDeadenTimer -= uiDiff; }
 
         if (m_uiSoulShockTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_SPIRIT_SHOCK) == CAST_OK)
-                m_uiSoulShockTimer = urand(5000, 10000);
+            { m_uiSoulShockTimer = urand(5000, 10000); }
         }
         else
-            m_uiSoulShockTimer -= uiDiff;
+        { m_uiSoulShockTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -570,7 +570,7 @@ struct MANGOS_DLL_DECL boss_essence_of_angerAI : public ScriptedAI
         if (m_pInstance)
         {
             if (Creature* pReliquary = m_pInstance->GetSingleCreatureFromStorage(NPC_RELIQUARY_OF_SOULS))
-                pReliquary->AI()->EnterEvadeMode();
+            { pReliquary->AI()->EnterEvadeMode(); }
         }
 
         m_creature->ForcedDespawn();
@@ -579,23 +579,23 @@ struct MANGOS_DLL_DECL boss_essence_of_angerAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiSeetheTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SEETHE) == CAST_OK)
-                m_uiSeetheTimer = urand(20000, 30000);
+            { m_uiSeetheTimer = urand(20000, 30000); }
         }
         else
-            m_uiSeetheTimer -= uiDiff;
+        { m_uiSeetheTimer -= uiDiff; }
 
         if (m_uiSoulScreamTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SOUL_SCREAM) == CAST_OK)
-                m_uiSoulScreamTimer = 10000;
+            { m_uiSoulScreamTimer = 10000; }
         }
         else
-            m_uiSoulScreamTimer -= uiDiff;
+        { m_uiSoulScreamTimer -= uiDiff; }
 
         if (m_uiSpiteTimer < uiDiff)
         {
@@ -606,7 +606,7 @@ struct MANGOS_DLL_DECL boss_essence_of_angerAI : public ScriptedAI
             }
         }
         else
-            m_uiSpiteTimer -= uiDiff;
+        { m_uiSpiteTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -641,7 +641,7 @@ struct MANGOS_DLL_DECL npc_enslaved_soulAI : public ScriptedAI
             if (Creature* pReliquary = m_pInstance->GetSingleCreatureFromStorage(NPC_RELIQUARY_OF_SOULS))
             {
                 if (boss_reliquary_of_soulsAI* pBossAI = dynamic_cast<boss_reliquary_of_soulsAI*>(pReliquary->AI()))
-                    pBossAI->DoNotifySouldDead();
+                { pBossAI->DoNotifySouldDead(); }
             }
         }
     }
@@ -652,7 +652,7 @@ struct MANGOS_DLL_DECL npc_enslaved_soulAI : public ScriptedAI
         if (m_pInstance)
         {
             if (Creature* pReliquary = m_pInstance->GetSingleCreatureFromStorage(NPC_RELIQUARY_OF_SOULS))
-                pReliquary->AI()->EnterEvadeMode();
+            { pReliquary->AI()->EnterEvadeMode(); }
         }
 
         m_creature->ForcedDespawn();
@@ -661,7 +661,7 @@ struct MANGOS_DLL_DECL npc_enslaved_soulAI : public ScriptedAI
     void UpdateAI(const uint32 /*uiDiff*/) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }

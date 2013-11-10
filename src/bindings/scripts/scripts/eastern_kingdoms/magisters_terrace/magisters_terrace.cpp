@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL npc_kalecgosAI : public ScriptedAI
     void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE)
-            return;
+        { return; }
 
         if (uiPointId)
         {
@@ -95,7 +95,7 @@ struct MANGOS_DLL_DECL npc_kalecgosAI : public ScriptedAI
                 }
             }
             else
-                m_uiTransformTimer -= uiDiff;
+            { m_uiTransformTimer -= uiDiff; }
         }
     }
 };
@@ -113,7 +113,7 @@ bool ProcessEventId_event_go_scrying_orb(uint32 /*uiEventId*/, Object* pSource, 
         {
             // Check if the Dragon is already spawned and don't allow it to spawn it multiple times
             if (pInstance->GetSingleCreatureFromStorage(NPC_KALECGOS_DRAGON, true))
-                return true;
+            { return true; }
         }
     }
     return false;

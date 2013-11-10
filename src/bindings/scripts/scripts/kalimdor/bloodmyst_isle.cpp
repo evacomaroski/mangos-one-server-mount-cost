@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL mob_webbed_creatureAI : public Scripted_NoMovementAI
             case 0:
                 uiSpawnCreatureEntry = NPC_EXPEDITION_RESEARCHER;
                 if (pKiller->GetTypeId() == TYPEID_PLAYER)
-                    ((Player*)pKiller)->KilledMonsterCredit(uiSpawnCreatureEntry, m_creature->GetObjectGuid());
+                { ((Player*)pKiller)->KilledMonsterCredit(uiSpawnCreatureEntry, m_creature->GetObjectGuid()); }
                 break;
             case 1:
             case 2:
@@ -74,7 +74,7 @@ struct MANGOS_DLL_DECL mob_webbed_creatureAI : public Scripted_NoMovementAI
         }
 
         if (uiSpawnCreatureEntry)
-            m_creature->SummonCreature(uiSpawnCreatureEntry, 0.0f, 0.0f, 0.0f, m_creature->GetOrientation(), TEMPSUMMON_TIMED_OOC_DESPAWN, 25000);
+        { m_creature->SummonCreature(uiSpawnCreatureEntry, 0.0f, 0.0f, 0.0f, m_creature->GetOrientation(), TEMPSUMMON_TIMED_OOC_DESPAWN, 25000); }
     }
 };
 

@@ -341,8 +341,8 @@ struct FactionEntry
         for (int i = 0; i < 4; ++i)
         {
             if ((BaseRepRaceMask[i] == 0 || (BaseRepRaceMask[i] & raceMask)) &&
-                    (BaseRepClassMask[i] == 0 || (BaseRepClassMask[i] & classMask)))
-                return i;
+                (BaseRepClassMask[i] == 0 || (BaseRepClassMask[i] & classMask)))
+            { return i; }
         }
 
         return -1;
@@ -376,10 +376,10 @@ struct FactionTemplateEntry
         {
             for (int i = 0; i < 4; ++i)
                 if (enemyFaction[i]  == entry.faction)
-                    return false;
+                { return false; }
             for (int i = 0; i < 4; ++i)
                 if (friendFaction[i] == entry.faction)
-                    return true;
+                { return true; }
         }
         return (friendlyMask & entry.ourMask) || (ourMask & entry.friendlyMask);
     }
@@ -389,10 +389,10 @@ struct FactionTemplateEntry
         {
             for (int i = 0; i < 4; ++i)
                 if (enemyFaction[i]  == entry.faction)
-                    return true;
+                { return true; }
             for (int i = 0; i < 4; ++i)
                 if (friendFaction[i] == entry.faction)
-                    return false;
+                { return false; }
         }
         return (hostileMask & entry.ourMask) != 0;
     }
@@ -401,7 +401,7 @@ struct FactionTemplateEntry
     {
         for (int i = 0; i < 4; ++i)
             if (enemyFaction[i] != 0)
-                return false;
+            { return false; }
         return hostileMask == 0 && friendlyMask == 0;
     }
     bool IsContestedGuardFaction() const { return (factionFlags & FACTION_TEMPLATE_FLAG_CONTESTED_GUARD) != 0; }

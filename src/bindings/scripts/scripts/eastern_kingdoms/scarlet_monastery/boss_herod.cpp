@@ -94,13 +94,13 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         for (uint8 i = 0; i < 20; ++i)
-            m_creature->SummonCreature(NPC_SCARLET_TRAINEE, 1939.18f, -431.58f, 17.09f, 6.22f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
+        { m_creature->SummonCreature(NPC_SCARLET_TRAINEE, 1939.18f, -431.58f, 17.09f, 6.22f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // If we are < 30% hp enrage
         if (!m_bEnrage && m_creature->GetHealthPercent() <= 30.0f && !m_creature->IsNonMeleeSpellCasted(false))
@@ -120,7 +120,7 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
             m_uiCleaveTimer = urand(7500, 17500);
         }
         else
-            m_uiCleaveTimer -= uiDiff;
+        { m_uiCleaveTimer -= uiDiff; }
 
         if (m_uiWhirlwindTimer < uiDiff)
         {
@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
             }
         }
         else
-            m_uiWhirlwindTimer -= uiDiff;
+        { m_uiWhirlwindTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -165,11 +165,11 @@ struct MANGOS_DLL_DECL mob_scarlet_traineeAI : public npc_escortAI
                 m_uiStartTimer = 0;
             }
             else
-                m_uiStartTimer -= uiDiff;
+            { m_uiStartTimer -= uiDiff; }
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }

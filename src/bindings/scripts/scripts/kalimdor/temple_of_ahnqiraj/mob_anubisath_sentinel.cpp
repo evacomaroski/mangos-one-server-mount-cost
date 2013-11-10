@@ -73,11 +73,11 @@ struct MANGOS_DLL_DECL npc_anubisath_sentinelAI : public ScriptedAI
     void GetAIInformation(ChatHandler& reader) override
     {
         if (m_lAssistList.empty())
-            reader.PSendSysMessage("Anubisath Sentinel - group not assigned, will be assigned OnAggro");
+        { reader.PSendSysMessage("Anubisath Sentinel - group not assigned, will be assigned OnAggro"); }
         if (m_lAssistList.size() == MAX_BUDDY)
-            reader.PSendSysMessage("Anubisath Sentinel - proper group found");
+        { reader.PSendSysMessage("Anubisath Sentinel - proper group found"); }
         else
-            reader.PSendSysMessage("Anubisath Sentinel - not correct number of mobs for group found. Number found %u, should be %u", m_lAssistList.size(), MAX_BUDDY);
+        { reader.PSendSysMessage("Anubisath Sentinel - not correct number of mobs for group found. Number found %u, should be %u", m_lAssistList.size(), MAX_BUDDY); }
     }
 
     void JustReachedHome() override
@@ -85,12 +85,12 @@ struct MANGOS_DLL_DECL npc_anubisath_sentinelAI : public ScriptedAI
         for (GuidList::const_iterator itr = m_lAssistList.begin(); itr != m_lAssistList.end(); ++itr)
         {
             if (*itr == m_creature->GetObjectGuid())
-                continue;
+            { continue; }
 
             if (Creature* pBuddy = m_creature->GetMap()->GetCreature(*itr))
             {
                 if (pBuddy->isDead())
-                    pBuddy->Respawn();
+                { pBuddy->Respawn(); }
             }
         }
     }
@@ -132,10 +132,10 @@ struct MANGOS_DLL_DECL npc_anubisath_sentinelAI : public ScriptedAI
             if (Creature* pBuddy = m_creature->GetMap()->GetCreature(*itr))
             {
                 if (*itr == m_creature->GetObjectGuid())
-                    continue;
+                { continue; }
 
                 if (!pBuddy->isAlive())
-                    continue;
+                { continue; }
 
                 pBuddy->SetHealth(pBuddy->GetMaxHealth());
                 DoCastSpellIfCan(pBuddy, m_uiMyAbility, CAST_TRIGGERED);
@@ -150,12 +150,12 @@ struct MANGOS_DLL_DECL npc_anubisath_sentinelAI : public ScriptedAI
             for (GuidList::const_iterator itr = m_lAssistList.begin(); itr != m_lAssistList.end(); ++itr)
             {
                 if (*itr == m_creature->GetObjectGuid())
-                    continue;
+                { continue; }
 
                 if (Creature* pBuddy = m_creature->GetMap()->GetCreature(*itr))
                 {
                     if (pBuddy->isAlive())
-                        pBuddy->AI()->AttackStart(pTarget);
+                    { pBuddy->AI()->AttackStart(pTarget); }
                 }
             }
 
@@ -170,19 +170,19 @@ struct MANGOS_DLL_DECL npc_anubisath_sentinelAI : public ScriptedAI
             m_lAssistList.push_back((*iter)->GetObjectGuid());
 
             if ((*iter)->GetObjectGuid() == m_creature->GetObjectGuid())
-                continue;
+            { continue; }
 
             (*iter)->AI()->AttackStart(pTarget);
         }
 
         if (m_lAssistList.size() != MAX_BUDDY)
-            script_error_log("npc_anubisath_sentinel for %s found too few/too many buddies, expected %u.", m_creature->GetGuidStr().c_str(), MAX_BUDDY);
+        { script_error_log("npc_anubisath_sentinel for %s found too few/too many buddies, expected %u.", m_creature->GetGuidStr().c_str(), MAX_BUDDY); }
     }
 
     void UpdateAI(const uint32 /*uiDiff*/) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (!m_bEnraged && m_creature->GetHealthPercent() < 30.0f)
         {

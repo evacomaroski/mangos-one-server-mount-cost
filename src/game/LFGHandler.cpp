@@ -33,7 +33,7 @@ static void AttemptJoin(Player* _player)
 {
     // skip not can autojoin cases and player group case
     if (!_player->m_lookingForGroup.canAutoJoin() || _player->GetGroup())
-        return;
+    { return; }
 
     // TODO: Guard Player Map
     HashMapHolder<Player>::MapType const& players = sObjectAccessor.GetPlayers();
@@ -43,19 +43,19 @@ static void AttemptJoin(Player* _player)
 
         // skip enemies and self
         if (!plr || plr == _player || plr->GetTeam() != _player->GetTeam())
-            continue;
+        { continue; }
 
         // skip players not in world
         if (!plr->IsInWorld())
-            continue;
+        { continue; }
 
         // skip not auto add, not group leader cases
         if (!plr->GetSession()->LookingForGroup_auto_add || (plr->GetGroup() && plr->GetGroup()->GetLeaderGuid() != plr->GetObjectGuid()))
-            continue;
+        { continue; }
 
         // skip non auto-join or empty slots, or non compatible slots
         if (!plr->m_lookingForGroup.more.canAutoJoin() || !_player->m_lookingForGroup.HaveInSlot(plr->m_lookingForGroup.more))
-            continue;
+        { continue; }
 
         // attempt create group, or skip
         if (!plr->GetGroup())
@@ -74,14 +74,14 @@ static void AttemptJoin(Player* _player)
         if (plr->GetGroup()->AddMember(_player->GetObjectGuid(), _player->GetName()))
         {
             if (sWorld.getConfig(CONFIG_BOOL_RESTRICTED_LFG_CHANNEL) && _player->GetSession()->GetSecurity() == SEC_PLAYER)
-                _player->LeaveLFGChannel();
+            { _player->LeaveLFGChannel(); }
             break;
         }
         // full
         else
         {
             if (sWorld.getConfig(CONFIG_BOOL_RESTRICTED_LFG_CHANNEL) && plr->GetSession()->GetSecurity() == SEC_PLAYER)
-                plr->LeaveLFGChannel();
+            { plr->LeaveLFGChannel(); }
         }
     }
 }
@@ -90,10 +90,10 @@ static void AttemptAddMore(Player* _player)
 {
     // skip not group leader case
     if (_player->GetGroup() && _player->GetGroup()->GetLeaderGuid() != _player->GetObjectGuid())
-        return;
+    { return; }
 
     if (!_player->m_lookingForGroup.more.canAutoJoin())
-        return;
+    { return; }
 
     // TODO: Guard Player map
     HashMapHolder<Player>::MapType const& players = sObjectAccessor.GetPlayers();
@@ -103,17 +103,17 @@ static void AttemptAddMore(Player* _player)
 
         // skip enemies and self
         if (!plr || plr == _player || plr->GetTeam() != _player->GetTeam())
-            continue;
+        { continue; }
 
         if (!plr->IsInWorld())
-            continue;
+        { continue; }
 
         // skip not auto join or in group
         if (!plr->GetSession()->LookingForGroup_auto_join || plr->GetGroup())
-            continue;
+        { continue; }
 
         if (!plr->m_lookingForGroup.HaveInSlot(_player->m_lookingForGroup.more))
-            continue;
+        { continue; }
 
         // attempt create group if need, or stop attempts
         if (!_player->GetGroup())
@@ -132,20 +132,20 @@ static void AttemptAddMore(Player* _player)
         if (!_player->GetGroup()->AddMember(plr->GetObjectGuid(), plr->GetName()))
         {
             if (sWorld.getConfig(CONFIG_BOOL_RESTRICTED_LFG_CHANNEL) && _player->GetSession()->GetSecurity() == SEC_PLAYER)
-                _player->LeaveLFGChannel();
+            { _player->LeaveLFGChannel(); }
 
             break;
         }
 
         // joined
         if (sWorld.getConfig(CONFIG_BOOL_RESTRICTED_LFG_CHANNEL) && plr->GetSession()->GetSecurity() == SEC_PLAYER)
-            plr->LeaveLFGChannel();
+        { plr->LeaveLFGChannel(); }
 
         // and group full
         if (_player->GetGroup()->IsFull())
         {
             if (sWorld.getConfig(CONFIG_BOOL_RESTRICTED_LFG_CHANNEL) && _player->GetSession()->GetSecurity() == SEC_PLAYER)
-                _player->LeaveLFGChannel();
+            { _player->LeaveLFGChannel(); }
 
             break;
         }
@@ -158,7 +158,7 @@ void WorldSession::HandleLfgSetAutoJoinOpcode(WorldPacket & /*recv_data*/)
     LookingForGroup_auto_join = true;
 
     if (!_player)                                           // needed because STATUS_AUTHED
-        return;
+    { return; }
 
     AttemptJoin(_player);
 }
@@ -175,7 +175,7 @@ void WorldSession::HandleLfmSetAutoFillOpcode(WorldPacket & /*recv_data*/)
     LookingForGroup_auto_add = true;
 
     if (!_player)                                           // needed because STATUS_AUTHED
-        return;
+    { return; }
 
     AttemptAddMore(_player);
 }
@@ -192,10 +192,10 @@ void WorldSession::HandleLfgClearOpcode(WorldPacket & /*recv_data */)
     DEBUG_LOG("CMSG_CLEAR_LOOKING_FOR_GROUP");
 
     for (int i = 0; i < MAX_LOOKING_FOR_GROUP_SLOT; ++i)
-        _player->m_lookingForGroup.slots[i].Clear();
+    { _player->m_lookingForGroup.slots[i].Clear(); }
 
     if (sWorld.getConfig(CONFIG_BOOL_RESTRICTED_LFG_CHANNEL) && _player->GetSession()->GetSecurity() == SEC_PLAYER)
-        _player->LeaveLFGChannel();
+    { _player->LeaveLFGChannel(); }
 }
 
 void WorldSession::HandleLfmClearOpcode(WorldPacket & /*recv_data */)
@@ -221,7 +221,7 @@ void WorldSession::HandleSetLfmOpcode(WorldPacket& recv_data)
     DEBUG_LOG("LFM set: temp %u, zone %u, type %u", temp, entry, type);
 
     if (LookingForGroup_auto_add)
-        AttemptAddMore(_player);
+    { AttemptAddMore(_player); }
 
     SendLfgResult(LfgType(type), entry, LFM_MODE);
 }
@@ -248,10 +248,10 @@ void WorldSession::HandleLookingForGroup(WorldPacket& recv_data)
     DEBUG_LOG("MSG_LOOKING_FOR_GROUP: type %u, entry %u, unk %u", type, entry, unk);
 
     if (LookingForGroup_auto_add)
-        AttemptAddMore(_player);
+    { AttemptAddMore(_player); }
 
     if (LookingForGroup_auto_join)
-        AttemptJoin(_player);
+    { AttemptJoin(_player); }
 
     SendLfgResult(LfgType(type), entry, LFG_MODE);
 }
@@ -274,13 +274,13 @@ void WorldSession::SendLfgResult(LfgType type, uint32 entry, LfgMode lfg_mode)
         Player* plr = iter->second;
 
         if (!plr || plr->GetTeam() != _player->GetTeam())
-            continue;
+        { continue; }
 
         if (!plr->IsInWorld())
-            continue;
+        { continue; }
 
         if (!plr->m_lookingForGroup.HaveInSlot(entry, type))
-            continue;
+        { continue; }
 
         ++number;
 
@@ -335,13 +335,13 @@ void WorldSession::HandleSetLfgOpcode(WorldPacket& recv_data)
     uint32 type = ((temp >> 24) & 0xFFFF);
 
     if (slot >= MAX_LOOKING_FOR_GROUP_SLOT)
-        return;
+    { return; }
 
     _player->m_lookingForGroup.slots[slot].Set(entry, type);
     DEBUG_LOG("LFG set: looknumber %u, temp %X, type %u, entry %u", slot, temp, type, entry);
 
     if (LookingForGroup_auto_join)
-        AttemptJoin(_player);
+    { AttemptJoin(_player); }
 
     SendLfgResult(LfgType(type), entry, LFG_MODE);
 }

@@ -49,14 +49,14 @@ void instance_deadmines::OnPlayerEnter(Player* pPlayer)
 {
     // Respawn the Mysterious chest if one of the players who enter the instance has the quest in his log
     if (pPlayer->GetQuestStatus(QUEST_FORTUNE_AWAITS) == QUEST_STATUS_COMPLETE &&
-            !pPlayer->GetQuestRewardStatus(QUEST_FORTUNE_AWAITS))
-        DoRespawnGameObject(GO_MYSTERIOUS_CHEST, HOUR);
+        !pPlayer->GetQuestRewardStatus(QUEST_FORTUNE_AWAITS))
+    { DoRespawnGameObject(GO_MYSTERIOUS_CHEST, HOUR); }
 }
 
 void instance_deadmines::OnCreatureCreate(Creature* pCreature)
 {
     if (pCreature->GetEntry() == NPC_MR_SMITE)
-        m_mNpcEntryGuidStore[NPC_MR_SMITE] = pCreature->GetObjectGuid();
+    { m_mNpcEntryGuidStore[NPC_MR_SMITE] = pCreature->GetObjectGuid(); }
 }
 
 void instance_deadmines::OnObjectCreate(GameObject* pGo)
@@ -65,22 +65,22 @@ void instance_deadmines::OnObjectCreate(GameObject* pGo)
     {
         case GO_FACTORY_DOOR:
             if (m_auiEncounter[TYPE_RHAHKZOR] == DONE)
-                pGo->SetGoState(GO_STATE_ACTIVE);
+            { pGo->SetGoState(GO_STATE_ACTIVE); }
 
             break;
         case GO_MAST_ROOM_DOOR:
             if (m_auiEncounter[TYPE_SNEED] == DONE)
-                pGo->SetGoState(GO_STATE_ACTIVE);
+            { pGo->SetGoState(GO_STATE_ACTIVE); }
 
             break;
         case GO_FOUNDRY_DOOR:
             if (m_auiEncounter[TYPE_GILNID] == DONE)
-                pGo->SetGoState(GO_STATE_ACTIVE);
+            { pGo->SetGoState(GO_STATE_ACTIVE); }
 
             break;
         case GO_IRON_CLAD_DOOR:
             if (m_auiEncounter[TYPE_IRON_CLAD_DOOR] == DONE)
-                pGo->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+            { pGo->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE); }
 
             break;
         case GO_DEFIAS_CANNON:
@@ -112,7 +112,7 @@ void instance_deadmines::SetData(uint32 uiType, uint32 uiData)
         case TYPE_RHAHKZOR:
         {
             if (uiData == DONE)
-                DoUseDoorOrButton(GO_FACTORY_DOOR);
+            { DoUseDoorOrButton(GO_FACTORY_DOOR); }
 
             m_auiEncounter[uiType] = uiData;
             break;
@@ -120,7 +120,7 @@ void instance_deadmines::SetData(uint32 uiType, uint32 uiData)
         case TYPE_SNEED:
         {
             if (uiData == DONE)
-                DoUseDoorOrButton(GO_MAST_ROOM_DOOR);
+            { DoUseDoorOrButton(GO_MAST_ROOM_DOOR); }
 
             m_auiEncounter[uiType] = uiData;
             break;
@@ -128,7 +128,7 @@ void instance_deadmines::SetData(uint32 uiType, uint32 uiData)
         case TYPE_GILNID:
         {
             if (uiData == DONE)
-                DoUseDoorOrButton(GO_FOUNDRY_DOOR);
+            { DoUseDoorOrButton(GO_FOUNDRY_DOOR); }
 
             m_auiEncounter[uiType] = uiData;
             break;
@@ -137,7 +137,7 @@ void instance_deadmines::SetData(uint32 uiType, uint32 uiData)
         {
             // delayed door animation to sync with Defias Cannon animation
             if (uiData == DONE)
-                m_uiIronDoorTimer = 500;
+            { m_uiIronDoorTimer = 500; }
 
             m_auiEncounter[uiType] = uiData;
             break;
@@ -161,7 +161,7 @@ void instance_deadmines::SetData(uint32 uiType, uint32 uiData)
 uint32 instance_deadmines::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
-        return m_auiEncounter[uiType];
+    { return m_auiEncounter[uiType]; }
 
     return 0;
 }
@@ -182,7 +182,7 @@ void instance_deadmines::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
-            m_auiEncounter[i] = NOT_STARTED;
+        { m_auiEncounter[i] = NOT_STARTED; }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
@@ -200,7 +200,7 @@ void instance_deadmines::Update(uint32 uiDiff)
                     DoUseDoorOrButton(GO_IRON_CLAD_DOOR, 0, true);
 
                     if (Creature* pMrSmite = GetSingleCreatureFromStorage(NPC_MR_SMITE))
-                        DoScriptText(INST_SAY_ALARM1, pMrSmite);
+                    { DoScriptText(INST_SAY_ALARM1, pMrSmite); }
 
                     if (GameObject* pDoor = GetSingleGameObjectFromStorage(GO_IRON_CLAD_DOOR))
                     {
@@ -223,7 +223,7 @@ void instance_deadmines::Update(uint32 uiDiff)
                     break;
                 case 1:
                     if (Creature* pMrSmite = GetSingleCreatureFromStorage(NPC_MR_SMITE))
-                        DoScriptText(INST_SAY_ALARM2, pMrSmite);
+                    { DoScriptText(INST_SAY_ALARM2, pMrSmite); }
 
                     m_uiDoorStep = 0;
                     m_uiIronDoorTimer = 0;
@@ -231,7 +231,7 @@ void instance_deadmines::Update(uint32 uiDiff)
             }
         }
         else
-            m_uiIronDoorTimer -= uiDiff;
+        { m_uiIronDoorTimer -= uiDiff; }
     }
 }
 

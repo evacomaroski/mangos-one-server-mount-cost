@@ -125,13 +125,13 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI, private DialogueHelpe
     void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_SPOTLIGHT)
-            m_spotlightGuid = pSummoned->GetObjectGuid();
+        { m_spotlightGuid = pSummoned->GetObjectGuid(); }
     }
 
     void WaypointReached(uint32 uiPointId) override
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         switch (uiPointId)
         {
@@ -173,7 +173,7 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI, private DialogueHelpe
             case OPERA_EVENT_ROMULO_AND_JUL:
                 // Despawn spotlight and resume escort
                 if (Creature* pSpotlight = m_creature->GetMap()->GetCreature(m_spotlightGuid))
-                    pSpotlight->ForcedDespawn();
+                { pSpotlight->ForcedDespawn(); }
                 SetEscortPaused(false);
                 break;
         }
@@ -193,7 +193,7 @@ bool GossipHello_npc_barnes(Player* pPlayer, Creature* pCreature)
     {
         // Check if opera event is not yet in progress
         if (pInstance->GetData(TYPE_OPERA) == IN_PROGRESS || pInstance->GetData(TYPE_OPERA) == DONE)
-            return true;
+        { return true; }
 
         // Check for death of Moroes
         if (pInstance->GetData(TYPE_MOROES) == DONE)
@@ -230,7 +230,7 @@ bool GossipSelect_npc_barnes(Player* pPlayer, Creature* pCreature, uint32 /*uiSe
             DoScriptText(SAY_BARNES_EVENT_START, pCreature);
             // start the stage escort
             if (npc_barnesAI* pBarnesAI = dynamic_cast<npc_barnesAI*>(pCreature->AI()))
-                pBarnesAI->Start(false, NULL, NULL, true);
+            { pBarnesAI->Start(false, NULL, NULL, true); }
             break;
             // GM gossip options
         case GOSSIP_ACTION_INFO_DEF+3:
@@ -279,7 +279,7 @@ bool GossipHello_npc_berthold(Player* pPlayer, Creature* pCreature)
     {
         // Check if Shade of Aran event is done
         if (pInstance->GetData(TYPE_ARAN) == DONE)
-            pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TELEPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        { pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TELEPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1); }
     }
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
@@ -289,7 +289,7 @@ bool GossipHello_npc_berthold(Player* pPlayer, Creature* pCreature)
 bool GossipSelect_npc_berthold(Player* pPlayer, Creature* /*pCreature*/, uint32 /*uiSender*/, uint32 uiAction)
 {
     if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)
-        pPlayer->CastSpell(pPlayer, SPELL_TELEPORT, true);
+    { pPlayer->CastSpell(pPlayer, SPELL_TELEPORT, true); }
 
     pPlayer->CLOSE_GOSSIP_MENU();
     return true;
@@ -398,7 +398,7 @@ struct MANGOS_DLL_DECL npc_image_of_medivhAI : public ScriptedAI, private Dialog
     void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE || pSummoned->GetEntry() != NPC_IMAGE_OF_ARCANAGOS)
-            return;
+        { return; }
 
         switch (uiPointId)
         {
@@ -411,7 +411,7 @@ struct MANGOS_DLL_DECL npc_image_of_medivhAI : public ScriptedAI, private Dialog
                 m_creature->GetMotionMaster()->MovePoint(0, afMedivhExitLoc[0], afMedivhExitLoc[1], afMedivhExitLoc[2]);
                 // complete quest
                 if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_eventStarterGuid))
-                    pPlayer->GroupEventHappens(QUEST_MASTERS_TERRACE, m_creature);
+                { pPlayer->GroupEventHappens(QUEST_MASTERS_TERRACE, m_creature); }
                 break;
         }
     }
@@ -428,13 +428,13 @@ struct MANGOS_DLL_DECL npc_image_of_medivhAI : public ScriptedAI, private Dialog
     void JustDidDialogueStep(int32 iEntry) override
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         switch (iEntry)
         {
             case SAY_ARCANAGOS_6:
                 if (Creature* pDragon = m_pInstance->GetSingleCreatureFromStorage(NPC_IMAGE_OF_ARCANAGOS))
-                    DoCastSpellIfCan(pDragon, SPELL_FIREBALL);
+                { DoCastSpellIfCan(pDragon, SPELL_FIREBALL); }
                 break;
             case EMOTE_CAST_SPELL:
                 DoCastSpellIfCan(m_creature, SPELL_EVOCATION);
@@ -509,7 +509,7 @@ bool ProcessEventId_event_spell_medivh_journal(uint32 /*uiEventId*/, Object* pSo
 
             // store the player who started the event
             if (npc_image_of_medivhAI* pMedivhAI = dynamic_cast<npc_image_of_medivhAI*>(pMedivh->AI()))
-                pMedivhAI->SetEventStarter(pSource->GetObjectGuid());
+            { pMedivhAI->SetEventStarter(pSource->GetObjectGuid()); }
         }
     }
 

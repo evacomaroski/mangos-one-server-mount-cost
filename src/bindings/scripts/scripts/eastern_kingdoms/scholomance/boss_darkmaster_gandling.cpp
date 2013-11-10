@@ -67,34 +67,34 @@ struct MANGOS_DLL_DECL boss_darkmaster_gandlingAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Arcane Missiles Timer
         if (m_uiArcaneMissilesTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_ARCANE_MISSILES) == CAST_OK)
-                m_uiArcaneMissilesTimer = 8000;
+            { m_uiArcaneMissilesTimer = 8000; }
         }
         else
-            m_uiArcaneMissilesTimer -= uiDiff;
+        { m_uiArcaneMissilesTimer -= uiDiff; }
 
         // Shadow Shield Timer
         if (m_uiShadowShieldTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SHADOW_SHIELD) == CAST_OK)
-                m_uiShadowShieldTimer = urand(14000, 28000);
+            { m_uiShadowShieldTimer = urand(14000, 28000); }
         }
         else
-            m_uiShadowShieldTimer -= uiDiff;
+        { m_uiShadowShieldTimer -= uiDiff; }
 
         // Curse Timer
         if (m_uiCurseTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_CURSE) == CAST_OK)
-                m_uiCurseTimer = urand(15000, 27000);
+            { m_uiCurseTimer = urand(15000, 27000); }
         }
         else
-            m_uiCurseTimer -= uiDiff;
+        { m_uiCurseTimer -= uiDiff; }
 
         // Teleporting Random Target to one of the six pre boss rooms and spawn 3-4 skeletons near the gamer.
         // We will only telport if gandling has more than 3% of hp so teleported gamers can always loot.
@@ -108,14 +108,14 @@ struct MANGOS_DLL_DECL boss_darkmaster_gandlingAI : public ScriptedAI
                     {
                         // remove threat
                         if (m_creature->getThreatManager().getThreat(pTarget))
-                            m_creature->getThreatManager().modifyThreatPercent(pTarget, -100);
+                        { m_creature->getThreatManager().modifyThreatPercent(pTarget, -100); }
 
                         m_uiTeleportTimer = urand(20000, 35000);
                     }
                 }
             }
             else
-                m_uiTeleportTimer -= uiDiff;
+            { m_uiTeleportTimer -= uiDiff; }
         }
 
         DoMeleeAttackIfReady();

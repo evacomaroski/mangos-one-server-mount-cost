@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL npc_professor_phizzlethorpeAI : public npc_escortAI
         Player* pPlayer = GetPlayerForEscort();
 
         if (!pPlayer)
-            return;
+        { return; }
 
         switch (uiPointId)
         {
@@ -113,7 +113,7 @@ bool QuestAccept_npc_professor_phizzlethorpe(Player* pPlayer, Creature* pCreatur
         DoScriptText(SAY_PROGRESS_1, pCreature, pPlayer);
 
         if (npc_professor_phizzlethorpeAI* pEscortAI = dynamic_cast<npc_professor_phizzlethorpeAI*>(pCreature->AI()))
-            pEscortAI->Start(false, pPlayer, pQuest, true);
+        { pEscortAI->Start(false, pPlayer, pQuest, true); }
     }
     return true;
 }

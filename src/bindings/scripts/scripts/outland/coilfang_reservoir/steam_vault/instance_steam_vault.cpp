@@ -44,12 +44,12 @@ bool GOUse_go_main_chambers_access_panel(Player* /*pPlayer*/, GameObject* pGo)
     ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
 
     if (!pInstance)
-        return true;
+    { return true; }
 
     if (pGo->GetEntry() == GO_ACCESS_PANEL_HYDRO)
-        pInstance->SetData(TYPE_HYDROMANCER_THESPIA, SPECIAL);
+    { pInstance->SetData(TYPE_HYDROMANCER_THESPIA, SPECIAL); }
     else if (pGo->GetEntry() == GO_ACCESS_PANEL_MEK)
-        pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, SPECIAL);
+    { pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, SPECIAL); }
 
     return false;
 }
@@ -84,15 +84,15 @@ void instance_steam_vault::OnObjectCreate(GameObject* pGo)
     {
         case GO_MAIN_CHAMBERS_DOOR:
             if (m_auiEncounter[TYPE_HYDROMANCER_THESPIA] == SPECIAL && m_auiEncounter[TYPE_MEKGINEER_STEAMRIGGER] == SPECIAL)
-                pGo->SetGoState(GO_STATE_ACTIVE);
+            { pGo->SetGoState(GO_STATE_ACTIVE); }
             break;
         case GO_ACCESS_PANEL_HYDRO:
             if (m_auiEncounter[TYPE_HYDROMANCER_THESPIA] == DONE)
-                pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
+            { pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT); }
             break;
         case GO_ACCESS_PANEL_MEK:
             if (m_auiEncounter[TYPE_MEKGINEER_STEAMRIGGER] == DONE)
-                pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
+            { pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT); }
             break;
         default:
             return;
@@ -106,7 +106,7 @@ void instance_steam_vault::OnCreatureDeath(Creature* pCreature)
     if (pCreature->GetEntry() == NPC_NAGA_DISTILLER)
     {
         if (Creature* pWarlord = GetSingleCreatureFromStorage(NPC_KALITHRESH))
-            pWarlord->InterruptNonMeleeSpells(false);
+        { pWarlord->InterruptNonMeleeSpells(false); }
     }
 }
 
@@ -116,21 +116,21 @@ void instance_steam_vault::SetData(uint32 uiType, uint32 uiData)
     {
         case TYPE_HYDROMANCER_THESPIA:
             if (uiData == DONE)
-                DoToggleGameObjectFlags(GO_ACCESS_PANEL_HYDRO, GO_FLAG_NO_INTERACT, false);
+            { DoToggleGameObjectFlags(GO_ACCESS_PANEL_HYDRO, GO_FLAG_NO_INTERACT, false); }
             if (uiData == SPECIAL)
             {
                 if (GetData(TYPE_MEKGINEER_STEAMRIGGER) == SPECIAL)
-                    DoUseDoorOrButton(GO_MAIN_CHAMBERS_DOOR);
+                { DoUseDoorOrButton(GO_MAIN_CHAMBERS_DOOR); }
             }
             m_auiEncounter[uiType] = uiData;
             break;
         case TYPE_MEKGINEER_STEAMRIGGER:
             if (uiData == DONE)
-                DoToggleGameObjectFlags(GO_ACCESS_PANEL_MEK, GO_FLAG_NO_INTERACT, false);
+            { DoToggleGameObjectFlags(GO_ACCESS_PANEL_MEK, GO_FLAG_NO_INTERACT, false); }
             if (uiData == SPECIAL)
             {
                 if (GetData(TYPE_HYDROMANCER_THESPIA) == SPECIAL)
-                    DoUseDoorOrButton(GO_MAIN_CHAMBERS_DOOR);
+                { DoUseDoorOrButton(GO_MAIN_CHAMBERS_DOOR); }
             }
             m_auiEncounter[uiType] = uiData;
             break;
@@ -144,7 +144,7 @@ void instance_steam_vault::SetData(uint32 uiType, uint32 uiData)
                     if (Creature* pDistiller = instance->GetCreature(*itr))
                     {
                         if (!pDistiller->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
-                            pDistiller->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        { pDistiller->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE); }
                     }
                 }
             }
@@ -169,7 +169,7 @@ void instance_steam_vault::SetData(uint32 uiType, uint32 uiData)
 uint32 instance_steam_vault::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
-        return m_auiEncounter[uiType];
+    { return m_auiEncounter[uiType]; }
 
     return 0;
 }
@@ -190,7 +190,7 @@ void instance_steam_vault::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
-            m_auiEncounter[i] = NOT_STARTED;
+        { m_auiEncounter[i] = NOT_STARTED; }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;

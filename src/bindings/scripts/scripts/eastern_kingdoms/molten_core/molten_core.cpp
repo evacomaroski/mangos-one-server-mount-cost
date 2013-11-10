@@ -45,7 +45,7 @@ bool GOUse_go_molten_core_rune(Player* pPlayer, GameObject* pGo)
     ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
 
     if (!pInstance)
-        return true;
+    { return true; }
 
     for (uint8 i = 0; i < MAX_MOLTEN_RUNES; ++i)
     {
@@ -53,7 +53,7 @@ bool GOUse_go_molten_core_rune(Player* pPlayer, GameObject* pGo)
         {
             // check if boss is already dead - if not return true
             if (pInstance->GetData(m_aMoltenCoreRunes[i].m_uiType) != DONE)
-                return true;
+            { return true; }
 
             pInstance->SetData(m_aMoltenCoreRunes[i].m_uiType, SPECIAL);
             return false;

@@ -54,7 +54,7 @@ enum
 bool GOUse_go_mausoleum_door(Player* pPlayer, GameObject* /*pGo*/)
 {
     if (pPlayer->GetQuestStatus(QUEST_ULAG) != QUEST_STATUS_INCOMPLETE)
-        return false;
+    { return false; }
 
     if (GameObject* pTrigger = GetClosestGameObjectWithEntry(pPlayer, GO_TRIGGER, 30.0f))
     {
@@ -69,7 +69,7 @@ bool GOUse_go_mausoleum_door(Player* pPlayer, GameObject* /*pGo*/)
 bool GOUse_go_mausoleum_trigger(Player* pPlayer, GameObject* pGo)
 {
     if (pPlayer->GetQuestStatus(QUEST_ULAG) != QUEST_STATUS_INCOMPLETE)
-        return false;
+    { return false; }
 
     if (GameObject* pDoor = GetClosestGameObjectWithEntry(pPlayer, GO_DOOR, 30.0f))
     {
@@ -114,7 +114,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
     void AttackedBy(Unit* pAttacker) override
     {
         if (m_creature->getVictim() || m_creature->IsFriendlyTo(pAttacker))
-            return;
+        { return; }
 
         AttackStart(pAttacker);
     }
@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
             m_uiPhase = 1;
 
             if (pDoneBy->GetTypeId() == TYPEID_PLAYER)
-                m_playerGuid = pDoneBy->GetObjectGuid();
+            { m_playerGuid = pDoneBy->GetObjectGuid(); }
         }
     }
 
@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
         if (m_uiPhase)
         {
             if (m_uiPhaseTimer < uiDiff)
-                m_uiPhaseTimer = 7500;
+            { m_uiPhaseTimer = 7500; }
             else
             {
                 m_uiPhaseTimer -= uiDiff;
@@ -154,7 +154,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
                     break;
                 case 2:
                     if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_playerGuid))
-                        pPlayer->AreaExploredOrEventHappens(QUEST_590);
+                    { pPlayer->AreaExploredOrEventHappens(QUEST_590); }
 
                     m_creature->CastSpell(m_creature, SPELL_DRINK, true);
                     ++m_uiPhase;
@@ -168,7 +168,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }

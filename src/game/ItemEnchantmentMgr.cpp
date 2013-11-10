@@ -71,7 +71,7 @@ void LoadRandomEnchantmentsTable()
             float chance = fields[2].GetFloat();
 
             if (chance > 0.000001f && chance <= 100.0f)
-                RandomItemEnch[entry].push_back(EnchStoreItem(ench, chance));
+            { RandomItemEnch[entry].push_back(EnchStoreItem(ench, chance)); }
 
             ++count;
         }
@@ -91,7 +91,7 @@ void LoadRandomEnchantmentsTable()
 
 uint32 GetItemEnchantMod(uint32 entry)
 {
-    if (!entry) return 0;
+    if (!entry) { return 0; }
 
     EnchantmentStore::const_iterator tab = RandomItemEnch.find(entry);
 
@@ -108,7 +108,7 @@ uint32 GetItemEnchantMod(uint32 entry)
     {
         fCount += ench_iter->chance;
 
-        if (fCount > dRoll) return ench_iter->ench;
+        if (fCount > dRoll) { return ench_iter->ench; }
     }
 
     // we could get here only if sum of all enchantment chances is lower than 100%
@@ -119,7 +119,7 @@ uint32 GetItemEnchantMod(uint32 entry)
     {
         fCount += ench_iter->chance;
 
-        if (fCount > dRoll) return ench_iter->ench;
+        if (fCount > dRoll) { return ench_iter->ench; }
     }
 
     return 0;
@@ -130,13 +130,13 @@ uint32 GenerateEnchSuffixFactor(uint32 item_id)
     ItemPrototype const* itemProto = ObjectMgr::GetItemPrototype(item_id);
 
     if (!itemProto)
-        return 0;
+    { return 0; }
     if (!itemProto->RandomSuffix)
-        return 0;
+    { return 0; }
 
     RandomPropertiesPointsEntry const* randomProperty = sRandomPropertiesPointsStore.LookupEntry(itemProto->ItemLevel);
     if (!randomProperty)
-        return 0;
+    { return 0; }
 
     uint32 suffixFactor;
     switch (itemProto->InventoryType)

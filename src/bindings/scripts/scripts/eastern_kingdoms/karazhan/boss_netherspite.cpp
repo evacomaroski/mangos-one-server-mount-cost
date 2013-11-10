@@ -152,13 +152,13 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
         m_vPortalEntryList.resize(MAX_PORTALS);
 
         for (uint8 i = 0; i < MAX_PORTALS; ++i)
-            m_vPortalEntryList[i] = auiPortals[i];
+        { m_vPortalEntryList[i] = auiPortals[i]; }
     }
 
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NETHERSPITE, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_NETHERSPITE, IN_PROGRESS); }
 
         DoSummonPortals();
         DoCastSpellIfCan(m_creature, SPELL_NETHERBURN);
@@ -167,13 +167,13 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NETHERSPITE, DONE);
+        { m_pInstance->SetData(TYPE_NETHERSPITE, DONE); }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_NETHERSPITE, FAIL);
+        { m_pInstance->SetData(TYPE_NETHERSPITE, FAIL); }
     }
 
     void SwitchPhases()
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
     void DoSummonPortals()
     {
         for (uint8 i = 0; i < MAX_PORTALS; ++i)
-            m_creature->SummonCreature(m_vPortalEntryList[i], aPortalCoordinates[i].fX, aPortalCoordinates[i].fY, aPortalCoordinates[i].fZ, aPortalCoordinates[i].fO, TEMPSUMMON_TIMED_DESPAWN, 60000);
+        { m_creature->SummonCreature(m_vPortalEntryList[i], aPortalCoordinates[i].fX, aPortalCoordinates[i].fY, aPortalCoordinates[i].fZ, aPortalCoordinates[i].fO, TEMPSUMMON_TIMED_DESPAWN, 60000); }
 
         // randomize the portals after the first summon
         std::random_shuffle(m_vPortalEntryList.begin(), m_vPortalEntryList.end());
@@ -244,22 +244,22 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiPhaseSwitchTimer <= uiDiff)
-            SwitchPhases();
+        { SwitchPhases(); }
         else
-            m_uiPhaseSwitchTimer -= uiDiff;
+        { m_uiPhaseSwitchTimer -= uiDiff; }
 
         if (m_uiEnrageTimer)
         {
             if (m_uiEnrageTimer <= uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_NETHER_INFUSION) == CAST_OK)
-                    m_uiEnrageTimer = 0;
+                { m_uiEnrageTimer = 0; }
             }
             else
-                m_uiEnrageTimer -= uiDiff;
+            { m_uiEnrageTimer -= uiDiff; }
         }
 
         if (m_uiActivePhase == BEAM_PHASE)
@@ -269,11 +269,11 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 {
                     if (DoCastSpellIfCan(pTarget, SPELL_VOID_ZONE) == CAST_OK)
-                        m_uiVoidZoneTimer = 15000;
+                    { m_uiVoidZoneTimer = 15000; }
                 }
             }
             else
-                m_uiVoidZoneTimer -= uiDiff;
+            { m_uiVoidZoneTimer -= uiDiff; }
 
             if (m_uiEmpowermentTimer)
             {
@@ -286,7 +286,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
                     }
                 }
                 else
-                    m_uiEmpowermentTimer -= uiDiff;
+                { m_uiEmpowermentTimer -= uiDiff; }
             }
 
             DoMeleeAttackIfReady();
@@ -296,10 +296,10 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
             if (m_uiNetherbreathTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_NETHERBREATH) == CAST_OK)
-                    m_uiNetherbreathTimer = urand(4000, 5000);
+                { m_uiNetherbreathTimer = urand(4000, 5000); }
             }
             else
-                m_uiNetherbreathTimer -= uiDiff;
+            { m_uiNetherbreathTimer -= uiDiff; }
         }
     }
 };

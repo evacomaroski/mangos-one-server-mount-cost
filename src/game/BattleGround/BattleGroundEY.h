@@ -137,8 +137,8 @@ enum EYPointsTrigger
     AREATRIGGER_MAGE_TOWER_BUFF         = 4570,
     AREATRIGGER_DRAENEI_RUINS_BUFF      = 4571
 
-    //AREATRIGGER_EY_HORDE_START          = 4530,
-    //AREATRIGGER_EY_ALLIANCE_START       = 4531
+            //AREATRIGGER_EY_HORDE_START          = 4530,
+            //AREATRIGGER_EY_ALLIANCE_START       = 4531
 };
 
 enum EYGaveyards

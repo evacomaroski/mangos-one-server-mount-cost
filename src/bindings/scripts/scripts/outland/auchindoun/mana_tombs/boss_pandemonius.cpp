@@ -94,12 +94,12 @@ struct MANGOS_DLL_DECL boss_pandemoniusAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiVoidBlastTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                DoCastSpellIfCan(pTarget, m_bIsRegularMode ? SPELL_VOID_BLAST : SPELL_VOID_BLAST_H);
+            { DoCastSpellIfCan(pTarget, m_bIsRegularMode ? SPELL_VOID_BLAST : SPELL_VOID_BLAST_H); }
 
             // reset timer and counter when counter has reached the max limit
             if (m_uiVoidBlastCounter == MAX_VOID_BLASTS)
@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_pandemoniusAI : public ScriptedAI
             }
         }
         else
-            m_uiVoidBlastTimer -= uiDiff;
+        { m_uiVoidBlastTimer -= uiDiff; }
 
         // use the darkshell only when the boss isn't casting the void blasts
         if (!m_uiVoidBlastCounter)
@@ -129,7 +129,7 @@ struct MANGOS_DLL_DECL boss_pandemoniusAI : public ScriptedAI
                 }
             }
             else
-                m_uiDarkShellTimer -= uiDiff;
+            { m_uiDarkShellTimer -= uiDiff; }
         }
 
         DoMeleeAttackIfReady();

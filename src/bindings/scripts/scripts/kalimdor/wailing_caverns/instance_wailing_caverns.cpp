@@ -47,8 +47,8 @@ void instance_wailing_caverns::OnPlayerEnter(Player* pPlayer)
 {
     // Respawn the Mysterious chest if one of the players who enter the instance has the quest in his log
     if (pPlayer->GetQuestStatus(QUEST_FORTUNE_AWAITS) == QUEST_STATUS_COMPLETE &&
-            !pPlayer->GetQuestRewardStatus(QUEST_FORTUNE_AWAITS))
-        DoRespawnGameObject(GO_MYSTERIOUS_CHEST, HOUR);
+        !pPlayer->GetQuestRewardStatus(QUEST_FORTUNE_AWAITS))
+    { DoRespawnGameObject(GO_MYSTERIOUS_CHEST, HOUR); }
 }
 
 void instance_wailing_caverns::OnCreatureCreate(Creature* pCreature)
@@ -65,7 +65,7 @@ void instance_wailing_caverns::OnCreatureCreate(Creature* pCreature)
 void instance_wailing_caverns::OnObjectCreate(GameObject* pGo)
 {
     if (pGo->GetEntry() == GO_MYSTERIOUS_CHEST)
-        m_mGoEntryGuidStore[GO_MYSTERIOUS_CHEST] = pGo->GetObjectGuid();
+    { m_mGoEntryGuidStore[GO_MYSTERIOUS_CHEST] = pGo->GetObjectGuid(); }
 }
 
 void instance_wailing_caverns::SetData(uint32 uiType, uint32 uiData)
@@ -99,7 +99,7 @@ void instance_wailing_caverns::SetData(uint32 uiType, uint32 uiData)
         if (m_auiEncounter[4] == NOT_STARTED)
         {
             if (Creature* pDisciple = GetSingleCreatureFromStorage(NPC_DISCIPLE))
-                DoScriptText(SAY_INTRO, pDisciple);
+            { DoScriptText(SAY_INTRO, pDisciple); }
         }
 
         m_auiEncounter[4] = SPECIAL;
@@ -137,7 +137,7 @@ void instance_wailing_caverns::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
-            m_auiEncounter[i] = NOT_STARTED;
+        { m_auiEncounter[i] = NOT_STARTED; }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
@@ -146,7 +146,7 @@ void instance_wailing_caverns::Load(const char* chrIn)
 uint32 instance_wailing_caverns::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
-        return m_auiEncounter[uiType];
+    { return m_auiEncounter[uiType]; }
 
     return 0;
 }

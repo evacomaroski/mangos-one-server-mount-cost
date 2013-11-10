@@ -125,7 +125,7 @@ void LoadSkillDiscoveryTable()
             }
 
             for (SkillLineAbilityMap::const_iterator _spell_idx = bounds.first; _spell_idx != bounds.second; ++_spell_idx)
-                SkillDiscoveryStore[-int32(_spell_idx->second->skillId)].push_back(SkillDiscoveryEntry(spellId, chance));
+            { SkillDiscoveryStore[-int32(_spell_idx->second->skillId)].push_back(SkillDiscoveryEntry(spellId, chance)); }
         }
         else
         {
@@ -142,7 +142,7 @@ void LoadSkillDiscoveryTable()
     sLog.outString();
     sLog.outString(">> Loaded %u skill discovery definitions", count);
     if (!ssNonDiscoverableEntries.str().empty())
-        sLog.outErrorDb("Some items can't be successfully discovered: have in chance field value < 0.000001 in `skill_discovery_template` DB table . List:\n%s", ssNonDiscoverableEntries.str().c_str());
+    { sLog.outErrorDb("Some items can't be successfully discovered: have in chance field value < 0.000001 in `skill_discovery_template` DB table . List:\n%s", ssNonDiscoverableEntries.str().c_str()); }
 }
 
 uint32 GetSkillDiscoverySpell(uint32 skillId, uint32 spellId, Player* player)
@@ -155,15 +155,15 @@ uint32 GetSkillDiscoverySpell(uint32 skillId, uint32 spellId, Player* player)
         for (SkillDiscoveryList::const_iterator item_iter = tab->second.begin(); item_iter != tab->second.end(); ++item_iter)
         {
             if (roll_chance_f(item_iter->chance * sWorld.getConfig(CONFIG_FLOAT_RATE_SKILL_DISCOVERY)) &&
-                    !player->HasSpell(item_iter->spellId))
-                return item_iter->spellId;
+                !player->HasSpell(item_iter->spellId))
+            { return item_iter->spellId; }
         }
 
         return 0;
     }
 
     if (!skillId)
-        return 0;
+    { return 0; }
 
     // check skill line case
     tab = SkillDiscoveryStore.find(-(int32)skillId);
@@ -172,8 +172,8 @@ uint32 GetSkillDiscoverySpell(uint32 skillId, uint32 spellId, Player* player)
         for (SkillDiscoveryList::const_iterator item_iter = tab->second.begin(); item_iter != tab->second.end(); ++item_iter)
         {
             if (roll_chance_f(item_iter->chance * sWorld.getConfig(CONFIG_FLOAT_RATE_SKILL_DISCOVERY)) &&
-                    !player->HasSpell(item_iter->spellId))
-                return item_iter->spellId;
+                !player->HasSpell(item_iter->spellId))
+            { return item_iter->spellId; }
         }
 
         return 0;

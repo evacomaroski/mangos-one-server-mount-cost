@@ -108,16 +108,16 @@ World::World()
     m_availableDbcLocaleMask = 0;
 
     for (int i = 0; i < CONFIG_UINT32_VALUE_COUNT; ++i)
-        m_configUint32Values[i] = 0;
+    { m_configUint32Values[i] = 0; }
 
     for (int i = 0; i < CONFIG_INT32_VALUE_COUNT; ++i)
-        m_configInt32Values[i] = 0;
+    { m_configInt32Values[i] = 0; }
 
     for (int i = 0; i < CONFIG_FLOAT_VALUE_COUNT; ++i)
-        m_configFloatValues[i] = 0.0f;
+    { m_configFloatValues[i] = 0.0f; }
 
     for (int i = 0; i < CONFIG_BOOL_VALUE_COUNT; ++i)
-        m_configBoolValues[i] = false;
+    { m_configBoolValues[i] = false; }
 }
 
 /// World destructor
@@ -133,13 +133,13 @@ World::~World()
 
     ///- Empty the WeatherMap
     for (WeatherMap::const_iterator itr = m_weathers.begin(); itr != m_weathers.end(); ++itr)
-        delete itr->second;
+    { delete itr->second; }
 
     m_weathers.clear();
 
     CliCommandHolder* command = NULL;
     while (cliCmdQueue.next(command))
-        delete command;
+    { delete command; }
 
     VMAP::VMapFactory::clear();
     MMAP::MMapFactory::clear();
@@ -163,10 +163,10 @@ Player* World::FindPlayerInZone(uint32 zone)
     for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (!itr->second)
-            continue;
+        { continue; }
         Player* player = itr->second->GetPlayer();
         if (!player)
-            continue;
+        { continue; }
         if (player->IsInWorld() && player->GetZoneId() == zone)
         {
             // Used by the weather system. We return the player to broadcast the change weather message to him and all players in the zone.
@@ -182,9 +182,9 @@ WorldSession* World::FindSession(uint32 id) const
     SessionMap::const_iterator itr = m_sessions.find(id);
 
     if (itr != m_sessions.end())
-        return itr->second;                                 // also can return NULL for kicked session
+    { return itr->second; }                                 // also can return NULL for kicked session
     else
-        return NULL;
+    { return NULL; }
 }
 
 /// Remove a given session
@@ -196,7 +196,7 @@ bool World::RemoveSession(uint32 id)
     if (itr != m_sessions.end() && itr->second)
     {
         if (itr->second->PlayerLoading())
-            return false;
+        { return false; }
         itr->second->KickPlayer();
     }
 
@@ -236,7 +236,7 @@ World::AddSession_(WorldSession* s)
         {
             // prevent decrease sessions count if session queued
             if (RemoveQueuedSession(old->second))
-                decrease_session = false;
+            { decrease_session = false; }
             // not remove replaced session form queue if listed
             delete old->second;
         }
@@ -251,7 +251,7 @@ World::AddSession_(WorldSession* s)
     // so we don't count the user trying to
     // login as a session and queue the socket that we are using
     if (decrease_session)
-        --Sessions;
+    { --Sessions; }
 
     if (pLimit > 0 && Sessions >= pLimit && s->GetSecurity() == SEC_PLAYER)
     {
@@ -293,7 +293,7 @@ int32 World::GetQueuedSessionPos(WorldSession* sess)
 
     for (Queue::const_iterator iter = m_QueuedSessions.begin(); iter != m_QueuedSessions.end(); ++iter, ++position)
         if ((*iter) == sess)
-            return position;
+        { return position; }
 
     return 0;
 }
@@ -341,7 +341,7 @@ bool World::RemoveQueuedSession(WorldSession* sess)
 
     // if session not queued then we need decrease sessions count
     if (!found && sessions)
-        --sessions;
+    { --sessions; }
 
     // accept first in queue
     if ((!m_playerLimit || (int32)sessions < m_playerLimit) && !m_QueuedSessions.empty())
@@ -359,7 +359,7 @@ bool World::RemoveQueuedSession(WorldSession* sess)
     // update position from iter to end()
     // iter point to first not updated socket, position store new position
     for (; iter != m_QueuedSessions.end(); ++iter, ++position)
-        (*iter)->SendAuthWaitQue(position);
+    { (*iter)->SendAuthWaitQue(position); }
 
     return found;
 }
@@ -370,9 +370,9 @@ Weather* World::FindWeather(uint32 id) const
     WeatherMap::const_iterator itr = m_weathers.find(id);
 
     if (itr != m_weathers.end())
-        return itr->second;
+    { return itr->second; }
     else
-        return 0;
+    { return 0; }
 }
 
 /// Remove a Weather object for the given zoneid
@@ -395,7 +395,7 @@ Weather* World::AddWeather(uint32 zone_id)
 
     // zone not have weather, ignore
     if (!weatherChances)
-        return NULL;
+    { return NULL; }
 
     Weather* w = new Weather(zone_id, weatherChances);
     m_weathers[w->GetZone()] = w;
@@ -527,22 +527,22 @@ void World::LoadConfigSettings(bool reload)
 
     setConfigMin(CONFIG_UINT32_INTERVAL_GRIDCLEAN, "GridCleanUpDelay", 5 * MINUTE * IN_MILLISECONDS, MIN_GRID_DELAY);
     if (reload)
-        sMapMgr.SetGridCleanUpDelay(getConfig(CONFIG_UINT32_INTERVAL_GRIDCLEAN));
+    { sMapMgr.SetGridCleanUpDelay(getConfig(CONFIG_UINT32_INTERVAL_GRIDCLEAN)); }
 
     setConfigMin(CONFIG_UINT32_INTERVAL_MAPUPDATE, "MapUpdateInterval", 100, MIN_MAP_UPDATE_DELAY);
     if (reload)
-        sMapMgr.SetMapUpdateInterval(getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE));
+    { sMapMgr.SetMapUpdateInterval(getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE)); }
 
     setConfig(CONFIG_UINT32_INTERVAL_CHANGEWEATHER, "ChangeWeatherInterval", 10 * MINUTE * IN_MILLISECONDS);
 
     if (configNoReload(reload, CONFIG_UINT32_PORT_WORLD, "WorldServerPort", DEFAULT_WORLDSERVER_PORT))
-        setConfig(CONFIG_UINT32_PORT_WORLD, "WorldServerPort", DEFAULT_WORLDSERVER_PORT);
+    { setConfig(CONFIG_UINT32_PORT_WORLD, "WorldServerPort", DEFAULT_WORLDSERVER_PORT); }
 
     if (configNoReload(reload, CONFIG_UINT32_GAME_TYPE, "GameType", 0))
-        setConfig(CONFIG_UINT32_GAME_TYPE, "GameType", 0);
+    { setConfig(CONFIG_UINT32_GAME_TYPE, "GameType", 0); }
 
     if (configNoReload(reload, CONFIG_UINT32_REALM_ZONE, "RealmZone", REALM_ZONE_DEVELOPMENT))
-        setConfig(CONFIG_UINT32_REALM_ZONE, "RealmZone", REALM_ZONE_DEVELOPMENT);
+    { setConfig(CONFIG_UINT32_REALM_ZONE, "RealmZone", REALM_ZONE_DEVELOPMENT); }
 
     setConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_ACCOUNTS,            "AllowTwoSide.Accounts", false);
     setConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_CHAT,    "AllowTwoSide.Interaction.Chat", false);
@@ -572,7 +572,7 @@ void World::LoadConfigSettings(bool reload)
     setConfigMinMax(CONFIG_UINT32_SKIP_CINEMATICS, "SkipCinematics", 0, 0, 2);
 
     if (configNoReload(reload, CONFIG_UINT32_MAX_PLAYER_LEVEL, "MaxPlayerLevel", DEFAULT_MAX_LEVEL))
-        setConfigMinMax(CONFIG_UINT32_MAX_PLAYER_LEVEL, "MaxPlayerLevel", DEFAULT_MAX_LEVEL, 1, DEFAULT_MAX_LEVEL);
+    { setConfigMinMax(CONFIG_UINT32_MAX_PLAYER_LEVEL, "MaxPlayerLevel", DEFAULT_MAX_LEVEL, 1, DEFAULT_MAX_LEVEL); }
 
     setConfigMinMax(CONFIG_UINT32_START_PLAYER_LEVEL, "StartPlayerLevel", 1, 1, getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL));
 
@@ -665,7 +665,7 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_ALWAYS_MAX_SKILL_FOR_LEVEL, "AlwaysMaxSkillForLevel", false);
 
     if (configNoReload(reload, CONFIG_UINT32_EXPANSION, "Expansion", MAX_EXPANSION))
-        setConfigMinMax(CONFIG_UINT32_EXPANSION, "Expansion", MAX_EXPANSION, 0, MAX_EXPANSION);
+    { setConfigMinMax(CONFIG_UINT32_EXPANSION, "Expansion", MAX_EXPANSION, 0, MAX_EXPANSION); }
 
     setConfig(CONFIG_UINT32_CHATFLOOD_MESSAGE_COUNT, "ChatFlood.MessageCount", 10);
     setConfig(CONFIG_UINT32_CHATFLOOD_MESSAGE_DELAY, "ChatFlood.MessageDelay", 1);
@@ -716,9 +716,9 @@ void World::LoadConfigSettings(bool reload)
 
     // always use declined names in the russian client
     if (getConfig(CONFIG_UINT32_REALM_ZONE) == REALM_ZONE_RUSSIAN)
-        setConfig(CONFIG_BOOL_DECLINED_NAMES_USED, true);
+    { setConfig(CONFIG_BOOL_DECLINED_NAMES_USED, true); }
     else
-        setConfig(CONFIG_BOOL_DECLINED_NAMES_USED, "DeclinedNames", false);
+    { setConfig(CONFIG_BOOL_DECLINED_NAMES_USED, "DeclinedNames", false); }
 
     setConfig(CONFIG_BOOL_BATTLEGROUND_CAST_DESERTER,                  "Battleground.CastDeserter", true);
     setConfigMinMax(CONFIG_UINT32_BATTLEGROUND_QUEUE_ANNOUNCER_JOIN,   "Battleground.QueueAnnouncer.Join", 0, 0, 2);
@@ -830,24 +830,24 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_CHARDELETE_KEEP_DAYS, "CharDelete.KeepDays", 30);
 
     if (configNoReload(reload, CONFIG_UINT32_GUID_RESERVE_SIZE_CREATURE, "GuidReserveSize.Creature", 100))
-        setConfig(CONFIG_UINT32_GUID_RESERVE_SIZE_CREATURE,   "GuidReserveSize.Creature",   100);
+    { setConfig(CONFIG_UINT32_GUID_RESERVE_SIZE_CREATURE,   "GuidReserveSize.Creature",   100); }
     if (configNoReload(reload, CONFIG_UINT32_GUID_RESERVE_SIZE_GAMEOBJECT, "GuidReserveSize.GameObject", 100))
-        setConfig(CONFIG_UINT32_GUID_RESERVE_SIZE_GAMEOBJECT, "GuidReserveSize.GameObject", 100);
+    { setConfig(CONFIG_UINT32_GUID_RESERVE_SIZE_GAMEOBJECT, "GuidReserveSize.GameObject", 100); }
 
     ///- Read the "Data" directory from the config file
     std::string dataPath = sConfig.GetStringDefault("DataDir", "./");
 
     // for empty string use current dir as for absent case
     if (dataPath.empty())
-        dataPath = "./";
+    { dataPath = "./"; }
     // normalize dir path to path/ or path\ form
     else if (dataPath.at(dataPath.length() - 1) != '/' && dataPath.at(dataPath.length() - 1) != '\\')
-        dataPath.append("/");
+    { dataPath.append("/"); }
 
     if (reload)
     {
         if (dataPath != m_dataPath)
-            sLog.outError("DataDir option can't be changed at mangosd.conf reload, using current value (%s).", m_dataPath.c_str());
+        { sLog.outError("DataDir option can't be changed at mangosd.conf reload, using current value (%s).", m_dataPath.c_str()); }
     }
     else
     {
@@ -861,7 +861,7 @@ void World::LoadConfigSettings(bool reload)
     std::string ignoreSpellIds = sConfig.GetStringDefault("vmap.ignoreSpellIds", "");
 
     if (!enableHeight)
-        sLog.outError("VMAP height use disabled! Creatures movements and other things will be in broken state.");
+    { sLog.outError("VMAP height use disabled! Creatures movements and other things will be in broken state."); }
 
     VMAP::VMapFactory::createOrGetVMapManager()->setEnableLineOfSightCalc(enableLOS);
     VMAP::VMapFactory::createOrGetVMapManager()->setEnableHeightCalc(enableHeight);
@@ -893,14 +893,14 @@ void World::SetInitialWorldSettings()
 
     ///- Check the existence of the map files for all races start areas.
     if (!MapManager::ExistMapAndVMap(0, -6240.32f, 331.033f) ||                     // Dwarf/ Gnome
-            !MapManager::ExistMapAndVMap(0, -8949.95f, -132.493f) ||                // Human
-            !MapManager::ExistMapAndVMap(1, -618.518f, -4251.67f) ||                // Orc
-            !MapManager::ExistMapAndVMap(0, 1676.35f, 1677.45f) ||                  // Scourge
-            !MapManager::ExistMapAndVMap(1, 10311.3f, 832.463f) ||                  // NightElf
-            !MapManager::ExistMapAndVMap(1, -2917.58f, -257.98f) ||                 // Tauren
-            (m_configUint32Values[CONFIG_UINT32_EXPANSION] >= EXPANSION_TBC &&
-              (!MapManager::ExistMapAndVMap(530, 10349.6f, -6357.29f) ||            // BloodElf
-              !MapManager::ExistMapAndVMap(530, -3961.64f, -13931.2f))))            // Draenei
+        !MapManager::ExistMapAndVMap(0, -8949.95f, -132.493f) ||                // Human
+        !MapManager::ExistMapAndVMap(1, -618.518f, -4251.67f) ||                // Orc
+        !MapManager::ExistMapAndVMap(0, 1676.35f, 1677.45f) ||                  // Scourge
+        !MapManager::ExistMapAndVMap(1, 10311.3f, 832.463f) ||                  // NightElf
+        !MapManager::ExistMapAndVMap(1, -2917.58f, -257.98f) ||                 // Tauren
+        (m_configUint32Values[CONFIG_UINT32_EXPANSION] >= EXPANSION_TBC &&
+         (!MapManager::ExistMapAndVMap(530, 10349.6f, -6357.29f) ||            // BloodElf
+          !MapManager::ExistMapAndVMap(530, -3961.64f, -13931.2f))))            // Draenei
     {
         sLog.outError("Correct *.map files not found in path '%smaps' or *.vmtree/*.vmtile files in '%svmaps'. Please place *.map and vmap files in appropriate directories or correct the DataDir value in the mangosd.conf file.", m_dataPath.c_str(), m_dataPath.c_str());
         Log::WaitBeforeContinueIfNeed();
@@ -1388,7 +1388,7 @@ void World::DetectDBCLang()
     }
 
     if (default_locale != m_lang_confid && m_lang_confid < MAX_LOCALE &&
-            (m_availableDbcLocaleMask & (1 << m_lang_confid)))
+        (m_availableDbcLocaleMask & (1 << m_lang_confid)))
     {
         default_locale = m_lang_confid;
     }
@@ -1413,9 +1413,9 @@ void World::Update(uint32 diff)
     for (int i = 0; i < WUPDATE_COUNT; ++i)
     {
         if (m_timers[i].GetCurrent() >= 0)
-            m_timers[i].Update(diff);
+        { m_timers[i].Update(diff); }
         else
-            m_timers[i].SetCurrent(0);
+        { m_timers[i].SetCurrent(0); }
     }
 
     ///- Update the game time and check for shutdown time
@@ -1426,7 +1426,7 @@ void World::Update(uint32 diff)
 
     /// Handle daily quests reset time
     if (m_gameTime > m_NextDailyQuestReset)
-        ResetDailyQuests();
+    { ResetDailyQuests(); }
 
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_AUCTIONS].Passed())
@@ -1469,7 +1469,7 @@ void World::Update(uint32 diff)
                 m_weathers.erase(itr++);
             }
             else
-                ++itr;
+            { ++itr; }
         }
 
         m_timers[WUPDATE_WEATHERS].SetCurrent(0);
@@ -1555,7 +1555,7 @@ namespace MaNGOS
                     do_helper(data_list, &str[0]);
                 }
                 else
-                    do_helper(data_list, (char*)text);
+                { do_helper(data_list, (char*)text); }
             }
         private:
             char* lineFromMessage(char*& pos) { char* start = strtok(pos, "\n"); pos = NULL; return start; }
@@ -1599,7 +1599,7 @@ void World::SendWorldText(int32 string_id, ...)
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (!itr->second || !itr->second->GetPlayer() || !itr->second->GetPlayer()->IsInWorld())
-            continue;
+        { continue; }
 
         wt_do(itr->second->GetPlayer());
     }
@@ -1613,8 +1613,8 @@ void World::SendGlobalMessage(WorldPacket* packet)
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (itr->second &&
-                itr->second->GetPlayer() &&
-                itr->second->GetPlayer()->IsInWorld())
+            itr->second->GetPlayer() &&
+            itr->second->GetPlayer()->IsInWorld())
         {
             itr->second->SendPacket(packet);
         }
@@ -1629,9 +1629,9 @@ void World::SendServerMessage(ServerMessageType type, const char* text /*=""*/, 
     data << text;
 
     if (player)
-        player->GetSession()->SendPacket(&data);
+    { player->GetSession()->SendPacket(&data); }
     else
-        SendGlobalMessage(&data);
+    { SendGlobalMessage(&data); }
 }
 
 /// Sends a zone under attack message to all players not in an instance
@@ -1643,10 +1643,10 @@ void World::SendZoneUnderAttackMessage(uint32 zoneId, Team team)
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (itr->second &&
-                itr->second->GetPlayer() &&
-                itr->second->GetPlayer()->IsInWorld() &&
-                itr->second->GetPlayer()->GetTeam() == team &&
-                !itr->second->GetPlayer()->GetMap()->Instanceable())
+            itr->second->GetPlayer() &&
+            itr->second->GetPlayer()->IsInWorld() &&
+            itr->second->GetPlayer()->GetTeam() == team &&
+            !itr->second->GetPlayer()->GetMap()->Instanceable())
         {
             itr->second->SendPacket(&data);
         }
@@ -1659,9 +1659,9 @@ void World::SendDefenseMessage(uint32 zoneId, int32 textId)
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (itr->second &&
-                itr->second->GetPlayer() &&
-                itr->second->GetPlayer()->IsInWorld() &&
-                !itr->second->GetPlayer()->GetMap()->Instanceable())
+            itr->second->GetPlayer() &&
+            itr->second->GetPlayer()->IsInWorld() &&
+            !itr->second->GetPlayer()->GetMap()->Instanceable())
         {
             char const* message = itr->second->GetMangosString(textId);
             uint32 messageLength = strlen(message) + 1;
@@ -1682,7 +1682,7 @@ void World::KickAll()
 
     // session not removed at kick and will removed in next update tick
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
-        itr->second->KickPlayer();
+    { itr->second->KickPlayer(); }
 }
 
 /// Kick (and save) all players with security level less `sec`
@@ -1691,7 +1691,7 @@ void World::KickAllLess(AccountTypes sec)
     // session not removed at kick and will removed in next update tick
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
         if (itr->second->GetSecurity() < sec)
-            itr->second->KickPlayer();
+        { itr->second->KickPlayer(); }
 }
 
 /// Ban an account or ban an IP address, duration_secs if it is positive used, otherwise permban
@@ -1727,9 +1727,9 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, uint32 duration_
     if (!resultAccounts)
     {
         if (mode == BAN_IP)
-            return BAN_SUCCESS;                             // ip correctly banned but nobody affected (yet)
+        { return BAN_SUCCESS; }                             // ip correctly banned but nobody affected (yet)
         else
-            return BAN_NOTFOUND;                            // Nobody to ban
+        { return BAN_NOTFOUND; }                            // Nobody to ban
     }
 
     ///- Disconnect all affected players (for IP it can be several)
@@ -1747,7 +1747,7 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, uint32 duration_
 
         if (WorldSession* sess = FindSession(account))
             if (std::string(sess->GetPlayerName()) != author)
-                sess->KickPlayer();
+            { sess->KickPlayer(); }
     }
     while (resultAccounts->NextRow());
 
@@ -1767,12 +1767,12 @@ bool World::RemoveBanAccount(BanMode mode, std::string nameOrIP)
     {
         uint32 account = 0;
         if (mode == BAN_ACCOUNT)
-            account = sAccountMgr.GetId(nameOrIP);
+        { account = sAccountMgr.GetId(nameOrIP); }
         else if (mode == BAN_CHARACTER)
-            account = sObjectMgr.GetPlayerAccountIdByPlayerName(nameOrIP);
+        { account = sObjectMgr.GetPlayerAccountIdByPlayerName(nameOrIP); }
 
         if (!account)
-            return false;
+        { return false; }
 
         // NO SQL injection as account is uint32
         LoginDatabase.PExecute("UPDATE account_banned SET active = '0' WHERE id = '%u'", account);
@@ -1795,9 +1795,9 @@ void World::_UpdateGameTime()
         if (m_ShutdownTimer <= elapsed)
         {
             if (!(m_ShutdownMask & SHUTDOWN_MASK_IDLE) || GetActiveAndQueuedSessionCount() == 0)
-                m_stopEvent = true;                         // exist code already set
+            { m_stopEvent = true; }                         // exist code already set
             else
-                m_ShutdownTimer = 1;                        // minimum timer value to wait idle state
+            { m_ShutdownTimer = 1; }                        // minimum timer value to wait idle state
         }
         ///- ... else decrease it and if necessary display a shutdown countdown to the users
         else
@@ -1814,7 +1814,7 @@ void World::ShutdownServ(uint32 time, uint32 options, uint8 exitcode)
 {
     // ignore if server shutdown at next tick
     if (m_stopEvent)
-        return;
+    { return; }
 
     m_ShutdownMask = options;
     m_ExitCode = exitcode;
@@ -1823,9 +1823,9 @@ void World::ShutdownServ(uint32 time, uint32 options, uint8 exitcode)
     if (time == 0)
     {
         if (!(options & SHUTDOWN_MASK_IDLE) || GetActiveAndQueuedSessionCount() == 0)
-            m_stopEvent = true;                             // exist code already set
+        { m_stopEvent = true; }                             // exist code already set
         else
-            m_ShutdownTimer = 1;                            // So that the session count is re-evaluated at next world tick
+        { m_ShutdownTimer = 1; }                            // So that the session count is re-evaluated at next world tick
     }
     ///- Else set the shutdown timer and warn users
     else
@@ -1840,15 +1840,15 @@ void World::ShutdownMsg(bool show /*= false*/, Player* player /*= NULL*/)
 {
     // not show messages for idle shutdown mode
     if (m_ShutdownMask & SHUTDOWN_MASK_IDLE)
-        return;
+    { return; }
 
     ///- Display a message every 12 hours, 1 hour, 5 minutes, 1 minute and 15 seconds
     if (show ||
-            (m_ShutdownTimer < 5 * MINUTE && (m_ShutdownTimer % 15) == 0) ||            // < 5 min; every 15 sec
-            (m_ShutdownTimer < 15 * MINUTE && (m_ShutdownTimer % MINUTE) == 0) ||       // < 15 min; every 1 min
-            (m_ShutdownTimer < 30 * MINUTE && (m_ShutdownTimer % (5 * MINUTE)) == 0) || // < 30 min; every 5 min
-            (m_ShutdownTimer < 12 * HOUR && (m_ShutdownTimer % HOUR) == 0) ||           // < 12 h; every 1 h
-            (m_ShutdownTimer >= 12 * HOUR && (m_ShutdownTimer % (12 * HOUR)) == 0))     // >= 12 h; every 12 h
+        (m_ShutdownTimer < 5 * MINUTE && (m_ShutdownTimer % 15) == 0) ||            // < 5 min; every 15 sec
+        (m_ShutdownTimer < 15 * MINUTE && (m_ShutdownTimer % MINUTE) == 0) ||       // < 15 min; every 1 min
+        (m_ShutdownTimer < 30 * MINUTE && (m_ShutdownTimer % (5 * MINUTE)) == 0) || // < 30 min; every 5 min
+        (m_ShutdownTimer < 12 * HOUR && (m_ShutdownTimer % HOUR) == 0) ||           // < 12 h; every 1 h
+        (m_ShutdownTimer >= 12 * HOUR && (m_ShutdownTimer % (12 * HOUR)) == 0))     // >= 12 h; every 12 h
     {
         std::string str = secsToTimeString(m_ShutdownTimer);
 
@@ -1864,7 +1864,7 @@ void World::ShutdownCancel()
 {
     // nothing cancel or too later
     if (!m_ShutdownTimer || m_stopEvent)
-        return;
+    { return; }
 
     ServerMessageType msgid = (m_ShutdownMask & SHUTDOWN_MASK_RESTART) ? SERVER_MSG_RESTART_CANCELLED : SERVER_MSG_SHUTDOWN_CANCELLED;
 
@@ -1881,7 +1881,7 @@ void World::UpdateSessions(uint32 diff)
     ///- Add new sessions
     WorldSession* sess;
     while (addSessQueue.next(sess))
-        AddSession_(sess);
+    { AddSession_(sess); }
 
     ///- Then send an update signal to remaining ones
     for (SessionMap::iterator itr = m_sessions.begin(), next; itr != m_sessions.end(); itr = next)
@@ -1916,7 +1916,7 @@ void World::ProcessCliCommands()
         handler.ParseCommands(command->m_command);
 
         if (command->m_commandFinished)
-            command->m_commandFinished(callbackArg, !handler.HasSentErrorMessage());
+        { command->m_commandFinished(callbackArg, !handler.HasSentErrorMessage()); }
 
         delete command;
     }
@@ -1959,9 +1959,9 @@ void World::InitDailyQuestResetTime()
 {
     QueryResult* result = CharacterDatabase.Query("SELECT NextDailyQuestResetTime FROM saved_variables");
     if (!result)
-        m_NextDailyQuestReset = time_t(time(NULL));         // game time not yet init
+    { m_NextDailyQuestReset = time_t(time(NULL)); }         // game time not yet init
     else
-        m_NextDailyQuestReset = time_t((*result)[0].GetUInt64());
+    { m_NextDailyQuestReset = time_t((*result)[0].GetUInt64()); }
 
     // generate time by config
     time_t curTime = time(NULL);
@@ -1975,15 +1975,15 @@ void World::InitDailyQuestResetTime()
 
     // next reset time before current moment
     if (curTime >= nextDayResetTime)
-        nextDayResetTime += DAY;
+    { nextDayResetTime += DAY; }
 
     // normalize reset time
     m_NextDailyQuestReset = m_NextDailyQuestReset < curTime ? nextDayResetTime - DAY : nextDayResetTime;
 
     if (!result)
-        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextDailyQuestResetTime) VALUES ('" UI64FMTD "')", uint64(m_NextDailyQuestReset));
+    { CharacterDatabase.PExecute("INSERT INTO saved_variables (NextDailyQuestResetTime) VALUES ('" UI64FMTD "')", uint64(m_NextDailyQuestReset)); }
     else
-        delete result;
+    { delete result; }
 }
 
 void World::ResetDailyQuests()
@@ -1992,7 +1992,7 @@ void World::ResetDailyQuests()
     CharacterDatabase.Execute("DELETE FROM character_queststatus_daily");
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
         if (itr->second->GetPlayer())
-            itr->second->GetPlayer()->ResetDailyQuestStatus();
+        { itr->second->GetPlayer()->ResetDailyQuestStatus(); }
 
     m_NextDailyQuestReset = time_t(m_NextDailyQuestReset + DAY);
     CharacterDatabase.PExecute("UPDATE saved_variables SET NextDailyQuestResetTime = '" UI64FMTD "'", uint64(m_NextDailyQuestReset));
@@ -2001,7 +2001,7 @@ void World::ResetDailyQuests()
 void World::SetPlayerLimit(int32 limit, bool needUpdate)
 {
     if (limit < -SEC_ADMINISTRATOR)
-        limit = -SEC_ADMINISTRATOR;
+    { limit = -SEC_ADMINISTRATOR; }
 
     // lock update need
     bool db_update_need = needUpdate || (limit < 0) != (m_playerLimit < 0) || (limit < 0 && m_playerLimit < 0 && limit != m_playerLimit);
@@ -2033,10 +2033,10 @@ void World::LoadDBVersion()
     }
 
     if (m_DBVersion.empty())
-        m_DBVersion = "Unknown world database.";
+    { m_DBVersion = "Unknown world database."; }
 
     if (m_CreatureEventAIVersion.empty())
-        m_CreatureEventAIVersion = "Unknown creature EventAI.";
+    { m_CreatureEventAIVersion = "Unknown creature EventAI."; }
 }
 
 void World::setConfig(eConfigUInt32Values index, char const* fieldname, uint32 defvalue)
@@ -2152,11 +2152,11 @@ void World::setConfigMinMax(eConfigFloatValues index, char const* fieldname, flo
 bool World::configNoReload(bool reload, eConfigUInt32Values index, char const* fieldname, uint32 defvalue)
 {
     if (!reload)
-        return true;
+    { return true; }
 
     uint32 val = sConfig.GetIntDefault(fieldname, defvalue);
     if (val != getConfig(index))
-        sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%u).", fieldname, getConfig(index));
+    { sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%u).", fieldname, getConfig(index)); }
 
     return false;
 }
@@ -2164,11 +2164,11 @@ bool World::configNoReload(bool reload, eConfigUInt32Values index, char const* f
 bool World::configNoReload(bool reload, eConfigInt32Values index, char const* fieldname, int32 defvalue)
 {
     if (!reload)
-        return true;
+    { return true; }
 
     int32 val = sConfig.GetIntDefault(fieldname, defvalue);
     if (val != getConfig(index))
-        sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%i).", fieldname, getConfig(index));
+    { sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%i).", fieldname, getConfig(index)); }
 
     return false;
 }
@@ -2176,11 +2176,11 @@ bool World::configNoReload(bool reload, eConfigInt32Values index, char const* fi
 bool World::configNoReload(bool reload, eConfigFloatValues index, char const* fieldname, float defvalue)
 {
     if (!reload)
-        return true;
+    { return true; }
 
     float val = sConfig.GetFloatDefault(fieldname, defvalue);
     if (val != getConfig(index))
-        sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%f).", fieldname, getConfig(index));
+    { sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%f).", fieldname, getConfig(index)); }
 
     return false;
 }
@@ -2188,11 +2188,11 @@ bool World::configNoReload(bool reload, eConfigFloatValues index, char const* fi
 bool World::configNoReload(bool reload, eConfigBoolValues index, char const* fieldname, bool defvalue)
 {
     if (!reload)
-        return true;
+    { return true; }
 
     bool val = sConfig.GetBoolDefault(fieldname, defvalue);
     if (val != getConfig(index))
-        sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%s).", fieldname, getConfig(index) ? "'true'" : "'false'");
+    { sLog.outError("%s option can't be changed at mangosd.conf reload, using current value (%s).", fieldname, getConfig(index) ? "'true'" : "'false'"); }
 
     return false;
 }

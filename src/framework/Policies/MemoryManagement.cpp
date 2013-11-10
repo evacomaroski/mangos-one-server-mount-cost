@@ -33,7 +33,7 @@ void* operator new(size_t sz)
     void* res = scalable_malloc(sz);
 
     if (res == NULL)
-        throw std::bad_alloc();
+    { throw std::bad_alloc(); }
 
     return res;
 }
@@ -43,7 +43,7 @@ void* operator new[](size_t sz)
     void* res = scalable_malloc(sz);
 
     if (res == NULL)
-        throw std::bad_alloc();
+    { throw std::bad_alloc(); }
 
     return res;
 }

@@ -71,7 +71,7 @@ struct MANGOS_DLL_DECL npc_ranger_lilathaAI : public npc_escortAI
             if (!m_heliosGuid && pUnit->GetEntry() == NPC_CAPTAIN_HELIOS)
             {
                 if (m_creature->IsWithinDistInMap(pUnit, 30.0f))
-                    m_heliosGuid = pUnit->GetObjectGuid();
+                { m_heliosGuid = pUnit->GetObjectGuid(); }
             }
         }
 
@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL npc_ranger_lilathaAI : public npc_escortAI
         Player* pPlayer = GetPlayerForEscort();
 
         if (!pPlayer)
-            return;
+        { return; }
 
         switch (i)
         {
@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL npc_ranger_lilathaAI : public npc_escortAI
                 break;
             case 1:
                 if (GameObject* pGo = m_creature->GetMap()->GetGameObject(m_goCageGuid))
-                    pGo->SetGoState(GO_STATE_READY);
+                { pGo->SetGoState(GO_STATE_READY); }
                 break;
             case 5:
                 DoScriptText(SAY_PROGRESS1, m_creature, pPlayer);
@@ -111,9 +111,9 @@ struct MANGOS_DLL_DECL npc_ranger_lilathaAI : public npc_escortAI
             case 18:
                 DoScriptText(SAY_PROGRESS3, m_creature, pPlayer);
                 if (Creature* pSum1 = m_creature->SummonCreature(16342, 7627.083984f, -7532.538086f, 152.128616f, 1.082733f, TEMPSUMMON_DEAD_DESPAWN, 0))
-                    pSum1->AI()->AttackStart(m_creature);
+                { pSum1->AI()->AttackStart(m_creature); }
                 if (Creature* pSum2 = m_creature->SummonCreature(16343, 7620.432129f, -7532.550293f, 152.454865f, 0.827478f, TEMPSUMMON_DEAD_DESPAWN, 0))
-                    pSum2->AI()->AttackStart(pPlayer);
+                { pSum2->AI()->AttackStart(pPlayer); }
                 break;
             case 19:
                 SetRun();
@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL npc_ranger_lilathaAI : public npc_escortAI
             case 33:
                 DoScriptText(SAY_END2, m_creature, pPlayer);
                 if (Creature* pHelios = m_creature->GetMap()->GetCreature(m_heliosGuid))
-                    DoScriptText(CAPTAIN_ANSWER, pHelios, m_creature);
+                { DoScriptText(CAPTAIN_ANSWER, pHelios, m_creature); }
                 break;
         }
     }
@@ -157,7 +157,7 @@ bool QuestAccept_npc_ranger_lilatha(Player* pPlayer, Creature* pCreature, const 
         pCreature->SetFactionTemporary(FACTION_SMOON_E, TEMPFACTION_RESTORE_RESPAWN);
 
         if (npc_ranger_lilathaAI* pEscortAI = dynamic_cast<npc_ranger_lilathaAI*>(pCreature->AI()))
-            pEscortAI->Start(false, pPlayer, pQuest);
+        { pEscortAI->Start(false, pPlayer, pQuest); }
     }
     return true;
 }

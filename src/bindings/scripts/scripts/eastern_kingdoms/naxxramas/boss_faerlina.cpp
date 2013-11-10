@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
         }
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_FAERLINA, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_FAERLINA, IN_PROGRESS); }
     }
 
     void MoveInLineOfSight(Unit* pWho) override
@@ -112,13 +112,13 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_FAERLINA, DONE);
+        { m_pInstance->SetData(TYPE_FAERLINA, DONE); }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_FAERLINA, FAIL);
+        { m_pInstance->SetData(TYPE_FAERLINA, FAIL); }
     }
 
     // Widow's Embrace prevents frenzy and poison bolt, if it removes frenzy, next frenzy is sceduled in 60s
@@ -149,16 +149,16 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Poison Bolt Volley
         if (m_uiPoisonBoltVolleyTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_POSIONBOLT_VOLLEY) == CAST_OK)
-                m_uiPoisonBoltVolleyTimer = 11000;
+            { m_uiPoisonBoltVolleyTimer = 11000; }
         }
         else
-            m_uiPoisonBoltVolleyTimer -= uiDiff;
+        { m_uiPoisonBoltVolleyTimer -= uiDiff; }
 
         // Rain Of Fire
         if (m_uiRainOfFireTimer < uiDiff)
@@ -166,11 +166,11 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_RAIN_OF_FIRE) == CAST_OK)
-                    m_uiRainOfFireTimer = 16000;
+                { m_uiRainOfFireTimer = 16000; }
             }
         }
         else
-            m_uiRainOfFireTimer -= uiDiff;
+        { m_uiRainOfFireTimer -= uiDiff; }
 
         // Enrage Timer
         if (m_uiEnrageTimer < uiDiff)
@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
             }
         }
         else
-            m_uiEnrageTimer -= uiDiff;
+        { m_uiEnrageTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

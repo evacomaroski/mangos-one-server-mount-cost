@@ -114,15 +114,15 @@ struct MANGOS_DLL_DECL boss_watchkeeper_gargolmarAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiMortalWoundTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), m_bIsRegularMode ? SPELL_MORTAL_WOUND : SPELL_MORTAL_WOUND_H) == CAST_OK)
-                m_uiMortalWoundTimer = urand(6100, 12200);
+            { m_uiMortalWoundTimer = urand(6100, 12200); }
         }
         else
-            m_uiMortalWoundTimer -= uiDiff;
+        { m_uiMortalWoundTimer -= uiDiff; }
 
         if (m_uiSurgeTimer < uiDiff)
         {
@@ -136,26 +136,26 @@ struct MANGOS_DLL_DECL boss_watchkeeper_gargolmarAI : public ScriptedAI
             }
         }
         else
-            m_uiSurgeTimer -= uiDiff;
+        { m_uiSurgeTimer -= uiDiff; }
 
         if (m_creature->GetHealthPercent() < 20.0f)
         {
             if (m_uiRetaliationTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_RETALIATION) == CAST_OK)
-                    m_uiRetaliationTimer = 30000;
+                { m_uiRetaliationTimer = 30000; }
             }
             else
-                m_uiRetaliationTimer -= uiDiff;
+            { m_uiRetaliationTimer -= uiDiff; }
         }
 
         if (m_uiOverpowerTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_OVERPOWER) == CAST_OK)
-                m_uiOverpowerTimer = urand(18100, 33700);
+            { m_uiOverpowerTimer = urand(18100, 33700); }
         }
         else
-            m_uiOverpowerTimer -= uiDiff;
+        { m_uiOverpowerTimer -= uiDiff; }
 
         if (!m_bYelledForHeal)
         {

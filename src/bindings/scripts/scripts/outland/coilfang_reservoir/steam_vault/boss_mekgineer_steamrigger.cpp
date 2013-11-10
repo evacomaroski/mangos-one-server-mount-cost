@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, FAIL);
+        { m_pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, FAIL); }
     }
 
     void JustDied(Unit* /*pKiller*/) override
@@ -114,7 +114,7 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, DONE);
+        { m_pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, DONE); }
     }
 
     void KilledUnit(Unit* /*pVictim*/) override
@@ -137,13 +137,13 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         }
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, IN_PROGRESS); }
     }
 
     void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_STEAMRIGGER_MECHANIC)
-            pSummoned->GetMotionMaster()->MoveFollow(m_creature, 0, 0);
+        { pSummoned->GetMotionMaster()->MoveFollow(m_creature, 0, 0); }
     }
 
     // Wrapper to summon three Mechanics
@@ -152,47 +152,47 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         DoScriptText(SAY_MECHANICS, m_creature);
 
         for (uint8 i = 0; i < 3; ++i)
-            m_creature->SummonCreature(NPC_STEAMRIGGER_MECHANIC, aSteamriggerSpawnLocs[i].m_fX, aSteamriggerSpawnLocs[i].m_fY, aSteamriggerSpawnLocs[i].m_fZ, 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 240000);
+        { m_creature->SummonCreature(NPC_STEAMRIGGER_MECHANIC, aSteamriggerSpawnLocs[i].m_fX, aSteamriggerSpawnLocs[i].m_fY, aSteamriggerSpawnLocs[i].m_fZ, 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 240000); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_uiShrinkTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SUPER_SHRINK_RAY) == CAST_OK)
-                m_uiShrinkTimer = 20000;
+            { m_uiShrinkTimer = 20000; }
         }
         else
-            m_uiShrinkTimer -= uiDiff;
+        { m_uiShrinkTimer -= uiDiff; }
 
         if (m_uiSawBladeTimer < uiDiff)
         {
             Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1);
             if (!pTarget)
-                pTarget = m_creature->getVictim();
+            { pTarget = m_creature->getVictim(); }
 
             if (pTarget)
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_SAW_BLADE) == CAST_OK)
-                    m_uiSawBladeTimer = 15000;
+                { m_uiSawBladeTimer = 15000; }
             }
         }
         else
-            m_uiSawBladeTimer -= uiDiff;
+        { m_uiSawBladeTimer -= uiDiff; }
 
         if (m_uiElectrifiedNetTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_ELECTRIFIED_NET) == CAST_OK)
-                    m_uiElectrifiedNetTimer = 10000;
+                { m_uiElectrifiedNetTimer = 10000; }
             }
         }
         else
-            m_uiElectrifiedNetTimer -= uiDiff;
+        { m_uiElectrifiedNetTimer -= uiDiff; }
 
         // On Heroic mode summon a mechanic at each 20 secs
         if (!m_bIsRegularMode)
@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
                 m_uiMechanicTimer = 20000;
             }
             else
-                m_uiMechanicTimer -= uiDiff;
+            { m_uiMechanicTimer -= uiDiff; }
         }
 
         if (m_creature->GetHealthPercent() < (100 - 25 * m_uiMechanicPhaseCount))
@@ -244,7 +244,7 @@ struct MANGOS_DLL_DECL mob_steamrigger_mechanicAI : public ScriptedAI
     {
         // Trigger attack only for players
         if (pWho->GetTypeId() != TYPEID_PLAYER)
-            return;
+        { return; }
 
         m_creature->InterruptNonMeleeSpells(false);
         ScriptedAI::AttackStart(pWho);
@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL mob_steamrigger_mechanicAI : public ScriptedAI
     {
         // Return if already in combat
         if (m_bCanStartAttack)
-            return;
+        { return; }
 
         // Don't attack players unless attacked
         if (pWho->GetEntry() == NPC_STEAMRIGGER)
@@ -265,7 +265,7 @@ struct MANGOS_DLL_DECL mob_steamrigger_mechanicAI : public ScriptedAI
                 // Channel the repair spell on Steamrigger
                 // This will also stop creature movement and will allow them to continue to follow the boss after channeling is finished or the boss is out of range
                 if (m_creature->IsWithinDistInMap(pWho, 2 * INTERACTION_DISTANCE))
-                    DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_REPAIR : SPELL_REPAIR_H);
+                { DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_REPAIR : SPELL_REPAIR_H); }
             }
         }
     }
@@ -273,7 +273,7 @@ struct MANGOS_DLL_DECL mob_steamrigger_mechanicAI : public ScriptedAI
     void UpdateAI(const uint32 /*uiDiff*/) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }

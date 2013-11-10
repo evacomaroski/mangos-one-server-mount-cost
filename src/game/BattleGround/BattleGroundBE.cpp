@@ -63,7 +63,7 @@ void BattleGroundBE::AddPlayer(Player* plr)
 void BattleGroundBE::RemovePlayer(Player* /*plr*/, ObjectGuid /*guid*/)
 {
     if (GetStatus() == STATUS_WAIT_LEAVE)
-        return;
+    { return; }
 
     UpdateWorldState(0x9f1, GetAlivePlayersCountByTeam(ALLIANCE));
     UpdateWorldState(0x9f0, GetAlivePlayersCountByTeam(HORDE));
@@ -74,7 +74,7 @@ void BattleGroundBE::RemovePlayer(Player* /*plr*/, ObjectGuid /*guid*/)
 void BattleGroundBE::HandleKillPlayer(Player* player, Player* killer)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     if (!killer)
     {
@@ -100,7 +100,7 @@ void BattleGroundBE::HandleAreaTrigger(Player* source, uint32 trigger)
 {
     // this is wrong way to implement these things. On official it done by gameobject spell cast.
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     // uint32 spellId = 0;
     // uint64 buff_guid = 0;
@@ -133,7 +133,7 @@ void BattleGroundBE::UpdatePlayerScore(Player* source, uint32 type, uint32 value
 {
     BattleGroundScoreMap::iterator itr = m_PlayerScores.find(source->GetObjectGuid());
     if (itr == m_PlayerScores.end())                        // player not found...
-        return;
+    { return; }
 
     // there is nothing special in this score
     BattleGround::UpdatePlayerScore(source, type, value);

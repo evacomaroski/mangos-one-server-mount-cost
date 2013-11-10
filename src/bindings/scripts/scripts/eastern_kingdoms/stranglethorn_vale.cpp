@@ -84,7 +84,7 @@ struct MANGOS_DLL_DECL mob_yennikuAI : public ScriptedAI
             m_creature->SetFactionTemporary(FACTION_ID_HORDE_GENERIC, TEMPFACTION_RESTORE_REACH_HOME);
         }
         else
-            ScriptedAI::EnterEvadeMode();
+        { ScriptedAI::EnterEvadeMode(); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
@@ -98,11 +98,11 @@ struct MANGOS_DLL_DECL mob_yennikuAI : public ScriptedAI
                 EnterEvadeMode();
             }
             else
-                m_uiResetTimer -= uiDiff;
+            { m_uiResetTimer -= uiDiff; }
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         DoMeleeAttackIfReady();
     }

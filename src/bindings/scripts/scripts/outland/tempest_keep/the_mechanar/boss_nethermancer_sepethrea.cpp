@@ -91,7 +91,7 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_SEPETHREA, DONE);
+        { m_pInstance->SetData(TYPE_SEPETHREA, DONE); }
     }
 
     void JustSummoned(Creature* pSummoned) override
@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
 
             // ToDo: need to fixate target and make them walk!
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                pSummoned->GetMotionMaster()->MoveChase(pTarget);
+            { pSummoned->GetMotionMaster()->MoveChase(pTarget); }
         }
     }
 
@@ -111,25 +111,25 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Frost Attack
         if (m_uiFrostAttackTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_FROST_ATTACK) == CAST_OK)
-                m_uiFrostAttackTimer = urand(5000, 17000);
+            { m_uiFrostAttackTimer = urand(5000, 17000); }
         }
         else
-            m_uiFrostAttackTimer -= uiDiff;
+        { m_uiFrostAttackTimer -= uiDiff; }
 
         // Arcane Blast
         if (m_uiArcaneBlastTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_ARCANE_BLAST) == CAST_OK)
-                m_uiArcaneBlastTimer = urand(15000, 30000);
+            { m_uiArcaneBlastTimer = urand(15000, 30000); }
         }
         else
-            m_uiArcaneBlastTimer -= uiDiff;
+        { m_uiArcaneBlastTimer -= uiDiff; }
 
         // Dragons Breath
         if (m_uiDragonsBreathTimer < uiDiff)
@@ -137,13 +137,13 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
             if (DoCastSpellIfCan(m_creature, SPELL_DRAGONS_BREATH) == CAST_OK)
             {
                 if (urand(0, 1))
-                    DoScriptText(urand(0, 1) ? SAY_DRAGONS_BREATH_1 : SAY_DRAGONS_BREATH_2, m_creature);
+                { DoScriptText(urand(0, 1) ? SAY_DRAGONS_BREATH_1 : SAY_DRAGONS_BREATH_2, m_creature); }
 
                 m_uiDragonsBreathTimer = urand(20000, 35000);
             }
         }
         else
-            m_uiDragonsBreathTimer -= uiDiff;
+        { m_uiDragonsBreathTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

@@ -67,7 +67,7 @@ int libmpq_read_listfile(mpq_archive* mpq_a, FILE* fp);
 
 int libmpq_conf_get_value(FILE* fp, char* search_value, void* return_value, int type, int size);
 char* libmpq_conf_delete_char(char* buf, char* chars);
-int libmpq_conf_get_array(FILE* fp, char* search_value, char** *filelist, int* entries);
+int libmpq_conf_get_array(FILE* fp, char* search_value, char***filelist, int* entries);
 int libmpq_free_listfile(char** filelist);
 int libmpq_read_listfile(mpq_archive* mpq_a, FILE* fp);
 

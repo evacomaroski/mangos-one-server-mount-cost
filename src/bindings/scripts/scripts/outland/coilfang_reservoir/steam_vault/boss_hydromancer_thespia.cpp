@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, FAIL);
+        { m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, FAIL); }
     }
 
     void JustDied(Unit* /*pKiller*/) override
@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         DoScriptText(SAY_DEAD, m_creature);
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, DONE);
+        { m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, DONE); }
     }
 
     void KilledUnit(Unit* /*pVictim*/) override
@@ -107,13 +107,13 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         }
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, IN_PROGRESS); }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // LightningCloud_Timer
         if (m_uiLightningCloudTimer < uiDiff)
@@ -123,13 +123,13 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
                 if (DoCastSpellIfCan(pTarget, SPELL_LIGHTNING_CLOUD) == CAST_OK)
                 {
                     if (urand(0, 1))
-                        DoScriptText(SAY_CLOUD, m_creature);
+                    { DoScriptText(SAY_CLOUD, m_creature); }
                     m_uiLightningCloudTimer = m_bIsRegularMode ? 30000 : 10000;
                 }
             }
         }
         else
-            m_uiLightningCloudTimer -= uiDiff;
+        { m_uiLightningCloudTimer -= uiDiff; }
 
         // LungBurst_Timer
         if (m_uiLungBurstTimer < uiDiff)
@@ -137,11 +137,11 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_LUNG_BURST) == CAST_OK)
-                    m_uiLungBurstTimer = urand(7000, 12000);
+                { m_uiLungBurstTimer = urand(7000, 12000); }
             }
         }
         else
-            m_uiLungBurstTimer -= uiDiff;
+        { m_uiLungBurstTimer -= uiDiff; }
 
         // EnvelopingWinds_Timer
         if (m_uiEnvelopingWindsTimer < uiDiff)
@@ -149,11 +149,11 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_ENVELOPING_WINDS) == CAST_OK)
-                    m_uiEnvelopingWindsTimer = m_bIsRegularMode ? 10000 : 15000;
+                { m_uiEnvelopingWindsTimer = m_bIsRegularMode ? 10000 : 15000; }
             }
         }
         else
-            m_uiEnvelopingWindsTimer -= uiDiff;
+        { m_uiEnvelopingWindsTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

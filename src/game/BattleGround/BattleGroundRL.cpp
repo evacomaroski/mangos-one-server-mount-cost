@@ -63,7 +63,7 @@ void BattleGroundRL::AddPlayer(Player* plr)
 void BattleGroundRL::RemovePlayer(Player* /*plr*/, ObjectGuid /*guid*/)
 {
     if (GetStatus() == STATUS_WAIT_LEAVE)
-        return;
+    { return; }
 
     UpdateWorldState(0xbb8, GetAlivePlayersCountByTeam(ALLIANCE));
     UpdateWorldState(0xbb9, GetAlivePlayersCountByTeam(HORDE));
@@ -74,7 +74,7 @@ void BattleGroundRL::RemovePlayer(Player* /*plr*/, ObjectGuid /*guid*/)
 void BattleGroundRL::HandleKillPlayer(Player* player, Player* killer)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     if (!killer)
     {
@@ -100,7 +100,7 @@ void BattleGroundRL::HandleAreaTrigger(Player* source, uint32 trigger)
 {
     // this is wrong way to implement these things. On official it done by gameobject spell cast.
     if (GetStatus() != STATUS_IN_PROGRESS)
-        return;
+    { return; }
 
     // uint32 spellId = 0;
     // uint64 buff_guid = 0;

@@ -79,35 +79,35 @@ struct MANGOS_DLL_DECL boss_hungarfenAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_creature->GetHealthPercent() <= 20.0f && !m_bHasSpores)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_FOUL_SPORES) == CAST_OK)
-                m_bHasSpores = true;
+            { m_bHasSpores = true; }
         }
 
         if (m_uiMushroomTimer < uiDiff)
         {
             // Summon a mushroom exactly on target position
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                m_creature->SummonCreature(NPC_UNDERBOG_MUSHROOM, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            { m_creature->SummonCreature(NPC_UNDERBOG_MUSHROOM, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_CORPSE_DESPAWN, 0); }
 
             m_uiMushroomTimer = m_bIsRegularMode ? 10000 : 5000;
         }
         else
-            m_uiMushroomTimer -= uiDiff;
+        { m_uiMushroomTimer -= uiDiff; }
 
         if (m_uiAcidGeyserTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_ACID_GEYSER) == CAST_OK)
-                    m_uiAcidGeyserTimer = urand(10000, 17500);
+                { m_uiAcidGeyserTimer = urand(10000, 17500); }
             }
         }
         else
-            m_uiAcidGeyserTimer -= uiDiff;
+        { m_uiAcidGeyserTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -151,7 +151,7 @@ struct MANGOS_DLL_DECL mob_underbog_mushroomAI : public ScriptedAI
                 }
             }
             else
-                m_uiSporeTimer -= uiDiff;
+            { m_uiSporeTimer -= uiDiff; }
         }
 
         if (m_uiGrowTimer)
@@ -159,10 +159,10 @@ struct MANGOS_DLL_DECL mob_underbog_mushroomAI : public ScriptedAI
             if (m_uiGrowTimer <= uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_GROW) == CAST_OK)
-                    m_uiGrowTimer = 3000;
+                { m_uiGrowTimer = 3000; }
             }
             else
-                m_uiGrowTimer -= uiDiff;
+            { m_uiGrowTimer -= uiDiff; }
         }
 
         if (m_uiShrinkTimer)
@@ -173,7 +173,7 @@ struct MANGOS_DLL_DECL mob_underbog_mushroomAI : public ScriptedAI
                 m_uiShrinkTimer = 0;
             }
             else
-                m_uiShrinkTimer -= uiDiff;
+            { m_uiShrinkTimer -= uiDiff; }
         }
     }
 };

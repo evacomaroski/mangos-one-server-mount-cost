@@ -40,15 +40,15 @@ Channel::Channel(const std::string& name, uint32 channel_id)
         m_flags |= CHANNEL_FLAG_GENERAL;                    // for all built-in channels
 
         if (ch->flags & CHANNEL_DBC_FLAG_TRADE)             // for trade channel
-            m_flags |= CHANNEL_FLAG_TRADE;
+        { m_flags |= CHANNEL_FLAG_TRADE; }
 
         if (ch->flags & CHANNEL_DBC_FLAG_CITY_ONLY2)        // for city only channels
-            m_flags |= CHANNEL_FLAG_CITY;
+        { m_flags |= CHANNEL_FLAG_CITY; }
 
         if (ch->flags & CHANNEL_DBC_FLAG_LFG)               // for LFG channel
-            m_flags |= CHANNEL_FLAG_LFG;
+        { m_flags |= CHANNEL_FLAG_LFG; }
         else                                                // for all other channels
-            m_flags |= CHANNEL_FLAG_NOT_LFG;
+        { m_flags |= CHANNEL_FLAG_NOT_LFG; }
     }
     else                                                    // it's custom channel
     {
@@ -95,7 +95,7 @@ void Channel::Join(ObjectGuid p, const char* pass)
         }
 
         if (plr->GetGuildId() && (GetFlags() == 0x38))
-            return;
+        { return; }
 
         plr->JoinedChannel(this);
     }
@@ -146,7 +146,7 @@ void Channel::Leave(ObjectGuid p, bool send)
             MakeYouLeft(&data);
             SendToOne(&data, p);
             if (plr)
-                plr->LeftChannel(this);
+            { plr->LeftChannel(this); }
             data.clear();
         }
 
@@ -175,7 +175,7 @@ void Channel::KickOrBan(ObjectGuid good, const char* badname, bool ban)
     AccountTypes sec = SEC_PLAYER;
     Player* gplr = sObjectMgr.GetPlayer(good);
     if (gplr)
-        sec = gplr->GetSession()->GetSecurity();
+    { sec = gplr->GetSession()->GetSecurity(); }
 
     if (!IsOn(good))
     {
@@ -216,7 +216,7 @@ void Channel::KickOrBan(ObjectGuid good, const char* badname, bool ban)
                 MakePlayerBanned(&data, bad->GetObjectGuid(), good);
             }
             else
-                MakePlayerKicked(&data, bad->GetObjectGuid(), good);
+            { MakePlayerKicked(&data, bad->GetObjectGuid(), good); }
 
             SendToAll(&data);
             m_players.erase(bad->GetObjectGuid());
@@ -236,7 +236,7 @@ void Channel::UnBan(ObjectGuid good, const char* badname)
     uint32 sec = 0;
     Player* gplr = sObjectMgr.GetPlayer(good);
     if (gplr)
-        sec = gplr->GetSession()->GetSecurity();
+    { sec = gplr->GetSession()->GetSecurity(); }
 
     if (!IsOn(good))
     {
@@ -275,7 +275,7 @@ void Channel::Password(ObjectGuid p, const char* pass)
     uint32 sec = 0;
     Player* plr = sObjectMgr.GetPlayer(p);
     if (plr)
-        sec = plr->GetSession()->GetSecurity();
+    { sec = plr->GetSession()->GetSecurity(); }
 
     if (!IsOn(p))
     {
@@ -303,7 +303,7 @@ void Channel::SetMode(ObjectGuid p, const char* p2n, bool mod, bool set)
 {
     Player* plr = sObjectMgr.GetPlayer(p);
     if (!plr)
-        return;
+    { return; }
 
     uint32 sec = plr->GetSession()->GetSecurity();
 
@@ -332,7 +332,7 @@ void Channel::SetMode(ObjectGuid p, const char* p2n, bool mod, bool set)
 
         PlayerInfo inf = m_players[newp->GetObjectGuid()];
         if (p == m_ownerGuid && newp->GetObjectGuid() == m_ownerGuid && mod)
-            return;
+        { return; }
 
         if (!IsOn(newp->GetObjectGuid()))
         {
@@ -345,7 +345,7 @@ void Channel::SetMode(ObjectGuid p, const char* p2n, bool mod, bool set)
         // allow make moderator from another team only if both is GMs
         // at this moment this only way to show channel post for GM from another team
         if ((plr->GetSession()->GetSecurity() < SEC_GAMEMASTER || newp->GetSession()->GetSecurity() < SEC_GAMEMASTER) &&
-                plr->GetTeam() != newp->GetTeam() && !sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
+            plr->GetTeam() != newp->GetTeam() && !sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
         {
             WorldPacket data;
             MakePlayerNotFound(&data, p2n);
@@ -362,9 +362,9 @@ void Channel::SetMode(ObjectGuid p, const char* p2n, bool mod, bool set)
         }
 
         if (mod)
-            SetModerator(newp->GetObjectGuid(), set);
+        { SetModerator(newp->GetObjectGuid(), set); }
         else
-            SetMute(newp->GetObjectGuid(), set);
+        { SetMute(newp->GetObjectGuid(), set); }
     }
 }
 
@@ -372,7 +372,7 @@ void Channel::SetOwner(ObjectGuid p, const char* newname)
 {
     Player* plr = sObjectMgr.GetPlayer(p);
     if (!plr)
-        return;
+    { return; }
 
     uint32 sec = plr->GetSession()->GetSecurity();
 
@@ -459,7 +459,7 @@ void Channel::List(Player* player)
             // PLAYER can't see MODERATOR, GAME MASTER, ADMINISTRATOR characters
             // MODERATOR, GAME MASTER, ADMINISTRATOR can see all
             if (plr && (player->GetSession()->GetSecurity() > SEC_PLAYER || plr->GetSession()->GetSecurity() <= gmLevelInWhoList) &&
-                    plr->IsVisibleGloballyFor(player))
+                plr->IsVisibleGloballyFor(player))
             {
                 data << ObjectGuid(i->first);
                 data << uint8(i->second.flags);             // flags seems to be changed...
@@ -478,7 +478,7 @@ void Channel::Announce(ObjectGuid p)
     uint32 sec = 0;
     Player* plr = sObjectMgr.GetPlayer(p);
     if (plr)
-        sec = plr->GetSession()->GetSecurity();
+    { sec = plr->GetSession()->GetSecurity(); }
 
     if (!IsOn(p))
     {
@@ -498,9 +498,9 @@ void Channel::Announce(ObjectGuid p)
 
         WorldPacket data;
         if (m_announce)
-            MakeAnnouncementsOn(&data, p);
+        { MakeAnnouncementsOn(&data, p); }
         else
-            MakeAnnouncementsOff(&data, p);
+        { MakeAnnouncementsOff(&data, p); }
         SendToAll(&data);
     }
 }
@@ -510,7 +510,7 @@ void Channel::Moderate(ObjectGuid p)
     uint32 sec = 0;
     Player* plr = sObjectMgr.GetPlayer(p);
     if (plr)
-        sec = plr->GetSession()->GetSecurity();
+    { sec = plr->GetSession()->GetSecurity(); }
 
     if (!IsOn(p))
     {
@@ -530,9 +530,9 @@ void Channel::Moderate(ObjectGuid p)
 
         WorldPacket data;
         if (m_moderate)
-            MakeModerationOn(&data, p);
+        { MakeModerationOn(&data, p); }
         else
-            MakeModerationOff(&data, p);
+        { MakeModerationOff(&data, p); }
         SendToAll(&data);
     }
 }
@@ -540,14 +540,14 @@ void Channel::Moderate(ObjectGuid p)
 void Channel::Say(ObjectGuid p, const char* what, uint32 lang)
 {
     if (!what)
-        return;
+    { return; }
     if (sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
-        lang = LANG_UNIVERSAL;
+    { lang = LANG_UNIVERSAL; }
 
     uint32 sec = 0;
     Player* plr = sObjectMgr.GetPlayer(p);
     if (plr)
-        sec = plr->GetSession()->GetSecurity();
+    { sec = plr->GetSession()->GetSecurity(); }
 
     if (!IsOn(p))
     {
@@ -607,7 +607,7 @@ void Channel::Invite(ObjectGuid p, const char* newname)
 
     Player* plr = sObjectMgr.GetPlayer(p);
     if (!plr)
-        return;
+    { return; }
 
     if (newp->GetTeam() != plr->GetTeam() && !sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
     {
@@ -643,7 +643,7 @@ void Channel::SetOwner(ObjectGuid guid, bool exclaim)
         // [] will re-add player after it possible removed
         PlayerList::iterator p_itr = m_players.find(m_ownerGuid);
         if (p_itr != m_players.end())
-            p_itr->second.SetOwner(false);
+        { p_itr->second.SetOwner(false); }
     }
 
     m_ownerGuid = guid;
@@ -670,13 +670,13 @@ void Channel::SendToAll(WorldPacket* data, ObjectGuid p)
     for (PlayerList::const_iterator i = m_players.begin(); i != m_players.end(); ++i)
         if (Player* plr = sObjectMgr.GetPlayer(i->first))
             if (!p || !plr->GetSocial()->HasIgnore(p))
-                plr->GetSession()->SendPacket(data);
+            { plr->GetSession()->SendPacket(data); }
 }
 
 void Channel::SendToOne(WorldPacket* data, ObjectGuid who)
 {
     if (Player* plr = ObjectMgr::GetPlayer(who))
-        plr->GetSession()->SendPacket(data);
+    { plr->GetSession()->SendPacket(data); }
 }
 
 void Channel::Voice(ObjectGuid /*guid1*/, ObjectGuid /*guid2*/)
@@ -777,7 +777,7 @@ void Channel::MakeChannelOwner(WorldPacket* data)
     std::string name = "";
 
     if (!sObjectMgr.GetPlayerNameByGUID(m_ownerGuid, name) || name.empty())
-        name = "PLAYER_NOT_FOUND";
+    { name = "PLAYER_NOT_FOUND"; }
 
     MakeNotifyPacket(data, CHAT_CHANNEL_OWNER_NOTICE);
     *data << ((IsConstant() || !m_ownerGuid) ? "Nobody" : name);
@@ -952,9 +952,9 @@ void Channel::JoinNotify(ObjectGuid guid)
     WorldPacket data;
 
     if (IsConstant())
-        data.Initialize(SMSG_USERLIST_ADD, 8 + 1 + 1 + 4 + GetName().size() + 1);
+    { data.Initialize(SMSG_USERLIST_ADD, 8 + 1 + 1 + 4 + GetName().size() + 1); }
     else
-        data.Initialize(SMSG_USERLIST_UPDATE, 8 + 1 + 1 + 4 + GetName().size() + 1);
+    { data.Initialize(SMSG_USERLIST_UPDATE, 8 + 1 + 1 + 4 + GetName().size() + 1); }
 
     data << ObjectGuid(guid);
     data << uint8(GetPlayerFlags(guid));

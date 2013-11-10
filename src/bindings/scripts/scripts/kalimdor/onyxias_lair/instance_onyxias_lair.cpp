@@ -62,12 +62,12 @@ void instance_onyxias_lair::OnCreatureCreate(Creature* pCreature)
 void instance_onyxias_lair::SetData(uint32 uiType, uint32 uiData)
 {
     if (uiType != TYPE_ONYXIA)
-        return;
+    { return; }
 
     m_uiEncounter = uiData;
 
     if (uiData == DATA_LIFTOFF)
-        m_tPhaseTwoStart = time(NULL);
+    { m_tPhaseTwoStart = time(NULL); }
 
     // Currently no reason to save anything
 }

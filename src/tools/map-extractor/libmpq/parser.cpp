@@ -219,7 +219,7 @@ int libmpq_conf_get_value(FILE* fp, char* search_value, void* return_value, int 
  *  found in the config file. As second value it returns th number of
  *  entries in the byte array. On success it returns 1, otherwise 0.
  */
-int libmpq_conf_get_array(FILE* fp, char* search_value, char** *filelist, int* entries)
+int libmpq_conf_get_array(FILE* fp, char* search_value, char***filelist, int* entries)
 {
     char buf[LIBMPQ_CONF_BUFSIZE];
     char temp[LIBMPQ_CONF_BUFSIZE];
@@ -275,7 +275,7 @@ int libmpq_conf_get_array(FILE* fp, char* search_value, char** *filelist, int* e
 
             /* add dummy option to use with libmpq_conf_parse_line() */
             strncpy(temp, "MPQ_BUFFER = ", LIBMPQ_CONF_BUFSIZE);
-            strncat(temp, line, LIBMPQ_CONF_BUFSIZE-strlen(temp)-1);
+            strncat(temp, line, LIBMPQ_CONF_BUFSIZE - strlen(temp) - 1);
             found = libmpq_conf_parse_line(temp, "MPQ_BUFFER", temp, LIBMPQ_CONF_BUFSIZE);
 
             if (found == 1)

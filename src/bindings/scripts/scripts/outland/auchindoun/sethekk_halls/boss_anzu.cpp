@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         DoSummonBirdHelpers();
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_ANZU, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_ANZU, IN_PROGRESS); }
     }
 
     void JustDied(Unit* /*pKiller*/) override
@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         DespawnBirdHelpers();
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_ANZU, DONE);
+        { m_pInstance->SetData(TYPE_ANZU, DONE); }
     }
 
     void JustReachedHome() override
@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         m_creature->ForcedDespawn();
 
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_ANZU, FAIL);
+        { m_pInstance->SetData(TYPE_ANZU, FAIL); }
     }
 
     void JustSummoned(Creature* pSummoned) override
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         if (pSummoned->GetEntry() == NPC_BROOD_OF_ANZU)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                pSummoned->AI()->AttackStart(pTarget);
+            { pSummoned->AI()->AttackStart(pTarget); }
         }
         else
         {
@@ -129,7 +129,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
     void DoSummonBroodsOfAnzu()
     {
         if (!m_pInstance)
-            return;
+        { return; }
 
         // Note: the birds should fly around the room for about 10 seconds before starting to attack the players
         if (GameObject* pClaw = m_pInstance->GetSingleGameObjectFromStorage(GO_RAVENS_CLAW))
@@ -159,14 +159,14 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         for (GuidList::const_iterator itr = m_lBirdsGuidList.begin(); itr != m_lBirdsGuidList.end(); ++itr)
         {
             if (Creature* pTemp = m_creature->GetMap()->GetCreature(*itr))
-                pTemp->ForcedDespawn();
+            { pTemp->ForcedDespawn(); }
         }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         // Banish at 66% and 33%; Boss can still use spells while banished
         if (m_creature->GetHealthPercent() < m_fHealthCheck)
@@ -182,18 +182,18 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         if (m_uiFleshRipTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_FLESH_RIP) == CAST_OK)
-                m_uiFleshRipTimer = urand(10000, 20000);
+            { m_uiFleshRipTimer = urand(10000, 20000); }
         }
         else
-            m_uiFleshRipTimer -= uiDiff;
+        { m_uiFleshRipTimer -= uiDiff; }
 
         if (m_uiScreechTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SCREECH) == CAST_OK)
-                m_uiScreechTimer = urand(31000, 35000);
+            { m_uiScreechTimer = urand(31000, 35000); }
         }
         else
-            m_uiScreechTimer -= uiDiff;
+        { m_uiScreechTimer -= uiDiff; }
 
         if (m_uiSpellBombTimer < uiDiff)
         {
@@ -212,18 +212,18 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
             }
         }
         else
-            m_uiSpellBombTimer -= uiDiff;
+        { m_uiSpellBombTimer -= uiDiff; }
 
         if (m_uiCycloneTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_CYCLONE) == CAST_OK)
-                    m_uiCycloneTimer = 21000;
+                { m_uiCycloneTimer = 21000; }
             }
         }
         else
-            m_uiCycloneTimer -= uiDiff;
+        { m_uiCycloneTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

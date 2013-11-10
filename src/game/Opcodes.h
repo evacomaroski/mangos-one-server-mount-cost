@@ -1139,7 +1139,7 @@ extern OpcodeHandler opcodeTable[NUM_MSG_TYPES];
 inline const char* LookupOpcodeName(uint16 id)
 {
     if (id >= NUM_MSG_TYPES)
-        return "Received unknown opcode, it's more than max!";
+    { return "Received unknown opcode, it's more than max!"; }
     return opcodeTable[id].name;
 }
 #endif

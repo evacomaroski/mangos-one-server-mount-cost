@@ -38,10 +38,10 @@ bool GOUse_go_defias_cannon(Player* /*pPlayer*/, GameObject* pGo)
     ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
 
     if (!pInstance)
-        return false;
+    { return false; }
 
     if (pInstance->GetData(TYPE_IRON_CLAD_DOOR) == DONE)
-        return false;
+    { return false; }
 
     pInstance->SetData(TYPE_IRON_CLAD_DOOR, DONE);
     return false;

@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHAHRAZ, IN_PROGRESS);
+        { m_pInstance->SetData(TYPE_SHAHRAZ, IN_PROGRESS); }
 
         DoScriptText(SAY_AGGRO, m_creature);
     }
@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHAHRAZ, FAIL);
+        { m_pInstance->SetData(TYPE_SHAHRAZ, FAIL); }
     }
 
     void KilledUnit(Unit* /*pVictim*/) override
@@ -129,7 +129,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHAHRAZ, DONE);
+        { m_pInstance->SetData(TYPE_SHAHRAZ, DONE); }
 
         DoScriptText(SAY_DEATH, m_creature);
     }
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
+        { return; }
 
         if (m_creature->GetHealthPercent() < 10.0f && !m_bIsEnraged)
         {
@@ -159,16 +159,16 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
             }
         }
         else
-            m_uiBeamTimer -= uiDiff;
+        { m_uiBeamTimer -= uiDiff; }
 
         // Random Prismatic Shield every 15 seconds.
         if (m_uiPrismaticShieldTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, aPrismaticAuras[urand(0, 5)]) == CAST_OK)
-                m_uiPrismaticShieldTimer = 15000;
+            { m_uiPrismaticShieldTimer = 15000; }
         }
         else
-            m_uiPrismaticShieldTimer -= uiDiff;
+        { m_uiPrismaticShieldTimer -= uiDiff; }
 
         if (m_uiFatalAttractionTimer < uiDiff)
         {
@@ -184,15 +184,15 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
             }
         }
         else
-            m_uiFatalAttractionTimer -= uiDiff;
+        { m_uiFatalAttractionTimer -= uiDiff; }
 
         if (m_uiShriekTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SILENCING_SHRIEK) == CAST_OK)
-                m_uiShriekTimer = 30000;
+            { m_uiShriekTimer = 30000; }
         }
         else
-            m_uiShriekTimer -= uiDiff;
+        { m_uiShriekTimer -= uiDiff; }
 
         if (m_uiBerserkTimer)
         {
@@ -205,7 +205,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
                 }
             }
             else
-                m_uiBerserkTimer -= uiDiff;
+            { m_uiBerserkTimer -= uiDiff; }
         }
 
         // Random taunts
@@ -221,7 +221,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
             m_uiRandomYellTimer = urand(60000, 150000);
         }
         else
-            m_uiRandomYellTimer -= uiDiff;
+        { m_uiRandomYellTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
