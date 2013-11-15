@@ -24,5 +24,47 @@
 # World of Warcraft, and all World of Warcraft or Warcraft art, images,
 # and lore are copyrighted by Blizzard Entertainment, Inc.
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ahbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist DESTINATION ${CONF_DIR})
+include(MacroMangosSourceGroup)
+
+#-----------------------------------------------------------------------------
+# Define the auctionhouse-bot library
+file(GLOB sources *.cpp)
+file(GLOB headers *.h)
+
+set(auctionhouse-bot_LIB_SRCS ${sources} ${headers})
+
+mangos_source_group(${auctionhouse-bot_LIB_SRCS})
+
+include_directories(
+    ${ACE_INCLUDE_DIRS}
+    ${MYSQL_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/dep/include/g3dlite/
+    ${CMAKE_SOURCE_DIR}/src/framework/
+    ${CMAKE_SOURCE_DIR}/src/shared/
+    ${CMAKE_SOURCE_DIR}/src/game/
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/src/shared/
+)
+
+#-----------------------------------------------------------------------------
+# Build the auctionhouse-bot library
+add_library(mangos-auctionhouse-bot STATIC ${auctionhouse-bot_LIB_SRCS})
+target_link_libraries(mangos-auctionhouse-bot mangos-shared mangos-framework g3dlite ${ACE_LIBRARIES} ${MYSQL_LIBRARIES})
+
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set(BUILD_PROPERTIES "-DMANGOS_DEBUG")
+    set_target_properties(mangos-auctionhouse-bot PROPERTIES COMPILE_FLAGS ${BUILD_PROPERTIES})
+endif()
+
+add_dependencies(mangos-auctionhouse-bot revision.h)
+
+#-----------------------------------------------------------------------------
+# Build and install the auctionhouse-bot files
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ahbot.conf.dist.cmake ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
+if(WIN32)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist DESTINATION ${BIN_DIR})
+else()
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist DESTINATION ${CONF_DIR})
+endif()

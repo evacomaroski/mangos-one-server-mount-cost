@@ -59,20 +59,31 @@ class DBCFile
         class Record
         {
             public:
+                Record& operator= (const Record& r)
+                {
+                    file = r.file;
+                    offset = r.offset;
+                    return *this;
+                }
                 float getFloat(size_t field) const
                 {
                     assert(field < file.fieldCount);
-                    return *reinterpret_cast<float*>(offset + field * 4);
+                    return *reinterpret_cast<float*>(offset + (field * 4));
                 }
                 unsigned int getUInt(size_t field) const
                 {
                     assert(field < file.fieldCount);
-                    return *reinterpret_cast<unsigned int*>(offset + field * 4);
+                    return *reinterpret_cast<unsigned int*>(offset + (field * 4));
                 }
                 int getInt(size_t field) const
                 {
                     assert(field < file.fieldCount);
-                    return *reinterpret_cast<int*>(offset + field * 4);
+                    return *reinterpret_cast<int*>(offset + (field * 4));
+                }
+                unsigned char getByte(size_t ofs) const
+                {
+                    assert(ofs < file.recordSize);
+                    return *reinterpret_cast<unsigned char*>(offset + ofs);
                 }
                 const char* getString(size_t field) const
                 {
@@ -83,14 +94,15 @@ class DBCFile
                 }
             private:
                 Record(DBCFile& file, unsigned char* offset): file(file), offset(offset) {}
-                unsigned char* offset;
                 DBCFile& file;
+                unsigned char* offset;
 
                 friend class DBCFile;
                 friend class DBCFile::Iterator;
         };
-        /** Iterator that iterates over records
-        */
+        /**
+         * Iterator that iterates over records
+         */
         class Iterator
         {
             public:

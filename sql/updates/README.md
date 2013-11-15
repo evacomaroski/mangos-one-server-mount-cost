@@ -1,90 +1,56 @@
-= MaNGOS -- README =
-
-This code is part of MaNGOS. Contributor & Copyright details are in AUTHORS/THANKS.
-
-See the COPYING file for copying conditions.
-
-NOTE: This is file special addition for mangosone fork (from mangos 0.12)
-      It describe work with backported sql updates
-
-== Database Updates ==
-
+Database updates
+================
 This folder contains SQL files which will apply required updates to your MySQL
 database, whenever the MaNGOS database structure has been changed or extended.
 
 To see if you need an update, the file names have been given a fixed structure
 that should enable you to see if you need an update or not.
 
-=== File Name Description ===
+Filename description
+--------------------
+Filenames are divided into two parts:
 
-File names are divided into two parts.
+* first part is the order_number, revision and counter that shows the commit
+  revision that is compatible with the database after apply that particular update.
+  Counter sets the order to apply SQL updates for the same revision. Order_number
+  sets global order in directory for back-ported SQL updates (it's back-ported in
+  random order and need special mangos-one side order to apply)
+* the second part of the name is the database and the table that needs an update
+  or has been added.
 
-First part is the order_number, revision and counter that shows the commit revision that
-will be compatible with the database after apply that particular update.
-Counter sets the order to apply sql updates for the same revision. Order_number set
-global order in directory for backported sql updates (its backported in random order
-and need special mangosone side order for apply).
+Example
+-------
+    z0001_xxx_01_characters_character_db_version.sql
+    |     |   |  |          |
+    |     |   |  |          |
+    |     |   |  |          The table `character_db_version`
+    |     |   |  |          will need an update.
+    |     |   |  |
+    |     |   |  Name of affected DB (default recommended name)
+    |     |   |  Can be: characters, mangos, realmd
+    |     |   |
+    |     |   Counter show number of SQL update in 0.12 back-ported or own (non back-ported, xxx) updates list for provided master revision
+    |     |   and set proper order for SQL updates for same revision
+    |     |
+    |     MaNGOS 0.12 commit revision related to SQL update (if this back-ported SQL update.
+    |     It can be absent (and replaced by xxx) if SQL update not really back-ported but only mangosone specific.
+    |
+    Order_number set special order for apply SQL updates from different back-ported revisions in mangosone
 
-The second part of the name is the database and the table that needs an update or has been added.
+After applying an update, the database is compatible with the *mangos-one* revision
+of this update. Updates include special protection against multiple and wrong order
+of update usage.
 
-See an example below:
+Attempts to apply updates to an older database without previous updates will generate
+an error and not be applied.
 
-         041_7932_01_characters_character_pet.sql
-         |   |    |  |          |
-         |   |    |  |          |
-         |   |    |  |          The table `character_pet`
-         |   |    |  |          will need an update.
-         |   |    |  |
-         |   |    |  Name of affected DB (default recommended name)
-         |   |    |  Can be: characters, mangos, realmd
-         |   |    |
-         |   |    Counter show number of sql updates in master updates list for provided master revision
-         |   |    and set proper order for sql updates for same revision
-         |   |
-         |   MaNGOS master commit revision related to sql update.
-         |   It included in commit description in form [7059] as you can see at http://github.com/mangos/mangos/commits/master
-         |   It can be absent (and replaced by ____) if sql update not really backported but only mangos-0.12 specific.
-         |
-         Order_number set special order for apply sql updates from different backported revisions in mangos-0.12 branch
+Creating updates
+----------------
+*Notice*: you have to use the `git_id` tool from the contributed sources.
 
-
-After applying an update the DB is compatible with the mangos revision of this sql update.
-SQL updates include special protection against multiple and wrong order of update application.
-
-Attempts to apply sql updates to an older DB without previous SQL updates in list for the database
-or to DB with already applied this or later SQL update will generate an error and not be applied.
-
-=== What do for upgrade to MaNGOS Master ====
-
-Use sql/tools/characters_convert_sXXXX_to_YYYYY.sql file fro convert Mangos One characters
-(in state compatible with sXXXX revision) to Mangos Master characters DB (with state compatible with revision YYYYY).
-Then apply post-YYYYY slq updates for make characters DB up-to-date.
-
-=== For Commiters ====
-
-IMPORTANT: Need use git_id tool from MaNGOSOne sources.
-
-===== For backporting sql updates =====
-
-1. Rename sql update from master form (7932_01_characters_character_pet.sql) to mangos-0.12 form (s9999_7932_01_characters_character_pet.sql)
-   using any free order_number in sql/updates files list (it will replaced by proper at git_id -s use).
-
-   If this realmd sql update preserve existed mangos master sql guards, and do next step with this goal.
-
-2. You can ignore sql order guards in sql update file. It will fixed at git_id -s use.
-   You can ignore content and changes/conflicts in sql/update/Makefile.am. It will regenerated at git_id -s use.
-   For make possible test code part build you can resolve revision_sql.h conflicts in any way.
-   Work test better do after apply git_id -s to comit when revision_sql.h will regenerated.
-   You also need resolve conflicts in DB sql file before git_id tool use (used revison in DB version not important and will replaced by git_id -s)
-
-3. Now use git_id -s
-
-===== For new sql updates =====
-
-1. Name sql update in mangosone form (s99999_xxxxx_01_characters_character_pet.sql)
-   using any free order_number in sql/updates files list (it will replaced by proper at git_id -s use).
-
-2. Add sql update to commit and manually include sql update changes in to related DB sql file.
-
-3. Now use git_id -s (sql update revison will updates in name, sql guards will added to sql update,
-   required revision data will update in related DB sql file and in revision_sql.h)
+* Name the update in *mangos-one* form: `s9999_xxxxxx_01_database_table.sql`
+* Add the update to commit and manually include SQL update changes in the related
+  database file.
+* Now use `git_id -s`. The update revision will updates in name, guards will added
+  to the update, required revision data will be updated in related database file
+  and in `src/shared/revision_sql.h`.

@@ -1,8 +1,5 @@
 /**
- * mangos-one is a full featured server for World of Warcraft in its first
- * expansion version, supporting clients for patch 2.4.3.
- *
- * Copyright (C) 2005-2013  MaNGOS project <http://getmangos.com>
+ * This code is part of MaNGOS. Contributor & Copyright details are in AUTHORS/THANKS.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * World of Warcraft, and all World of Warcraft or Warcraft art, images,
- * and lore are copyrighted by Blizzard Entertainment, Inc.
  */
 
 #ifndef _DEFINES_
@@ -179,7 +173,7 @@ void PG_Exec_str(string sql, PGconn* mPGconn)
 void PG_Escape_Str(string& str)
 {
     if (str.empty())
-    { return; }
+        return;
     char* buf = new char[str.size() * 2 + 1];
     PQescapeString(buf, str.c_str(), str.size());
     str = buf;

@@ -19,8 +19,6 @@
  *
  *  $Id: mpq.c,v 1.6 2004/02/12 00:49:00 mbroemme Exp $
  */
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <stdlib.h>
 #include <sys/stat.h>
 //#include <unistd.h>
@@ -398,6 +396,7 @@ int libmpq_file_extract(mpq_archive* mpq_a, const int number, const char* filena
     /* check if file was found */
     if (blockindex == -1 || blockindex > mpq_a->header->blocktablesize)
     {
+        _close(fd);
         return LIBMPQ_EFILE_NOT_FOUND;
     }
 
@@ -405,12 +404,14 @@ int libmpq_file_extract(mpq_archive* mpq_a, const int number, const char* filena
     mpq_b = mpq_a->blocktable + blockindex;
     if (mpq_b->filepos > (mpq_a->header->archivesize + mpq_a->mpqpos) || mpq_b->csize > mpq_a->header->archivesize)
     {
+        _close(fd);
         return LIBMPQ_EFILE_CORRUPT;
     }
 
     /* check if file exists */
     if ((mpq_b->flags & LIBMPQ_FILE_EXISTS) == 0)
     {
+        _close(fd);
         return LIBMPQ_EFILE_NOT_FOUND;
     }
 
@@ -418,6 +419,7 @@ int libmpq_file_extract(mpq_archive* mpq_a, const int number, const char* filena
     mpq_f = (mpq_file*)malloc(sizeof(mpq_file));
     if (!mpq_f)
     {
+        _close(fd);
         return LIBMPQ_EALLOCMEM;
     }
 
@@ -668,7 +670,7 @@ int libmpq_file_getdata(mpq_archive* mpq_a, mpq_hash mpq_h, const int number, un
     }
 
     if (libmpq_file_read_file(mpq_a, mpq_f, 0, (char*)dest, mpq_b->fsize) == mpq_b->fsize)
-    { success = 1; }
+        { success = 1; }
 
     if (mpq_f->mpq_b->flags & LIBMPQ_FILE_COMPRESSED)
     {

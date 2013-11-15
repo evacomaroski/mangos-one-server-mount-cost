@@ -19,8 +19,6 @@
  *
  *  $Id: parser.c,v 1.5 2004/02/12 00:47:53 mbroemme Exp $
  */
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -219,7 +217,7 @@ int libmpq_conf_get_value(FILE* fp, char* search_value, void* return_value, int 
  *  found in the config file. As second value it returns th number of
  *  entries in the byte array. On success it returns 1, otherwise 0.
  */
-int libmpq_conf_get_array(FILE* fp, char* search_value, char***filelist, int* entries)
+int libmpq_conf_get_array(FILE* fp, char* search_value, char** *filelist, int* entries)
 {
     char buf[LIBMPQ_CONF_BUFSIZE];
     char temp[LIBMPQ_CONF_BUFSIZE];
